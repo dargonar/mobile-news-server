@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+MIDlet-Version: 0.0.15
+MIDlet-Jar-Size: 831786
+RIM-COD-URL-5: eldia-5.cod
+RIM-COD-SHA1-5: 9e 64 c7 3a c8 1e 3e e2 b7 f4 ed 9d da 15 e2 60 da d5 48 28
+RIM-COD-URL-4: eldia-4.cod
+RIM-COD-SHA1-4: c0 4e c7 35 fd ef 55 94 6a 12 8f d5 71 0c c3 8a cc fa 92 e1
+RIM-COD-URL-3: eldia-3.cod
+RIM-COD-SHA1-3: 23 5b 55 2b 0a 4e e5 c2 87 3a f9 2f dc d0 b2 05 6c dc 11 ea
+RIM-COD-URL-2: eldia-2.cod
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Jar-URL: eldia2.jar
+RIM-COD-Module-Dependencies: net_rim_cldc,net_rim_xml,net_rim_xml_org,net_rim_bb_browser_field2_api,net_rim_bbapi_browser,net_rim_locationapi,net_rim_networkapi,net_rim_os,net_rim_bbapi_invoke,net_rim_bb_browser_field_api
+RIM-COD-Size-5: 55820
+RIM-COD-SHA1-2: bd 97 43 7c 1e 99 78 b2 3d b1 57 6f 37 09 cd 64 d7 41 df a6
+RIM-COD-URL-1: eldia-1.cod
+RIM-COD-Size-4: 63080
+RIM-COD-SHA1-1: 41 0d 68 0b bc e5 b3 04 0a 43 a4 41 e7 55 c1 0b 05 7c 6f f0
+RIM-COD-Size-3: 55656
+RIM-COD-Size-2: 68856
+RIM-MIDlet-Flags-1: 0
+RIM-COD-Size-1: 79676
+RIM-COD-Module-Name: eldia
+MIDlet-Name: eldia2
+RIM-COD-Size: 70012
+RIM-COD-Creation-Time: 1363669852
+MIDlet-1: El Dia para BlackBerry,img/icon.png,
+RIM-COD-URL: eldia.cod
+MIDlet-Description: El Dia
+RIM-COD-SHA1: b8 5d ad b6 08 2a 8d fe 2d 06 87 29 5d 2b d4 b1 ed b9 9d f3
+MicroEdition-Profile: MIDP-2.0
+MIDlet-Vendor: El Dia

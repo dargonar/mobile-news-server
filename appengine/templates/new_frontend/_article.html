@@ -1,0 +1,44 @@
+﻿{% extends "new_frontend/_base.html"%}  
+
+{%block content%}  
+    <section class="entry_open">
+      <div>
+        <section class="header">
+          <h2>{{article.category.name}}</h2>
+          <h1>{{article.title}}</h1>
+          <p class="subheader">{{article.excerpt}}</p>
+          <span class="entry_meta">{{article.published.strftime('%d.%m.%Y | %H:%M')}}</span>
+        </section>
+        <div class="separator"></div>
+        {% if article.image %} 
+          <section class="imagen">
+            <figure><img src="{{article.image}}"></figure>
+            <div class="separator"></div>
+          </section>
+        {% endif %}
+        <section class="cuerpo">
+          {{article.content}}
+        </section>
+
+      {% if article.rel_art_keys|length > 0 %}
+        <div class="separator"></div>
+        <section class="relacionadas">
+          <div class="titulo">
+            <span class="cool_font">Notas relacionadas</span>
+          </div>        
+          <div class="relacionada">
+            {% set catitems = rel_articles %}
+            <section class="entries">
+              {%include "new_frontend/_articles.html"%}
+            </section>
+            
+            {# {% for rel_article in rel_articles %}
+              {% if rel_article %}
+              <a href="{{ url_for('frontend/article', article=rel_article.key()|string) }}" class="info floatFix" style="text-transform:none;" rel="external" alt="{{rel_article.title}}" title="{{rel_article.title}}">{{ rel_article.title }}</a>
+              {% endif %}
+            {% endfor %} #}
+          </div>
+        </section>
+      {% endif %}
+    </section>
+{%endblock%}  

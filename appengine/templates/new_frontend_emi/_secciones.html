@@ -1,0 +1,23 @@
+{% extends "new_frontend_emi/_base.html"%}  
+
+{%block content%}  
+    <header>
+      <section class="cabezal">
+        <div class="floatFix fondoNav">
+          <div id="troncal">
+            <span class="techo header"><b>SECCIONES</b></span>
+            <nav class="desplegable" style="top:40px;">
+            <div class="floatFix">
+              <div class="columnaUno">
+                {% for cat in cats %}
+                  {% if cat['type']=='seccion' %}
+                    <a href="{{ url_for('frontend3/secciones/category', category=cat['key']) }}" >{{cat['desc']}}</a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </nav>
+        </div>
+      </section>
+    </header>
+{%endblock %}  

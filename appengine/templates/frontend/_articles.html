@@ -1,0 +1,17 @@
+{% for item in catitems %}
+          
+  <article class=" toi7342 nid1466728">
+    <a href="{{ url_for('frontend/article', article=item.key()|string) }}" class="info floatFix" rel="external" alt="{{item.title}}" title="{{item.title}}">
+      {% if item.image %}
+      <div class="contenedorImg">
+        <img style="width:117px" src="{{item.image}}=s117" class="lazyLoad">
+      </div>
+      {% endif %}
+      <div class="tema">
+        <span class="hora">{{item.published.strftime('%H:%M')}}</span>&nbsp;<span class="pipe">|</span>&nbsp;{{cats_conf[item.category.key().name()]}}
+      </div>
+      <h1 target="_blank" rel="external" >{{item.title}}</h1>
+    </a>
+  </article>
+  
+{% endfor %}

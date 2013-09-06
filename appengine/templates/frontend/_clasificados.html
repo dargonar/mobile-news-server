@@ -1,0 +1,23 @@
+{% extends "frontend/_base.html"%}  
+
+{%block content%}  
+    <header>
+      <section class="cabezal">
+        <div class="floatFix fondoNav">
+          <div id="troncal">
+            <span class="techo header" style="text-transform:uppercase;"><b>CLASIFICADOS</b></span>
+            <nav class="desplegable" style="top:40px;">
+            <div class="floatFix">
+              <div class="columnaUno">
+                {% for cat in cats %}
+                  {% if cat['type']=='clasificado' %}
+                    <a href="{{ url_for('frontend/clasificados/automotores')}}" >{{cat['desc']}}</a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </nav>
+        </div>
+      </section>
+    </header>
+{%endblock %}  

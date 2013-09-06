@@ -1,0 +1,19 @@
+{% for item in catitems %}
+          
+  <article class="entry">
+    <a href="{{ url_for('frontend2/article', article=item.key()|string) }}" class="info floatFix" rel="external" alt="{{item.title}}" title="{{item.title}}">
+      {% if item.image %}
+      <div class="contenedorImg">
+        <img src="{{item.image}}=s117" class="lazyLoad"> <!-- style="width:117px;" -->
+      </div>
+      {% endif %}
+      <h1 class="entry_title" target="_blank" rel="external" >{{item.title}}</h1>
+      <div class="subheader entry_content {{ 'with_image' if item.image else ''}}">
+        <span class="entry_meta">{{item.published.strftime('%H:%M')}}</span>&nbsp;{{'|&nbsp;'+item.excerpt|striptags|truncate(length=100) if item.excerpt|trim|length>0 else ''}}
+        {# {cats_conf[item.category.key().name()]} #}
+      </div>
+      
+    </a>
+  </article>
+  
+{% endfor %}

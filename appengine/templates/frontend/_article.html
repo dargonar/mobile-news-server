@@ -1,0 +1,47 @@
+﻿{% extends "frontend/_base.html"%}  
+
+{%block navigation%}  
+  {% if session['fullversion']==True %}
+    {% set include_buttons = True %}
+    {%include "frontend/_header_fullversion.html"%}
+    <section id="apertura"></section>
+  {% endif %}
+{%endblock%}  
+
+{%block content%}  
+    <section id="contenedor" class="tamano1" style="padding-bottom:48px;">
+      <div class="nota">
+        <section id="encabezado" class="floatFix">
+          <h1>{{article.title}}</h1>
+          <p>{{article.excerpt}}</p><span>{{article.published.strftime('%d.%m.%Y | %H:%M')}}</span>
+        </section>
+        <section id="cuerpo">
+          {% if article.image %} 
+          <br/>
+          <figure><img src="{{article.image}}"></figure>
+          {% endif %}
+          {{article.content}}
+        </section>
+      {% if article.rel_art_keys|length > 0 %}
+        <section class="cabezal">
+          <nav class="desplegable">
+            <div class="floatFix fondoNav">
+              <div id="troncal">
+                <div class="floatFix servicios">
+                  <span>Notas relacionadas</span>
+                  <div class="columnaUno">
+                    {% for rel_article in rel_articles %}
+                      {% if rel_article %}
+                      <a href="{{ url_for('frontend/article', article=rel_article.key()|string) }}" class="info floatFix" style="text-transform:none;" rel="external" alt="{{rel_article.title}}" title="{{rel_article.title}}">{{ rel_article.title }}</a>
+                      {% endif %}
+                    {% endfor %}
+                
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </section>
+      {% endif %}
+    </section>
+{%endblock%}  

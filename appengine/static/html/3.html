@@ -1,0 +1,98 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Atom | Mobile Website Template</title>
+  
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  
+  <!-- stylesheets -->
+  <link href="/html/css/atom.css" rel="stylesheet" type="text/css" />
+
+  <!-- javascript-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="/html/js/responsive.min.js"></script>
+
+  <!-- google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,400italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+  
+  <div class="container">
+  
+    <div class="hidden-menu">
+    
+      <ul class="menu">
+        <li><a class="icon home" href="index.html">home</a></li>
+        <li><a class="icon about" href="about.html">about us</a></li>
+        <li><a class="icon gallery" href="gallery.html">gallery</a></li>
+        <li><a class="icon blog" href="blog.html">our blog</a></li>
+        <li><a class="icon contact" href="contact.html">contact us</a></li>
+        <li class="divider"></li>
+        <li><a class="icon facebook" href="blog.html">facebook</a></li>
+        <li><a class="icon twitter" href="contact.html">twitter</a></li>
+        <li class="divider"></li>
+      </ul>
+      
+      <div class="subscribe">
+        <p>Subscribe to our newsletter</p>
+        <form action="subscribe.php" method="post">
+          <input type="email" name="email" placeholder="Email Address" />
+          <input type="submit" value="GO" />
+        </form>
+      </div>
+    
+    </div>
+  
+    <div class="header">
+    
+      <div class="home-icon">
+        <a href="index.html" title="Home">Home</a>
+      </div>
+      
+      <div class="logo">
+        <a href="index.html">Atom</a>
+      </div>
+      
+      <div class="menu-icon">
+        <a href="#" title="Menu">Menu</a>
+      </div>
+    
+    </div>
+    
+    <div class="content">
+      
+      <h1>we launch new mobile website!</h1>
+      <h3>21.july.2012</h3>
+      
+      <div class="block">
+      
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In lectus felis, condimentum id blandit nec, tincidunt pulvinar elit. Mauris bibendum erat ac nisl egestas feugiat. Integer vel lectus ac dolor blandit interdum a ut eros. Fusce lacinia, quam nec posuere ornare, quam nisi egestas dui, non euismod massa neque nec leo. Etiam mattis volutpat sem, non sodales odio sodales non. Praesent sed mauris eget massa ornare porttitor id quis diam. </p>
+        <h2>Sub-heading</h2>
+        <p>Nam hendrerit varius lorem, ac porta sem sodales at. Suspendisse placerat neque vel metus dapibus eget mattis lorem malesuada. Integer venenatis lorem vel ligula laoreet in fringilla enim tincidunt. </p>
+      
+      </div>
+    
+      <a href="blog.html" class="cta">&larr; back to blog</a>
+
+    </div>
+    
+    <p class="footer">Copyright &copy; 2012 Atom. Created by <a href="http://www.webbymatt.co.uk">Matt Saunders</a>.<span>View our <a href="">desktop site</a></span></p>
+  
+  </div>
+  
+  <script>
+  $(window).load(function() {
+
+    $(".menu-icon a").click(function() {
+      $(".hidden-menu").slideToggle("200");
+    });
+
+  });
+  </script>
+    
+</body>
+</html>

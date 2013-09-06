@@ -1,0 +1,8 @@
+<footer>
+  <div class="footer_icons">
+      <a href="{{ url_for('frontend/home/fullversion') }}" class="noticias {{ 'active' if session['page'] == 'home' else '' }}"></a>
+      <a href="{{ url_for('frontend/secciones') }}" class="secciones {{ 'active' if session['page'] == 'secciones' else '' }}"></a>
+      <a href="{{ url_for('frontend/clasificados') }}" class="clasificados {{ 'active' if session['page'] == 'clasificados' else '' }}"></a>
+      <a href="{{ url_for('frontend/servicios') }}" class="servicios {{ 'active' if session['page'] == 'servicios' else '' }}"></a>
+  </div>
+</footer>

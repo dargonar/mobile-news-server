@@ -1,0 +1,4 @@
+cron:
+- description: Baja los articulos y secciones de todos los diarios
+  url: /download/all
+  schedule: every 1 hours

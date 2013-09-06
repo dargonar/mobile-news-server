@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Diarios Móviles</title>
+	
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	
+  <meta name="description" content="En DiariosMóviles creamos la aplicación de su diario para las plataformas iPhone, Android, Blackberry y Nokia." />
+  
+  <meta name="keywords" content="diario, noticia, aplicación, nativa, iPhone, Android, BlackBerry, Nokia, diarios , moviles, mobile, plataforma, comscore, e-planning" />
+    
+
+    
+	<!-- Stylesheets -->
+	<link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/base.css" />
+
+	<link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/media.queries.css" />
+	<link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/tipsy.css" />
+	<link rel="stylesheet" type="text/css" href="/mvp_1/javascripts/fancybox/jquery.fancybox-1.3.4.css" />
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Nothing+You+Could+Do|Quicksand:400,700,300">
+	
+	<!-- Javascripts -->
+	<script type="text/javascript" src="/mvp_1/javascripts/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/html5shiv.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/fancybox/jquery.easing-1.3.pack.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/jquery.touchSwipe.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/jquery.mobilemenu.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/jquery.infieldlabel.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/jquery.echoslider.js"></script>
+	<script type="text/javascript" src="/mvp_1/javascripts/fluidapp.js"></script>
+	
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="/mvp_1/images/favicon.png" />
+	<link rel="apple-touch-icon" href="/mvp_1/images/apple-touch-icon.html">
+	<link rel="apple-touch-icon" sizes="72x72" href="/mvp_1/images/apple-touch-icon-72x72.html">
+	<link rel="apple-touch-icon" sizes="114x114" href="/mvp_1/images/apple-touch-icon-114x114.html">
+	<script type="text/javascript">
+    
+    var go_to = 'home';
+    {% if flash %}
+      go_to = 'contacto';
+    {% endif %}
+    
+    {% if go_to %}
+      go_to = '{{ go_to }}';
+    {% endif %}
+  </script>
+  <script type="text/javascript">      
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-32663760-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+</head>
+<body>
+	<!-- Start Wrapper -->
+	<div id="page_wrapper">
+		
+	<!-- Start Header -->
+    <header>
+      <div class="container">
+        <!-- Start Social Icons -->
+        <aside>
+          <ul class="social">
+            <!-- li class="facebook"><a href="#">Facebook</a></li -->
+            <!-- li class="twitter"><a href="http://twitter.com/two2twelve">Twitter</a></li -->
+            <li class="email"><a href="mailto:info@diariosmobiles.com.ar" title="info@diariosmobiles.com.ar">Email</a></li>
+            <!-- li class="rss"><a href="#" title="App Updates">RSS</a></li-->
+            <!-- More Social Icons:
+            <li class="dribbble"><a href="">Dribbble</a></li>
+            <li class="google"><a href="">Google</a></li>
+            <li class="flickr"><a href="">Flickr</a></li>
+            -->
+          </ul>
+        </aside>
+        <!-- End Social Icons -->
+        
+        <!-- Start Navigation -->
+        <nav>
+          <ul>
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="/que_hacemos" title="¿Qué es DiariosMóviles&copy;?">¿Qué es DiariosMóviles&copy;?</a></li>
+            <!-- li><a href="#updates" title="Características del servicio">Características</a></li -->
+            <li><a href="/faq" title="Preguntas frecuentes, precios">FAQ</a></li>
+            <li><a href="/clientes">Clientes</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+            
+            <!--li><a href="#screenshots">Pantallas</a></li-->
+            <!--li><a href="#press">Press</a></li-->
+            <!-- li><a href="#styles_original">Styles</a></li -->
+          </ul>
+          <span class="arrow"></span>
+        </nav>
+        <!-- End Navigation -->
+      </div>
+    </header>
+    <!-- End Header -->
+	
+    <div class="container_wrapper">
+      <section class="container">
+        <!-- Start App Info -->
+        <div id="app_info">
+          <!-- Start Logo -->
+          <a href="#home" class="logo">
+            <img src="/mvp_1/images/logi.png" alt="Fluid App" style="height:90px;width:auto;"/> <!-- light-logo.png -->
+          </a>
+          <!-- End Logo -->
+          <span class="tagline" style="display:none;">Edición para smartphones</span>
+          <span class="tagline">Su diario en todos los smartphones</span>
+          <p>
+            Ahora puede estar más cerca de sus lectores. 
+            <br /><b>DiariosMóviles</b>&copy; le permite ofrecer la edición de su diario para <b>smartphones</b>. 
+          </p>
+          
+          <div class="buttons">
+            <center>
+              <a href="/demo" class="large_button" id="apple">
+                <span class="icon"></span>
+                <em>Ver demo en</em> iPhone
+              </a>
+            </center>
+            <!--a href="demo/demo.html" class="large_button" id="android">
+              <span class="icon"></span>
+              <em>Ver demo para</em> Android
+            </a-->
+          </div>
+          
+          <div class="price centered">
+            <p><b>¡Acceda a la demo de su diario!</b></p>
+          </div>
+        </div>
+        <!-- End App Info -->		
+        
+        <!-- Start Pages -->
+        <div id="pages">
+          <div class="top_shadow"></div>
+          
+          <!-- Start Home -->
+          <div id="home" class="page">
+            
+            <div id="slider">
+
+              <div class="slide" data-effect-out="slide" data-title="iPhone">
+                
+                <div class="background iphone-black">
+                  <img src="/mvp_1/images/slider/iphone-back.jpg" alt="iPhone" title="iPhone" />
+                </div>
+                
+                <div class="foreground iphone-black">
+                  <img src="/mvp_1/images/slider/iphone-front.jpg" alt="iPhone" title="iPhone" />
+                </div>
+                
+              </div>
+              
+              <!-- div class="slide" data-effect-in="slide">
+                
+                <div class="background iphone-white">
+                  <img src="/mvp_1/images/slider/iphone-back.jpg" alt="" />
+                </div>
+                
+                <div class="foreground iphone-white">
+                  <iframe src="http://player.vimeo.com/video/40738306?title=0&amp;byline=0&amp;portrait=0" width="230" height="345" frameborder="0"></iframe>
+                </div>
+                
+              </div -->
+            
+              <div class="slide" data-title="Blackberry">
+                
+                <div class="background blackberry">
+                  <img src="/mvp_1/images/slider/blackberry-back.jpg" alt="Blackberry" title="Blackberry" />
+                </div>
+                
+                <div class="foreground blackberry">
+                  <img src="/mvp_1/images/slider/blackberry-front.jpg" alt="Blackberry" title="Blackberry" />
+                </div>
+                
+              </div>
+              
+              <div class="slide" data-title="Android">
+                
+                <div class="background android">
+                  <img src="/mvp_1/images/slider/android-back.jpg" alt="Android" title="Android" />
+                </div>
+                
+                <div class="foreground android">
+                  <img src="/mvp_1/images/slider/android-front.jpg" alt="Android" title="Android" />
+                </div>
+                
+              </div>
+              
+              <!--div class="slide">
+                
+                <div class="background ipad-white">
+                  <iframe src="http://player.vimeo.com/video/40603475?title=0&amp;byline=0&amp;portrait=0" width="352" height="468" frameborder="0"></iframe>
+                </div>
+                            
+              </div-->
+
+              <!--div class="slide">
+                
+                <div class="background ipad-black">
+                  <img src="/mvp_1/images/slider/ipad.jpg" alt="" />
+                </div>
+                            
+              </div-->
+              
+            </div>
+          
+          </div>
+          <!-- End Home -->
+          
+          <!-- Start Team -->
+          <div id="clientes" class="page" style="min-height: 555px;">
+            
+            <h1>Clientes</h1>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <!--div class="about_us content_box">
+              <div class="one_half">
+                <h2>El Día, La Plata</h2>
+                <p></p>
+              </div>
+
+              <div class="one_half column_last">
+                <img src="/mvp_1/images/about-main.png" alt="" />
+              </div>
+            </div-->
+            
+            <div class="team_members">
+              <div class="person one_half" style="min-width:300px;">
+                <img src="/mvp_1/images/clientes/eldia.png" alt="" />
+                <h3>El Día</h3>
+                <span>La Plata, Argentina</span>
+                <a href="http://www.eldia.com.ar" target="_blank">http://www.eldia.com.ar</a>
+                <ul class="apps">
+                  <li style="line-height:34px;color:#898989;">Descargas: </li>
+                  <li class="android"><a title="Android phones" href="https://play.google.com/store/apps/details?id=com.diventi.eldia" target="_blank">Android</a></li>
+                  <li class="iphone"><a title="iPhone/iPod" href="https://itunes.apple.com/gb/app/el-dia/id578331790?mt=8" target="_blank">iPhone</a></li>
+                  <li class="blackberry">
+                    <a id="download_eldia_blackberry" title="BlackBerry" href="http://www.vaskit.com/ota/eldia/eldia.jad" target="_blank">BlackBerry</a>
+                    <!-- a id="download_eldia_blackberry" title="BlackBerry" href="/apps/eldia/eldia.jad" target="_blank">BlackBerry</a -->
+                  </li>
+                </ul>
+              </div>
+              <div class="person one_half column_last">
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <!-- End Team -->
+            
+          <!-- Start Features -->
+          <div id="que_hacemos" class="page">
+            
+            <div class="about_us content_box">
+              <div class="one_half">
+                <!-- h2>¿Qué es <b>DiariosMóviles</b>&copy;?</h2 -->
+                <p>
+                  En <b>DiariosMóviles</b>&copy; creamos la aplicación de su diario para las plataformas iPhone, Android y Blackberry.
+                  <br/><br/>
+                  De esta manera puede ofrecerles a sus lectores una experiencia más rica con el uso de aplicaciones nativas y servicios personalizados. <br />
+                  También puede aprovechar las funcionalidades de los smartphones y generar nuevos canales de ingresos.
+                  <br/><br/>
+                  No requiere que realice ninguna modificación en su portal digital.
+                </p>
+              </div>
+
+              <div class="one_half column_last">
+                <center>
+                  <img src="/mvp_1/images/mobile_man.jpg" style="padding-top:40px;max-width:240px;max-height:240px;" alt="Su diario en smartphones" title="Su diario en smartphones" />
+                </center>
+              </div>
+            </div>
+            
+            <h2>¿Por qué en smartphones?</h2>
+            <!--h2>Simple, pero poderoso</h2-->
+            <!--div class="one_half">
+              <p>Los smartphones se han convertido en una parte indispensable de nuestra vida cotidiana. 
+                <br/>La penetración de Smartphones en Argentina está en torno al 24% de la población y los propietarios de teléfonos inteligentes están cada vez más dependientes sus dispositivos. 
+                <br/>El 71% accede a Internet todos los días en su teléfono inteligente y la mayoría nunca sale de casa sin él. 
+                <br/><b>Aquéllos que hagan del móvil una parte central de su estrategia</b> se beneficiarán del nuevo consumidor constantemente conectado.
+    </p>
+            </div>
+            
+            <div class="one_half column_last">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+            </div-->
+            
+            <div class="feature_list content_box">
+              <div class="one_half">
+                <h2 class="icon chart">El smartphone es útil</h2>
+                <p>Los smartphones se han convertido en una parte indispensable de nuestra vida cotidiana. 
+                <br/><b>La penetración de Smartphones en Argentina está en torno al 24% de la población</b> y los propietarios de teléfonos inteligentes están cada vez más dependientes de sus dispositivos. 
+                <br/>El <b>71% accede a Internet todos los días en su teléfono inteligente</b> y la mayoría nunca sale de casa sin él. 
+                <br/>Aquéllos que hagan del <b>móvil</b> una parte central de su <b>estrategia de negocios se beneficiarán</b> del nuevo consumidor constantemente conectado.
+    </p>
+              </div>
+
+              <div class="one_half column_last">
+                <h2 class="icon world">Es un canal de descubrimiento</h2>
+                <p>Los smartphones ayudan a los usuarios a navegar por el mundo. Aparecer en los teléfonos inteligentes es fundamental para las empresas locales: 
+                  &nbsp;<b>el 85% de los usuarios de teléfonos inteligentes buscan información local en su teléfono</b> y <b>el 89% continúa con una acción al obtener un resultado</b>, como <b>hacer una compra o ponerse en contacto con el negocio</b>. 
+                <br />La potenciación de los servicios basados ​​en la localización en el móvil facilitan a los consumidores conectarse directamente con las empresas.</p>
+              </div>
+
+              <div class="one_half">
+                <h2 class="icon people">Ha cambiado nuestro comportamiento</h2>
+                <p>Los teléfonos inteligentes han transformado el comportamiento del usuario. 
+                <br/>
+                  La búsqueda desde el smartphone, el video, el uso de aplicaciones y las redes sociales son prolíficos. 
+                  <br/>Los usuarios de smartphones son multitarea: <b>un 83% utiliza su smartphone mientras</b> hace otras cosas como ver la televisión (37%) o <b>leer noticias en diarios y revistas (27%)</b>.<br/> 
+                  Extender las estrategias de publicidad para incluir móviles junto a medios convencionales (TV, diario en papel) permite llegar más eficazmente a los consumidores de hoy.</p>
+                </div>
+
+              <div class="one_half column_last">
+                <h2 class="icon cart2">... y nuestro modo de consumo</h2>
+                <p>Los teléfonos inteligentes han cambiado la forma de comprar de los consumidores.
+                    <br/>Los <b>teléfonos inteligentes son usados por un 82% de los usuarios</b> como herramientas de <b><i>investigación</i></b> previa a la compra de un producto o servicio. 
+                    <br/>Estas investigaciones en los smartphones influencian las decisiones del comprador: <b>el 25% de los usuarios de teléfonos inteligentes ha hecho al menos una compra desde su teléfono</b>. 
+                    <br/> Tener un sitio móvil es el standard, una <b>aplicación móvil optimizada</b> es crítico y es una estrategia para atraer consumidores y <b>lectores</b>.</p>
+              </div>
+
+              <div class="two_halfs column_last">
+                <h2 class="icon adver">Acerca anunciantes y consumidores</h2>
+                <p>Ayuda a los anunciantes a ponerse en contacto con los consumidores. 
+                <br /> Los <b>anuncios para móviles son percibidos por el 86% de los usuarios</b> de smartphones. 
+                  <br />Los teléfonos inteligentes son también un <b>componente crítico de la publicidad tradicional</b> ya que el <b>76% ha realizado una búsqueda</b> en sus teléfonos inteligentes <b>después de ver un anuncio convencional</b> (no web ni mobile). 
+                  <br />Hacer anuncios para móviles forma parte de una <b>estrategia de marketing</b> integrado que puede conducir a un mayor acercamiento a los consumidores.</p>
+              </div>
+              
+              <!--
+              <div class="one_half column_last">
+                
+                <h2 class="icon help">Help &amp; Support</h2>
+                <p>Donec sed odio dui. Nullam id dolor id nibh ultricies vehicula ut id elit. Donec sed odio dui. Nullam id dolor. Nulla vitae elit libero, a pharetra augue. Nullam quis</p>
+              </div>
+              -->
+            </div>
+            
+          </div>
+          <!-- End Features -->		
+          
+          <!-- Start Screenshots -->
+          <div id="screenshots" class="page">
+            
+            <h1>Screenshots</h1>
+            
+            <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+            
+            <div class="screenshot_grid content_box">
+              
+              <div class="one_third">
+                <a href="images/screenshots/screen_1.jpg" class="fancybox" rel="group" title="Screenshot 1"><img src="/mvp_1/images/screenshots/screen_1.jpg" alt="" /></a>
+              </div>
+
+              <div class="one_third">
+                <a href="images/screenshots/screen_2.jpg" class="fancybox" rel="group" title="Screenshot 2"><img src="/mvp_1/images/screenshots/screen_2.jpg" alt="" /></a>
+              </div>
+              
+              <div class="one_third column_last">
+                <a href="images/screenshots/screen_3.jpg" class="fancybox" rel="group" title="Screenshot 3"><img src="/mvp_1/images/screenshots/screen_3.jpg" alt="" /></a>
+              </div>
+              
+              <div class="one_third">
+                <a href="images/screenshots/screen_4.jpg" class="fancybox" rel="group" title="Screenshot 4"><img src="/mvp_1/images/screenshots/screen_4.jpg" alt="" /></a>
+              </div>
+
+              <div class="one_third">
+                <a href="images/screenshots/screen_5.jpg" class="fancybox" rel="group" title="Screenshot 5"><img src="/mvp_1/images/screenshots/screen_5.jpg" alt="" /></a>
+              </div>
+              
+              <div class="one_third column_last">
+                <a href="images/screenshots/screen_6.jpg" class="fancybox" rel="group" title="Screenshot 6"><img src="/mvp_1/images/screenshots/screen_6.jpg" alt="" /></a>
+              </div>
+              
+              <div class="one_third">
+                <a href="images/screenshots/screen_7.jpg" class="fancybox" rel="group" title="Screenshot 7"><img src="/mvp_1/images/screenshots/screen_7.jpg" alt="" /></a>
+              </div>
+
+              <div class="one_third">
+                <a href="images/screenshots/screen_8.jpg" class="fancybox" rel="group" title="Screenshot 8"><img src="/mvp_1/images/screenshots/screen_8.jpg" alt="" /></a>
+              </div>
+              
+              <div class="one_third column_last">
+                <a href="images/screenshots/screen_9.jpg" class="fancybox" rel="group" title="Screenshot 9"><img src="/mvp_1/images/screenshots/screen_9.jpg" alt="" /></a>
+              </div>
+              
+            </div>
+            
+          </div>
+          <!-- End Screenshots -->
+                
+          <!-- Start Updates -->
+          <div id="updates_original" class="page">
+            
+            <div class="releases">
+              <article class="release">
+                <h2>Version 1.0.2</h2>
+                <span class="date">Released on March 13th, 2012</span>
+                <ul>
+                  <li class="new"><span><b>New</b></span> Full iOS 5.1 compatibility</li>
+                  <li class="fix"><span><b>Fix</b></span> Push notifications update &amp; fixes</li>
+                  <li class="new"><span><b>New</b></span> Added dashboard refresh button</li>
+                  <li class="fix"><span><b>fix</b></span> Various UI enhancements</li>
+                </ul>
+              </article>
+              
+              <article class="release">
+                <h2>Version 1.0.1</h2>
+                <span class="date">Released on January 10th, 2012</span>
+                <ul>
+                  <li class="new"><span><b>New</b></span> Full iOS 5 compatibility</li>
+                  <li class="fix"><span><b>Fix</b></span> Push notifications update &amp; fixes</li>
+                  <li class="new"><span><b>New</b></span> Added dashboard refresh button</li>
+                  <li class="fix"><span><b>fix</b></span> Various UI enhancements</li>
+                </ul>
+              </article>
+              
+              <article class="release">
+                <h2>Version 1.0</h2>
+                <span class="date">Released on January 1st, 2012</span>
+                <ul>
+                  <li class="new"><span><b>New</b></span> Initial release for iOS and Android</li>
+                </ul>
+              </article>
+            </div>
+            
+          </div>
+          <!-- End Updates -->
+              
+          <!-- Start Press -->
+          <div id="press" class="page">
+            
+            <h1>Press</h1>
+            
+            <div class="press_mentions">
+              <ul>
+                <li>
+                  <div class="logo">
+                    <img src="/mvp_1/images/light-press.png" alt="" />
+                  </div>
+                  <div class="details">
+                    <p>"The best mobile app website you’ve ever seen!"</p>
+                    <address>
+                      Jane Doe
+                      <a href="#">http://website.com &#x2192;</a>
+                    </address>
+                  </div>
+                </li>	
+                <li>
+                  <div class="logo">
+                    <img src="/mvp_1/images/light-press.png" alt="" />
+                  </div>
+                  <div class="details">
+                    <p>"Cras mattis consectetur purus sit amet fermentum."</p>
+                    <address>
+                      Jane Doe
+                      <a href="#">http://website.com &#x2192;</a>
+                    </address>
+                  </div>
+                </li>
+                <li>
+                  <div class="logo">
+                    <img src="/mvp_1/images/light-press.png" alt="" />
+                  </div>
+                  <div class="details">
+                    <p>"Etiam porta sem malesuada magna mollis euismod. Nullam quis risus eget urna mollis ornare vel eu leo."</p>
+                    <address>
+                      Jane Doe
+                      <a href="#">http://website.com &#x2192;</a>
+                    </address>
+                  </div>
+                </li>
+                <li>
+                  <div class="logo">
+                    <img src="/mvp_1/images/light-press.png" alt="" />
+                  </div>
+                  <div class="details">
+                    <p>"Vivamus sagittis vel augue rutrum faucibus dolor."</p>
+                    <address>
+                      Jane Doe
+                      <a href="#">http://website.com &#x2192;</a>
+                    </address>
+                  </div>
+                </li>
+                <li>
+                  <div class="logo">
+                    <img src="/mvp_1/images/light-press.png" alt="" />
+                  </div>
+                  <div class="details">
+                    <p>"Maecenas faucibus mollis interdum."</p>
+                    <address>
+                      Jane Doe
+                      <a href="#">http://website.com &#x2192;</a>
+                    </address>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+          </div>
+          <!-- End Press -->
+          
+          <!-- Start Start Contact -->
+          <div id="contacto" class="page">	
+            <h1>Contacto</h1>
+            <div class="contact content_box">
+              
+              
+              <p>Por favor complete el formulario para que lo contacte un integrante del equipo.</p>
+              
+              <div id="contact_form">
+                {% include "mvp_1/_contact_form.html" %}
+              </div>
+              <p> También puede escribirnos a <a href="mailto:info@diariosmoviles.com.ar" title="info@diariosmoviles.com.ar">info@diariosmoviles.com.ar</a>.</p>
+            </div>
+          </div>
+          <!-- End Start Contact -->
+          
+          <!-- Start Styles -->
+          <div id="faq" class="page">
+            <h1>Preguntas frecuentes <small>- FAQ</small></h1>
+            <div class="toggle_list">
+              <ul>
+                <li class="opened"> <!-- Use class "opened" to expand a toggle on page load -->
+                  <div class="title">
+                    <h3><span>P.</span> ¿Qué es el servicio?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <p>DiarioMóviles hace las aplicaciones para que su diario esté disponible en la tienda apps de <u><b>Apple</b></u> para sus dispositivos <b>iPhone/iPod</b> y <b>iPad</b>, en la tienda de <u><b>Android</b></u> GooglePlay para sus <b>smartphones</b> y <b>tablets</b>, y en la tienda de <u><b>BlackBerry</b></u> para los <b>smartphones</b> de la marca.</p>
+                  </div>
+                </li>
+                <li class="opened"> <!-- Use class "opened" to expand a toggle on page load -->
+                  <div class="title">
+                    <h3><span>P.</span> ¿Cuáles son los requerimientos para contar con el servicio?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <!-- p>Debe disponer de un RSS feed donde liste los articulos principales y de un RSS feed para clasificados.</p>
+                    <p>Opcionalmente puede contar con feeds para cada sección de su diario.</p -->
+                    <p>Ninguno. Nuestra propuesta es sencilla: tenga <b>una aplicación móvil nativa para cada plataforma sin fricción</b>.</p>
+                  </div>
+                </li>
+                <li class="opened">
+                  <div class="title">
+                    <h3><span>P.</span> ¿Cómo funciona?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <p> DiariosMóviles se nutre de las noticias, clasificados y publicidad de la web de su diario, sin requerir nuevos desarrollos o inversiones en tecnología.</p>
+                    <p>Nosotros nos encargamos de publicar las aplicaciones en las tiendas para iPhone, Android y Blackberry. </p>
+                    <br/>
+                    <p>Puede <a href="/contacto">solicitar un agente</a>, y nos comunicaremos a la brevedad.</p>
+                    
+                  </div>
+                </li>
+                <!--<li class="opened">
+                  <div class="title">
+                    <h3><span>P.</span> ¿Cuál es el precio?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <p>El precio es de $ pesos argentinos por mes.</p>
+                    <p><a href="#contact">Consúltenos</a> si su medio cuenta con publicación papel y digital.</p>
+                    <p><a href="#contact">Consúltenos</a> si su publicación está 100% orientada al medio digital.</p>
+                    <p><a href="#contact">Consúltenos</a> por modificaciones personalizadas de la aplicación.</p>
+                  </div>
+                </li>-->
+              </ul>
+            </div>
+          </div>  
+          <div id="styles_original" class="page">
+            
+            <h1>Styles</h1>
+            
+            <div class="full">
+              <h1>h1. Nullam id dolor id nibh ultricies.</h1>
+              <h2>h2. Nullam id dolor id nibh ultricies.</h2>
+              <h3>h3. Nullam id dolor id nibh ultricies.</h3>
+              <h4>h4. Nullam id dolor id nibh ultricies.</h4>
+              <h5>h5. Nullam id dolor id nibh ultricies.</h5>
+              <h6>h6. Nullam id dolor id nibh ultricies.</h6>
+            </div>
+            
+            <h2>Blockquotes</h2>
+            
+            <div class="one_half">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+            </div>
+
+            <div class="one_half column_last">
+              <blockquote>
+                <p>This is a blockquote style example. It's cool.</p>
+                <cite>Some Dude, Some Website</cite>
+              </blockquote>
+            </div>
+            
+            <div class="full">
+            
+              <h2>Small Buttons</h2>
+            
+              <a href="#" class="button black">Black</a>
+              <a href="#" class="button white">White</a>
+              <a href="#" class="button gray">Gray</a>
+              <a href="#" class="button orange">Orange</a>
+              <a href="#" class="button blue">Blue</a>
+              <a href="#" class="button green">Green</a>
+              <a href="#" class="button pink">Pink</a>			
+              <a href="#" class="button purple">Purple</a>
+            
+            </div>
+            
+            <div class="full">
+              
+              <h2>Large Buttons</h2>
+
+              <a href="#" class="large_button" id="apple">
+                <span class="icon"></span>
+                <em>Download now for</em> iPhone
+              </a>
+              <a href="#" class="large_button" id="android">
+                <span class="icon"></span>
+                <em>Download now for</em> Android
+              </a>
+              <a href="#" class="large_button" id="windows">
+                <span class="icon"></span>
+                <em>Download now for</em> Windows
+              </a>
+              <a href="#" class="large_button" id="blackberry">
+                <span class="icon"></span>
+                <em>Download now for</em> Blackberry
+              </a>
+              
+            </div>
+            
+            <h2>Columns</h2>
+            
+            <div class="one_half">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+            </div>
+            
+            <div class="one_half column_last">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+            </div>
+            
+            <div class="one_third">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+            </div>
+            
+            <div class="one_third">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+            </div>
+            
+            <div class="one_third column_last">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+            </div>
+            
+            <div class="one_third">
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            
+            <div class="two_thirds column_last">
+              <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Curabitur blandit tempus porttitor. Donec sed odio dui. Morbi leo risus, porta ac consectetur ac, vestibulum.</p>
+            </div>
+            
+            <h2>Toggle Lists</h2>
+            
+            <div class="toggle_list">
+              <ul>
+                <li class="opened"> <!-- Use class "opened" to expand a toggle on page load -->
+                  <div class="title">
+                    <h3><span>Q.</span> What are the requirements for using this app?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="title">
+                    <h3><span>Q.</span> How does it work?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <p>Donec ullamcorper nulla non metus auctor fringilla. Maecenas sed diam eget risus varius blandit sit amet non magna. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="title">
+                    <h3><span>Q.</span> How much does it cost?</h3>
+                    <a href="javascript:;" class="toggle_link" data-open_text="+" data-close_text="-"></a>
+                  </div>
+                  <div class="content">
+                    <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <h2>Lightbox Images</h2>
+            
+            <div class="one_third">
+              <a href="images/screenshots/screen_1.jpg" rel="screenshots" class="fancybox" title=""><img src="/mvp_1/images/screenshots/screen_1.jpg" alt="" /></a>
+            </div>
+            <div class="one_third">
+              <a href="images/screenshots/screen_2.jpg" rel="screenshots" class="fancybox" title=""><img src="/mvp_1/images/screenshots/screen_2.jpg" alt="" /></a>
+            </div>
+            <div class="one_third column_last">
+              <a href="images/screenshots/screen_3.jpg" rel="screenshots" class="fancybox" title=""><img src="/mvp_1/images/screenshots/screen_3.jpg" alt="" /></a>
+            </div>
+            
+            <div class="full">
+            
+              <h2>Tooltips</h2>
+            
+              <p>Cras justo odio, dapibus ac <a href="javascript:;" rel="tipsy" title="Example Tooltip">facilisis</a> in, egestas eget quam. Donec ullamcorper nulla non metus auctor fringilla. Nullam quis risus eget urna <a href="javascript:;" rel="tipsy" title="An even longer tooltip! <br/> With more stuff!">mollis ornare</a> vel eu leo.</p>
+            
+            </div>
+            
+          </div>
+          <!-- End Styles -->
+          
+          <div class="bottom_shadow"></div>
+        </div>
+        <!-- End Pages -->
+        
+        <div class="clear"></div>
+      </section>
+    
+      <!-- Start Footer -->
+      <footer class="container">
+        <p>DiariosMóviles &copy; 2012.</p>
+      </footer>
+      <!-- End Footer -->
+    </div>
+	
+  </div>
+	<!-- End Wrapper -->
+	<!-- div class="resize"></div -->
+</body>
+
+
+</html>

@@ -1,0 +1,17 @@
+  <header style="width:100%;position:fixed; top:0px;background-color:#ffffff;">
+    <div class="fondoLogo floatFix" style="background:none;">
+      <section class="logo">
+        {% if include_buttons == True %}
+        <a href="{{url_for('frontend/home/fullversion')}}" title="Atrás" class="alink back"></a>
+        {% endif %}
+        <center>
+          <a href="{{url_for('frontend/home/fullversion')}}" title="Inicio">
+            <img alt="Demo DiarioMóviles" title="Demo DiarioMóviles" style="height:30px;" src="/img/fullversion/logo.png" >
+          </a>
+        </center>
+        {% if include_buttons == True %}
+        <a href="#" onclick="javascript:alert('La nota fue agregada a la lista de Leer más tarde.');" title="Leer más tarde" class="alink favs_add"></a>
+        {% endif %}
+      </section>
+    </div>
+  </header>

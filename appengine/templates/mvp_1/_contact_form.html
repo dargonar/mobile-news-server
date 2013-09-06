@@ -1,0 +1,75 @@
+{%- macro form_field(field, class='') -%}
+		{% if field.errors %}
+      {{field(class=class+' error', **kwargs)}}
+    {% else %}
+      {{field(class=class, **kwargs)}}
+    {% endif %}
+{%- endmacro -%}
+
+{%- macro form_error(field) -%}
+    {% if field.description != '' %}<span class="m2">{{field.description}}</span>{% endif %}
+    {% if field.errors %} <span class="error">{{ field.errors.0 }}</span> {% endif %}
+{%- endmacro -%}
+
+    {% if flash %}
+      <div class="{{ 'validation' if flash.type == 'error' else 'success'}}"><p><b>{{flash.message}}</b></p></div>
+    {% endif %}
+    
+    <!--div class="validation">
+      <p>Upa! Por favor corrija los campos marcados...</p>
+    </div>
+
+    <div class="success">
+      <p>¡Gracias! Un agente se contactará a la brevedad.</p>
+    </div-->
+  
+    <form action="{{ url_for('mvp/ask_for_agent') }}" method="post">
+      <div class="row">
+        <p class="left">
+          <label for="name">Nombre y apellido</label>
+          {{ form_field(form.name) }}
+          {{ form_error(form.name) }}
+          <!-- input type="text" name="name" id="name" value="" / -->
+        </p>
+        <p class="right">
+          <label for="email">Email</label>
+          {{ form_field(form.email) }}
+          {{ form_error(form.email) }}
+        </p>
+      </div>
+    
+      <div class="row">
+        <p class="left">
+          <label for="website">Web de su portal</label>
+          {{ form_field(form.website) }}
+          {{ form_error(form.website) }}
+        </p>
+        <p class="right">
+          <label for="telephone">Teléfono + interno</label>
+          {{ form_field(form.telephone) }}
+          {{ form_error(form.telephone) }}
+        </p>
+      </div>
+      
+      <div class="row">
+        <p class="left">
+          <label for="mobile">Celular (opcional)</label>
+          {{ form_field(form.mobile) }}
+          {{ form_error(form.mobile) }}
+        </p>
+        
+        <p class="right">
+          <label for="call_at">Hora preferida de contacto</label>
+          {{ form_field(form.call_at) }}
+          {{ form_error(form.call_at) }}
+        </p>
+     </div>
+      
+      <p>
+        <label for="message" class="textarea">Comentario</label>
+        {{ form_field(form.message) }}
+        {{ form_error(form.message) }}
+      </p>
+    
+      <input type="submit" class="button white" value="Solicitar agente" />
+    </form>

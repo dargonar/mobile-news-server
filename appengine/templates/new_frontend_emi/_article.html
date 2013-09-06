@@ -1,0 +1,53 @@
+﻿{% extends "new_frontend_emi/_base.html"%}  
+
+{%block content%}  
+    <section class="entry_open">
+      <div>
+        {% if article.image %} 
+        <section class="imagen">
+          <div class="figure">
+            <div class="images_count primary_font"> 3 / 10</div>
+            <img onerror="this.src='/html/img/invisible.gif';" src="{{article.image|replace('localhost','192.168.1.103')}}=s320)">
+          </div>
+          
+        </section>
+        {% endif %}
+        
+      <section class="header">
+        {# {article.published.strftime('%d.%m.%Y | %H:%M')} #}
+        <h2 class="lead primary_font">{{article.category.name if article.category.name else 'Información General'}}&nbsp;<img style="width:14px;height:14px;" src="/html/img/blue_bullet.png">&nbsp;<span class="date">Hoy {{article.published.strftime('%H:%M')}}</span></h2>
+        <h1 class="primary_font">{{article.title}}</h1>
+        <p class="subheader primary_font">{{article.excerpt}}</p>
+      </section>
+      <div class="separator1"></div>
+      
+      <section class="cuerpo primary_font">
+        {{article.content}}
+      </section>
+      
+      <section class="text_resizer">
+        <div class="half float_left">
+          <a href="W" class="increase_font_size primary_font">Aa+</a> 
+        </div>
+        <div class="half float_right">
+          <a href="#" class="decerase_font_size primary_font">Aa-</a> 
+        </div>
+      </section>      
+        
+    </section>    
+      {# % if article.rel_art_keys|length > 0 % #}
+      {% if rel_articles|length > 0 %}
+        <section class="related_news entries">
+          <div class="related_header">
+            <span class="primary_font">NOTAS RELACIONADAS</span>
+          </div>        
+          <div class="relacionada">
+            {% set catitems = rel_articles %}
+            <section class="entries">
+              {%include "new_frontend_emi/_articles.html"%}
+            </section>
+          </div>
+        </section>
+      {% endif %}
+    
+{%endblock%}  

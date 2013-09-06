@@ -1,0 +1,73 @@
+  {% extends "new_frontend_emi/_base.html"%}  
+    
+  {%block head%}  
+    <!--
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+      function loadMore(sender){
+        var more = $(sender).attr('more_cursor');
+        if(jQuery.trim(more).length==0)
+          return false;
+        var url = $(sender).attr('href') + $(sender).attr('more_cursor');
+        $('#loading').show();
+        g_currentSearchXHR = jQuery.ajax({
+          url: url,
+          type: 'get',
+          dataType: 'json',
+          error: function(jqXHR, textStatus, errorThrown) {
+            $('#loading').hide();
+            //alert(textStatus + '|' + errorThrown);
+            return false;
+          },
+          success: function(obj) {
+            g_currentSearchXHR = null;
+            
+            $('#informacion').append(obj.html);
+            $(sender).attr('more_cursor', obj.more_cursor);
+            $('#loading').hide();
+            return false;
+          }
+        });
+        return false;
+      }
+    </script>
+    -->
+  {%endblock head%}  
+  
+  {%block content%}  
+    {% if the_category %}
+      <header>
+        <section class="cabezal">
+          <div class="floatFix fondoNav">
+            <div id="troncal">
+              <span class="techo header" style="text-transform:upper-case;"><b>{{the_category}}</b></span>
+            </div>
+          </div>
+        </section>
+      </header>
+    {% endif %}
+
+    <section class="entries">
+      {%include "new_frontend_emi/_articles.html"%}
+    </section>
+    
+    <!--section class="entries_footer">
+      <div class="ver_mas_container">
+        <a id="more_cursor" class="tipo last" title="Ver más notas" href="{{ (url_for('frontend3/secciones/category', category=the_category_id)+'?more_cursor=') if the_category else (url_for('frontend3/home')+'?more_cursor=') }}" more_cursor="{{more_cursor}}" onclick="return loadMore(this);">
+        
+        <center>
+            <p style="display:block;">Ver más notas</p> 
+            <p id="loading" style="display:none;"><img src="/img/loading.gif" border="0" alt="Cargando Notas" title="Cargando notas"></p>
+          </center>
+        </a>
+        
+      </div>
+    </section -->
+    
+    {%block footer%}  
+      <section class="entries_footer">
+      </section>
+    {%endblock%}  
+    
+    
+  {%endblock content%}  

@@ -1,0 +1,6 @@
+nombre,razon_social,domicilio,localidad,provincia,telefono,email,web,promedio,promedio_titulo,categoria,circ_neta_pagada_domingo,circ_neta_pagada_lunes_a_domingo,lunes_a_viernes,lunes_a_sabado,bloque,circulacion_neta_pagada,individualizada,ivc_url</br>
+{% for diario in diarios %}
+  {{diario.nombre}},{{diario.razon_social}},{{diario.domicilio}},{{diario.localidad}},{{diario.provincia}},{{diario.telefono}},{{diario.email}},{{diario.web}}
+  ,{{diario.promedio}},{{diario.promedio_titulo}},{{diario.categoria}},{{diario.circ_neta_pagada_domingo|string|replace('.0','')}},{{diario.circ_neta_pagada_lunes_a_domingo|string|replace('.0','')}},{{diario.lunes_a_viernes}}
+  ,{{diario.lunes_a_sabado}},{{diario.bloque}},{{diario.circulacion_neta_pagada}},{{diario.individualizada}},{{diario.ivc_url}}</br>
+{% endfor %}

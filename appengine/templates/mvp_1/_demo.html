@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Diarios Móviles - DEMO</title>
+    <link href="/mvp_1/stylesheets/style_demo.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/base.css" />
+    
+    <link rel="shortcut icon" href="/mvp_1/images/favicon.png" />
+    
+    <script type="text/javascript">      
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-32663760-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Start Wrapper -->
+    <div id="page_wrapper">
+      
+      <!-- Start Header -->
+      <header style="margin-bottom: 20px; height:30px;">
+        <div class="container">
+          <!-- Start Social Icons -->
+          <aside>
+            <ul class="social" style="padding-top:3px;">
+              <li class="goback"><a href="{{ url_for('mvp/index') }}" title="Ir a inicio">Volver</a></li>
+              
+            </ul>
+          </aside>
+          <!-- End Social Icons -->
+        </div>
+      </header>
+      <!-- End Header -->
+      
+      <section class="container">
+        <!-- img class="go-landscape" src="/mvp_1/images/demo/go-landscape.png" alt="img" style="display:none;"></a -->
+        <img class="go-landscape" src="/mvp_1/images/demo/move_mouse.png" alt="Utilice el ratón para desplazarse en el móvil" title="Utilice el ratón para desplazarse en el móvil" >
+        <div class="iphone-portrait">
+          <img class="iphone-pic" src="/mvp_1/images/demo/iphone.png" alt="img">
+          <div class="hide-scroll"></div>
+          <iframe class="iphone" src="{{url_for('frontend/home/fullversion')}}" width="344" height="488" style="overflow-x: hidden;"/>
+        </div>
+        <div class="clear"></div>
+      </section>
+    
+      <!-- Start Footer -->
+      <footer class="container">
+        <p>DiariosMóviles &copy; 2012.</p>
+      </footer>
+      <!-- End Footer -->
+	
+    </div>
+  </body>
+</html>
+

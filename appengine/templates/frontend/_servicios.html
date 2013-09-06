@@ -1,0 +1,24 @@
+{% extends "frontend/_base.html"%}  
+{%block content%}    
+    <header>
+      <section class="cabezal">
+        <nav class="desplegable">
+          <div class="floatFix fondoNav">
+            <div id="troncal">
+              <div class="floatFix servicios">
+                <span class="techo header"><b>SERVICIOS</b></span>
+                <div class="columnaUno">
+                  {% for cat in cats %}
+                    {% if cat['type']=='servicio' %}
+                      <a href="#" >{{cat['desc']}}</a>
+                    {% endif %}
+                  {% endfor %}
+              
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </section>
+    </header>
+{%endblock%}  

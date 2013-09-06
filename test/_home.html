@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> <html>
+<head>
+  <META http- equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>eldia.com - Diario matutino de la ciudad de La Plata</title>
+    <link rel="stylesheet" type="text/css" href="/css/demo.css">
+    <!--<script type="text/javascript" src="../static/js/ver_201112131263/m1/c7-c2-c3-c9 -e3-p4-p3-c6-u9-d1-d4-n6-i5-i1-i2-cm0-cm6.js"></script>-->
+    
+  </head>
+  <body bgcolor="#ffffff" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" width="100%" class="pid10533073">
+  
+    <header>
+      <section class="cabezal">
+        <div class="fondoLogo floatFix">
+          <section class="logo">
+            <a href="index.html" title="eldia.com | Diario matutino de la ciudad de La Plata">
+              <img alt="eldia.com | Diario matutino de la ciudad de La Plata" title="eldia.com | Diario matutino de la ciudad de La Plata" src="http://media.eldia.com/imag/logo_sombra1.jpg" >
+            </a>
+          </section>
+        </div>
+        <div class="floatFix fondoNav">
+          <div id="troncal" onclick="$('nav.desplegable').toggleClass('ocultar'); $('a.secciones').toggleClass('seccionesClick');"><a class="secciones floatFix" href="javascript:void(0);" title="Secciones"><b>SECCIONES</b></a><nav class="desplegable ocultar"><div class="floatFix">
+                <div class="columnaUno"><a href="politica.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','politica','cabezal']);">POLÍTICA</a><a href="economia.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','economia','cabezal']);">ECONOMÍA</a><a href="sociedad.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','sociedad','cabezal']);">SOCIEDAD</a><a href="seguridad.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','seguridad','cabezal']);">SEGURIDAD</a><a href="ciudadhtml.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','ciudad','cabezal']);">CIUDAD</a></div>
+                <div class="columnaDos"><a href="exterior.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','exterior','cabezal']);">EXTERIOR</a><a href="opinion.html" onclick="_gaq.push(['_trackEvent','troncal-informacion','opinion','cabezal']);">OPINION</a><a href="http://canchallena.lanacion.com.ar/" onclick="_gaq.push(['_trackEvent','troncal-interesa','deportes','cabezal']);">DEPORTES</a><a href="espectaculos.html" onclick="_gaq.push(['_trackEvent','troncal-interesa','espectaculos','cabezal']);">ESPECTÁCULOS</a><a href="tecnologia.html" onclick="_gaq.push(['_trackEvent','troncal-interesa','tecnologia','cabezal']);">TECNOLOGÍA</a></div>
+              </div>
+              <div class="floatFix servicios"><span>SERVICIOS</span><div class="columnaUno"><a href="http://servicios.lanacion.com.ar/m1/horoscopo/listado" onclick="_gaq.push(['_trackEvent','troncal-servicios','horoscopo','cabezal']);">HORÓSCOPO</a><a href="http://servicios.lanacion.com.ar/m1/informacion-general/pronostico/ciudad/cboCiudades=ARCF0009" onclick="_gaq.push(['_trackEvent','troncal-servicios','pronostico','cabezal']);">PRONÓSTICO</a></div>
+                <div class="columnaDos"><a href="humor.html" onclick="_gaq.push(['_trackEvent','troncal-servicios','humor','cabezal']);">HUMOR</a></div>
+              </div></nav></div><aside class="transito floatFix"> </aside>
+        </div>
+      </section>
+    </header>
+
+    <section id="contenedor" class="tamano1">
+      <section class="banner"></section>
+      <section id="apertura"></section>
+      <section id="informacion">
+        {% for item in items %}
+        <article class=" toi7342 nid1466728">
+          <a href="#" class="info floatFix" target="_blank" rel="external" alt="Enlace a Canchallena" title="Enlace a Canchallena">
+            {% if item.imagen != '' %}
+            <div class="contenedorImg">
+              <img style="width:117px" src="{{item.imagen}}" class="lazyLoad">
+            </div>
+            {% endif %}
+            <div class="tema">
+              <span class="hora">{{item.hora}}</span>&nbsp;<span class="pipe">|</span>&nbsp;{{item.category}}
+            </div>
+            <h1 target="_blank" rel="external" >{{item.title}}</h1>
+          </a>
+        </article>
+        {% endfor %}
+
+      </section>
+    </section>
+
+  </body>
+
+<!-- Mirrored from www.lanacion.com.ar/m1/ by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 20 Apr 2012 15:17:30 GMT -->
+</html>

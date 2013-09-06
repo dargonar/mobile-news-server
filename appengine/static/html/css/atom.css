@@ -1,0 +1,405 @@
+
+/* #Reset
+================================================== */
+	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+		margin: 0;
+		padding: 0;
+		border: 0;		
+		font-size: 100%;
+		font: inherit;
+		vertical-align: baseline; }
+	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+		display: block; }
+	body {
+		line-height: 1; }
+	ol, ul {
+		list-style: none; }
+	blockquote, q {
+		quotes: none; }
+	blockquote:before, blockquote:after,
+	q:before, q:after {
+		content: '';
+		content: none; }
+	table {
+		border-collapse: collapse;
+		border-spacing: 0; }
+		
+
+/* #Basic Styles
+================================================== */
+	
+	body {
+		font-family: open sans, arial;
+		/*background: url(/html/img/bg.jpg) center 38px no-repeat #000;*/
+	}
+	
+	.container {
+		width: 320px;
+		margin: auto;
+	}
+	
+	.content {
+		padding: 0 10px 0 10px;
+	}
+	
+	.block {
+		background: #fff;
+		padding: 6px;
+		margin-bottom: 10px;
+		clear: left;
+	}
+		.block.remove-bottom {
+			margin-bottom: 0;
+		}
+		
+	img {
+		display: block;
+	}
+	
+/* #Header
+================================================== */
+	
+	.header {
+		background: /* url(/html/img/header-bg.png) no-repeat*/ #000;
+		height: 38px;
+		margin-bottom: 10px;
+		text-align: center;
+		position: relative;
+	}
+	
+	.logo {
+		color: #fff;
+		padding-top: 4px;
+		font-size: 28px;
+		font-family: 'Oleo Script', cursive;
+	}
+		.logo a {
+			text-decoration: none;
+			color: #fff;
+		}
+	
+	.home-icon a {
+		background: url(/html/img/home-icon.png) no-repeat;
+		width: 19px;
+		height: 18px;
+		display: block;
+		text-indent: -99999px;
+		position: absolute;
+		left: 10px;
+		top: 10px;
+	}
+
+	.menu-icon a {
+		background: url(/html/img/menu-icon.png) no-repeat;
+		width: 28px;
+		height: 20px;
+		display: block;
+		text-indent: -99999px;
+		position: absolute;
+		right: 10px;
+		top: 8px;
+	}
+ 
+/* #Menu
+================================================== */
+
+	.hidden-menu {
+		display: none;
+		background: #000;
+		position: absolute;
+		z-index: 10;
+		top: 38px;
+		width: 300px;
+		padding: 10px 10px 0 10px;
+		height: 250%;
+	}
+	
+	.menu li a {
+		background-color: #b52929 !important;
+		padding: 10px 0 10px 36px;
+		color: #fff;
+		text-transform: uppercase;
+		display: block;
+		margin-bottom: 4px;
+		text-decoration: none;
+	}
+	
+	.menu li.divider {
+		height: 2px;
+		margin-bottom: 4px;
+		background: #3c3c3c;
+	}
+	
+	.icon {
+		
+	}
+		.icon.home {
+			background: url(/html/img/home-icon.png) 8px center no-repeat;
+		}
+		.icon.about {
+			background: url(/html/img/icon_about.png) 5px center no-repeat;
+		}
+		.icon.gallery {
+			background: url(/html/img/icon_gallery.png) 5px center no-repeat;
+		}
+		.icon.blog {
+			background: url(/html/img/icon_blog.png) 5px center no-repeat;
+		}
+		.icon.contact {
+			background: url(/html/img/icon_contact.png) 5px center no-repeat;
+		}
+		.icon.facebook {
+			background: url(/html/img/icon_facebook.png) 5px center no-repeat;
+		}
+		.icon.twitter {
+			background: url(/html/img/icon_twitter.png) 5px center no-repeat;
+		}
+		
+	.subscribe {
+		background: #3c3c3c;
+		padding: 6px;
+	}
+		.subscribe p {	
+			font-size: 12px;
+			color: #fff;
+			margin-bottom: 5px;
+			text-transform: uppercase;
+		}
+		.subscribe form input[type=email] {
+			background: #c4c4c4;
+			padding: 4px;
+			border: 0;
+		}
+		.subscribe form input[type=submit] {
+			background: #b52929;
+			padding: 3px;
+			border: 0;
+			color: #fff;
+		}
+ 
+/* #Typography
+================================================== */
+	
+	h1,h2,h3 {
+		text-transform: uppercase;
+		color: #fff;
+		float: left;
+		clear: left;
+	}
+	h1 {
+		font-size: 18px;
+		padding: 6px;
+		background: #29adb5;
+		margin-bottom: 10px;
+	}
+	h2 {
+		font-size: 14px;
+		background: #000;
+		padding: 6px;
+	}
+	.block h2 {
+		float: none;
+		background: none;
+		color: #404040;
+		padding: 0;
+		text-transform: none;
+		font-weight: bold;
+		margin: 10px 0 10px 0;
+	}
+	h3 {
+		font-size: 12px;
+		color: #444;
+		background: #fff;
+		padding: 6px;
+	}
+	
+	p {
+		font-size: 12px;
+		line-height: 18px;
+		color: #404040;
+	}
+	
+	p.intro {
+		font-size: 14px;
+		line-height: 20px;
+	}
+	
+/* #Slideshows
+================================================== */
+
+	.slideshow {
+		background: url(/html/img/slideshow-shadow.png) bottom no-repeat;
+		padding-bottom: 8px;
+		margin-bottom: 10px;
+		position: relative;
+		clear: left;
+	}
+	
+	.rslides {
+		position: relative;
+		list-style: none;
+		overflow: hidden;
+		width: 100%;
+		padding: 0;
+		margin: 0;
+	}
+
+	.rslides li {
+		position: absolute;
+		display: none;
+		width: 100%;
+		left: 0;
+		top: 0;
+	}
+
+	.rslides li:first-child {
+		position: relative;
+		display: block;
+		float: left;
+	}
+
+	.rslides img {
+		display: block;
+		height: auto;
+		float: left;
+		width: 100%;
+		border: 0;
+	}
+	
+	.rslides_tabs {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+	.rslides_tabs li a {
+		background: #b52929;
+		color: #fff;
+		display: block;
+		padding: 4px 8px 4px 8px;
+		margin: 1px 0 1px 0;
+		text-decoration: none;
+	}
+
+		
+/* #Links
+================================================== */
+	a { 
+		color: #b52929;
+	}
+	a.cta {
+		background: #b52929;
+		color: #fff;
+		padding: 6px;
+		font-size: 12px;
+		text-transform: uppercase;
+		float: left;
+		margin-right: 2px;
+		margin-bottom: 10px;
+		text-decoration: none;
+	}
+	.post h2 a {
+		text-decoration: none;
+		color: #fff;
+	}
+		
+/* #Team
+================================================== */
+
+	.team-member {
+		float: left;
+		width: 33%;
+	}
+		.team-member img {
+			display: inline;
+			width: 90%;
+		}	
+
+/* #Lists
+================================================== */
+
+	ul {
+		font-size: 12px;
+		line-height: 18px;
+	}
+	
+	.pagination {
+		clear: left;
+	}
+	.pagination li a {
+		float: left;
+		margin-right: 2px;
+		background: #b52929;
+		color: #fff;
+		padding: 4px 8px 4px 8px;
+		text-decoration: none;
+	}
+		.pagination li a.selected {
+			background:	#29adb5;
+		}
+
+/* #Forms
+================================================== */
+
+	.contact input[type=text], .contact input[type=email], .contact textarea {
+		padding: 8px;
+		display: block;
+		width: 284px;
+		border: 0;
+		margin-bottom: 10px;
+		font-size: 12px;
+		font-family: open sans, arial;
+	}
+	.contact input[type=submit] {
+		background-image: -webkit-linear-gradient(bottom, #e0e0e0, #fff); 
+		background-image: -moz-linear-gradient(bottom, #e0e0e0, #fff); 
+		border: 1px solid #e0e0e0;
+		width: 300px;
+		padding: 8px;
+		text-transform: uppercase;
+	}
+	
+/* #Footer
+================================================== */
+
+	.footer {
+		padding-top: 20px;
+		font-size: 11px;
+		clear: both;
+		color: #fff;
+		text-align: center;
+	}
+		.footer a {
+			color: #fff;
+		}
+		.footer span {
+			display: block;
+			font-size: 10px;
+		}
+	
+		
+/* #Misc
+================================================== */
+
+	.clear {
+		clear: both;
+	}
+
+/* #Landscape View
+================================================== */
+	
+	@media only screen and (min-width : 321px) {
+		.container {
+			width: 480px;
+		}
+		.slideshow {
+			background: url(/html/img/slideshow-shadow-wide.png) bottom no-repeat;
+		}
+		.hidden-menu {
+			width: 460px;
+		}
+		.contact input[type=text], .contact input[type=email], .contact textarea { 
+			width: 444px;
+		}
+		.contact input[type=submit] { 
+			width: 460px;
+	}

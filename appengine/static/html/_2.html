@@ -1,0 +1,414 @@
+﻿<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> <html>
+<head>
+  <META http- equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>eldia.com - Diario matutino de la ciudad de La Plata</title>
+    <link rel="stylesheet" type="text/css" href="/css/demo.css">
+      
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+      function loadMore(sender){
+        var more = $(sender).attr('more_cursor');
+        if(jQuery.trim(more).length==0)
+          return false;
+        var url = $(sender).attr('href') + $(sender).attr('more_cursor');
+        $('#loading').show();
+        g_currentSearchXHR = jQuery.ajax({
+          url: url,
+          type: 'get',
+          dataType: 'json',
+          error: function(jqXHR, textStatus, errorThrown) {
+            $('#loading').hide();
+            //alert(textStatus + '|' + errorThrown);
+            return false;
+          },
+          success: function(obj) {
+            g_currentSearchXHR = null;
+            
+            $('#informacion').append(obj.html);
+            $(sender).attr('more_cursor', obj.more_cursor);
+            $('#loading').hide();
+            return false;
+          }
+        });
+        return false;
+      }
+    </script>
+    
+  </head>
+  <body bgcolor="#ffffff" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" width=" 100%" class="pid10533073">
+    <section id="contenedor" class="tamano1">
+      <section id="informacion">
+      <article class=" toi7342 nid1466728">
+        <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIigyODdkYzZhMjgzN2Y0NjgzOWI2NTk5NWY3MDgzODEyMzhhMWI1NzZlDA" class="info floatFix" rel="external" alt="El tabaquismo mata 6 millones de personas al año " title="El tabaquismo mata 6 millones de personas al año ">
+          
+          <div class="tema">
+            &nbsp;Información General
+          </div>
+          <span class="hora_de_noticia">18:12&nbsp;|</span>&nbsp;<h1 target="_blank" rel="external" >El tabaquismo mata 6 millones de personas al año </h1>
+        </a>
+      </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIigyN2E0M2ZiNGI2YTE4MDY4YmY3ODE5ZDBmZjliZjdjYzY1Y2NjYzJhDA" class="info floatFix" rel="external" alt="Buscan darle utilidad a las cenizas del Puyehue-Cordón Caulle " title="Buscan darle utilidad a las cenizas del Puyehue-Cordón Caulle ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/RWu8mSJg8cLcIUVXF2ouMA===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">18:12</span>&nbsp;<span class="pipe">|</span>&nbsp;Información General
+      </div>
+      <h1 target="_blank" rel="external" >Buscan darle utilidad a las cenizas del Puyehue-Cordón Caulle </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihhNmFlNjQ2NTBkMDgxNDg5NjI2OTEyNjIxNGRjZDQwZWY4YTU2MzhmDA" class="info floatFix" rel="external" alt="Las inmobiliarias ya hablan de desplome de ventas por el cepo al dólar " title="Las inmobiliarias ya hablan de desplome de ventas por el cepo al dólar ">
+      
+      <div class="tema">
+        <span class="hora">18:08</span>&nbsp;<span class="pipe">|</span>&nbsp;Economía
+      </div>
+      <h1 target="_blank" rel="external" >Las inmobiliarias ya hablan de desplome de ventas por el cepo al dólar </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihhNWQzM2UxMTlkMGIwYTIzZGY1YzhkODNlOWMzNTIxYzYxOTMxMGYyDA" class="info floatFix" rel="external" alt="La Federación Agraria se
+
+moviliza el jueves en
+
+contra del impuestazo " title="La Federación Agraria se
+
+moviliza el jueves en
+
+contra del impuestazo ">
+      
+      <div class="tema">
+        <span class="hora">18:02</span>&nbsp;<span class="pipe">|</span>&nbsp;La Provincia
+      </div>
+      <h1 target="_blank" rel="external" >La Federación Agraria se
+
+moviliza el jueves en
+
+contra del impuestazo </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIig5OGU1MDJjMzA2MTJjMzNhNjMwYjJmN2M3NzE3ZTA3ZTY3N2U5MzcyDA" class="info floatFix" rel="external" alt="Piden cerrar embajada argentina
+
+en Siria por las violaciones de DDHH " title="Piden cerrar embajada argentina
+
+en Siria por las violaciones de DDHH ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/p1nkxciv0z6QGLVnHqJ3pA===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">18:02</span>&nbsp;<span class="pipe">|</span>&nbsp;El País
+      </div>
+      <h1 target="_blank" rel="external" >Piden cerrar embajada argentina
+
+en Siria por las violaciones de DDHH </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIig2ODYyY2ZmM2UwNzlkYjU4OTJjNDM4ZjdjZmRjMTA1YzM5ZDk3OGM3DA" class="info floatFix" rel="external" alt="Varios ausentes en el Country " title="Varios ausentes en el Country ">
+      
+      <div class="tema">
+        <span class="hora">17:58</span>&nbsp;<span class="pipe">|</span>&nbsp;Deportes
+      </div>
+      <h1 target="_blank" rel="external" >Varios ausentes en el Country </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihmODRjZGIyNTkwMjcxNDMwMTI0NDFkOWVjYTdiMjc5NTQ4NjI5NzY3DA" class="info floatFix" rel="external" alt="Varias naciones de Europa expulsan a los embajadores de Siria " title="Varias naciones de Europa expulsan a los embajadores de Siria ">
+      
+      <div class="tema">
+        <span class="hora">17:56</span>&nbsp;<span class="pipe">|</span>&nbsp;El Mundo
+      </div>
+      <h1 target="_blank" rel="external" >Varias naciones de Europa expulsan a los embajadores de Siria </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihlMjhkNTc3YzY1YzkwYmQ1YTYyMWJjM2I4ZTVmYWQwNDU5NGIyOGI5DA" class="info floatFix" rel="external" alt="Inauguran circuito para
+
+mountain bike en Hernández " title="Inauguran circuito para
+
+mountain bike en Hernández ">
+      
+      <div class="tema">
+        <span class="hora">17:56</span>&nbsp;<span class="pipe">|</span>&nbsp;La Ciudad
+      </div>
+      <h1 target="_blank" rel="external" >Inauguran circuito para
+
+mountain bike en Hernández </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihhNjkzMTYxZjMzNzNhZDNjOWU3ZDk0OTViNGFmNmE1ZThiODcxZWUxDA" class="info floatFix" rel="external" alt="Pachorra probó con tres delanteros " title="Pachorra probó con tres delanteros ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/PIiUnRoP7ZO2hAP5YqvpSQ===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:43</span>&nbsp;<span class="pipe">|</span>&nbsp;Deportes
+      </div>
+      <h1 target="_blank" rel="external" >Pachorra probó con tres delanteros </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIig5Y2U1ZTczZDk2MGE4NzNjYWVhZWUzNzU3MDc1NGUxZGZmNjhjNDkzDA" class="info floatFix" rel="external" alt="Crimen de la psicóloga: declaró 
+
+ex funcionario de Pinamar " title="Crimen de la psicóloga: declaró 
+
+ex funcionario de Pinamar ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/b3ZUt_1c38kvqdkefcBn2A===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:42</span>&nbsp;<span class="pipe">|</span>&nbsp;Policiales
+      </div>
+      <h1 target="_blank" rel="external" >Crimen de la psicóloga: declaró 
+
+ex funcionario de Pinamar </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIig2MjI0Mzg1ZDZlNWViMmZiZmYyMzVmZTE5MGUyNzVmZDg1NWQzYzgxDA" class="info floatFix" rel="external" alt="Argentinos intentan burlar el control
+
+cambiario viajando desde Uruguay " title="Argentinos intentan burlar el control
+
+cambiario viajando desde Uruguay ">
+      
+      <div class="tema">
+        <span class="hora">17:42</span>&nbsp;<span class="pipe">|</span>&nbsp;Economía
+      </div>
+      <h1 target="_blank" rel="external" >Argentinos intentan burlar el control
+
+cambiario viajando desde Uruguay </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihlNjIyNWQxYWE5ZTQ5ODRiYWJhYWY5ZTI5MzdlMThiOGU4NTYyMDBmDA" class="info floatFix" rel="external" alt="Alumnos del Nacional y Liceo, otra vez frente a frente " title="Alumnos del Nacional y Liceo, otra vez frente a frente ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/jCbL44z2TuUzugMxqilvmw===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:42</span>&nbsp;<span class="pipe">|</span>&nbsp;Educación
+      </div>
+      <h1 target="_blank" rel="external" >Alumnos del Nacional y Liceo, otra vez frente a frente </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihjMzgyZjNlMjVjODRlNjMxMWFmODNjNzE5YWE2ZjBiZDkyMmU2YTM4DA" class="info floatFix" rel="external" alt="Caballito: seis heridos por 
+
+derrumbe de obra en construcción " title="Caballito: seis heridos por 
+
+derrumbe de obra en construcción ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/vhdV6KIx1ynFcv9Ctr8O1A===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:42</span>&nbsp;<span class="pipe">|</span>&nbsp;Policiales
+      </div>
+      <h1 target="_blank" rel="external" >Caballito: seis heridos por 
+
+derrumbe de obra en construcción </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihmNDk1Y2MxNmE2MGExMzkzYzVmYzY1ZDZkZTEzN2I4MDJiMzg1MmE2DA" class="info floatFix" rel="external" alt="El campo se reúne para evaluar
+
+los pasos a seguir " title="El campo se reúne para evaluar
+
+los pasos a seguir ">
+      
+      <div class="tema">
+        <span class="hora">17:40</span>&nbsp;<span class="pipe">|</span>&nbsp;La Provincia
+      </div>
+      <h1 target="_blank" rel="external" >El campo se reúne para evaluar
+
+los pasos a seguir </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihlN2M3NWIzYzdiZjAyMmI5MTcwMzdiNDE1MTcwZTJkYTVkNTc0NDU5DA" class="info floatFix" rel="external" alt="Encuentran atunes radiactivos
+
+de Japón en la costa de EEUU " title="Encuentran atunes radiactivos
+
+de Japón en la costa de EEUU ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/nip80eIaV3soDrmP0JYSNQ===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:37</span>&nbsp;<span class="pipe">|</span>&nbsp;El Mundo
+      </div>
+      <h1 target="_blank" rel="external" >Encuentran atunes radiactivos
+
+de Japón en la costa de EEUU </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihlYjM1ZTVhZmNmN2QwYThkN2UxMDY5NzQ3Y2MxMmY1YmQyZTJkNzUxDA" class="info floatFix" rel="external" alt="Generales agotadas para ver 
+
+a la Selección contra Ecuador " title="Generales agotadas para ver 
+
+a la Selección contra Ecuador ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/DCr2uT9PvdYrfiZe68-soA===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:36</span>&nbsp;<span class="pipe">|</span>&nbsp;Deportes
+      </div>
+      <h1 target="_blank" rel="external" >Generales agotadas para ver 
+
+a la Selección contra Ecuador </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIigzYWM0OWJjY2E3MTBkYWYzMmQ1MGQ2MzQxOTQyM2NmN2U4ZDMxZDg0DA" class="info floatFix" rel="external" alt="El bombazo de Susana Giménez " title="El bombazo de Susana Giménez ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/kS6iJ43V8aDpWnBWCkB2PA===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:36</span>&nbsp;<span class="pipe">|</span>&nbsp;Espectáculos
+      </div>
+      <h1 target="_blank" rel="external" >El bombazo de Susana Giménez </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIig2YzZjNjBiMDJkNTUzYzVmMWI1ZGQwMzUyMzExNjdhYTljMGFmNDQzDA" class="info floatFix" rel="external" alt="Obama y una juventud ligada 
+
+al consumo de marihuana " title="Obama y una juventud ligada 
+
+al consumo de marihuana ">
+      
+      <div class="contenedorImg">
+        <img style="width:117px" src="http://localhost:8090/_ah/img/q3QFCZBY7-UQFAD5MRLzmQ===s117" class="lazyLoad">
+      </div>
+      
+      <div class="tema">
+        <span class="hora">17:36</span>&nbsp;<span class="pipe">|</span>&nbsp;El Mundo
+      </div>
+      <h1 target="_blank" rel="external" >Obama y una juventud ligada 
+
+al consumo de marihuana </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIig2ODIxNTI2NzU3ZTg5OTg5MGNlODM5ZGY1Y2ZhZTVhODk3NzJhOWU4DA" class="info floatFix" rel="external" alt="Lo de Enzo fue un esguince grado 2 " title="Lo de Enzo fue un esguince grado 2 ">
+      
+      <div class="tema">
+        <span class="hora">17:32</span>&nbsp;<span class="pipe">|</span>&nbsp;Deportes
+      </div>
+      <h1 target="_blank" rel="external" >Lo de Enzo fue un esguince grado 2 </h1>
+    </a>
+  </article>
+  
+
+          
+  <article class=" toi7342 nid1466728">
+    <a href="/demo/service/view/ahBkZXZ-dGVzdHNkYXZlbnRvcjULEgdBcnRpY2xlIihkMThkOWViOTkwZTQxNWJkYTFjMmU1NTliZjgzYTRmOGI1NGY3ZTY2DA" class="info floatFix" rel="external" alt="Las mujeres provocan accidentes
+
+menos graves que los hombres " title="Las mujeres provocan accidentes
+
+menos graves que los hombres ">
+      
+      <div class="tema">
+        <span class="hora">17:23</span>&nbsp;<span class="pipe">|</span>&nbsp;Información General
+      </div>
+      <h1 target="_blank" rel="external" >Las mujeres provocan accidentes
+
+menos graves que los hombres </h1>
+    </a>
+  </article>
+  
+
+      </section>
+    </section>
+    
+    <section id="promoMobiles" style="padding-bottom:48px;">
+      <div class="floatFix cajaDispositivos">
+        
+          <a id="more_cursor" class="tipo last" title="Ver más notas" href="/demo/service/?more_cursor=" more_cursor="E-ABAOsB8gEJcHVibGlzaGVk-gEJCMCx1buBprAC7AGCAklqEGRldn50ZXN0c2RhdmVudG9yNQsSB0FydGljbGUiKGQxOGQ5ZWI5OTBlNDE1YmRhMWMyZTU1OWJmODNhNGY4YjU0ZjdlNjYMFA==" onclick="return loadMore(this);">
+          
+        
+        <center>
+            <p style="display:block;">Ver más notas</p> 
+            <p id="loading" style="display:none;"><img src="/img/loading.gif" border="0" alt="Cargando Notas" title="Cargando notas"></p>
+          </center>
+        </a>
+        
+      </div>
+    </section>
+    
+    
+    
+    
+  </body>
+</html>
