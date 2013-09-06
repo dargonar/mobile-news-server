@@ -106,7 +106,7 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     if url.startswith('noticia://') and size == 'big':
       match = re.compile('section=(\w+)').findall(url)
       section = match[0] if len(match) else 'main'
-
+      #logging.error(' TITULO de section:: %s' % section)
       self.add_screen(outfile, appid, 'menu_section://%s' % section, size, 'pt' )
       self.add_screen(outfile, appid, 'ls_menu_section://%s' % section, size, 'ls' )
     
