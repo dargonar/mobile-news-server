@@ -27,11 +27,11 @@ from google.appengine.api import urlfetch
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
+days   = ['lunes','martes', u'miércoles', 'jueves', 'viernes', u'sábado', 'domingo']
 months = ['enero', 'febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
 
 apps_id = { 
   'com.diventi.eldia'       : 'eldia',
-  'com.diventi.mobipaper'   : 'eldia',
   'com.diventi.pregon'      : 'pregon',
   'com.diventi.castellanos' : 'castellanos',
   'com.diventi.ecosdiarios' : 'ecosdiarios',
@@ -103,10 +103,17 @@ def set_cache(inner_url, content, mem_only=False):
     cc.put()
 
 def in_cache(inner_url):
+  # DELETE 
+  return False
+
   dbkey = db.Key.from_path('CachedContent', inner_url)
   return CachedContent.all(keys_only=True).filter('__key__', dbkey).get() is not None
 
 def read_cache(inner_url, mem_only=False):
+  
+  # DELETE 
+  return None
+
   content = memcache.get(inner_url)
   if content is None and not mem_only:
     tmp = CachedContent.get(db.Key.from_path('CachedContent', inner_url))
@@ -122,6 +129,9 @@ def read_cache(inner_url, mem_only=False):
 def read_clean(httpurl, clean=True, use_cache=True):
   content = None
   
+  # DELETE 
+  use_cache = False
+
   if use_cache:
     content = memcache.get(httpurl)  
 

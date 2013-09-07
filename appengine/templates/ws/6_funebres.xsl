@@ -17,7 +17,7 @@
         <div class="rubro">{{item.category}}</div>
         {% set last_cat = item.category %}
         {% endif %}
-        <div class="aviso"><p>{{item.description}}</p></div>
+        <div class="aviso"><p>{{item.description|if_not_none}}</p></div>
 
         {% endif %}
         {% endfor %}
