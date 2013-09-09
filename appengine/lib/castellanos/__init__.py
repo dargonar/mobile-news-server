@@ -127,7 +127,7 @@ def rss_noticia(args):
   item['link']      = full_url
   item['guid']      = args['host']
   category = re.compile('<h2 class="volanta" class="">(.+?)</h1>').findall(html)
-  item['category']  = category[0] if len(category) else soup.select('div.seccion')[0].text.title()
+  item['category']  = category[0].decode('utf-8') if len(category) else soup.select('div.seccion')[0].text.title()
   item['thumbnail'] = img
   # item['group']     = group
   # item['has_gallery'] = 'true' if len(group) > 0 else 'false'
