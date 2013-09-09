@@ -27,11 +27,11 @@ from google.appengine.api import urlfetch
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
+days   = ['lunes','martes', u'miércoles', 'jueves', 'viernes', u'sábado', 'domingo']
 months = ['enero', 'febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
 
 apps_id = { 
   'com.diventi.eldia'       : 'eldia',
-  'com.diventi.mobipaper'   : 'eldia',
   'com.diventi.pregon'      : 'pregon',
   'com.diventi.castellanos' : 'castellanos',
   'com.diventi.ecosdiarios' : 'ecosdiarios',

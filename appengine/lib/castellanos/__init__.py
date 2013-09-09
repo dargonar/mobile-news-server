@@ -4,8 +4,8 @@ import re
 
 from bs4 import BeautifulSoup
 from collections import OrderedDict
-from datetime import datetime
-from utils import months, date_add_str, read_clean, clean_content, multi_fetch
+from datetime import datetime, timedelta
+from utils import days, months, date_add_str, read_clean, clean_content, multi_fetch, date2iso
 from xmlbuild import XMLBuild
 
 conf = {  'title'       : u'DIARIO CASTELLANOS',
@@ -14,57 +14,82 @@ conf = {  'title'       : u'DIARIO CASTELLANOS',
           'copyright'   : u'2013, Editora del Centro, Propiedad Intelectual N84.363, todos los derechos reservados',
           'logo'        : u'http://www.diariocastellanos.net/images/header/castellanos.png' }
 
-# Jueves 15 Agosto 2013 X Actualizado 12:40
-def get_header_date(strdate):
-  parts = strdate.split()[1:]
-  inx = months.index(parts[1].lower())
-  return datetime(int(parts[2]), inx+1, int(parts[0]))
+
+# 15 de Agosto de 2013 | 22:35 hs.
+def get_noticia_date(strdate):
+  parts = strdate.split()
+  parts = filter(lambda a: a!='de' and a!='del',parts)
+  month = parts[2].lower() if parts[1].lower()!='setiembre' else 'septiembre'
+  inx = months.index(month)
+  return datetime(int(parts[3]), inx+1, int(parts[1]))
+
+def date2spanish(date):
+  return '%s, %02d de %s del %d' % (days[date.weekday()].title(), date.day, months[date.month-1].title(), date.year)
 
 def rss_index(args):
 
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/Default.aspx'))
-  today_date = get_header_date(soup.select('p#Fecha')[0].text)
-  
+  # Puede ser la main o nos llaman de rss_section para parsear una seccion
+  full_url = 'http://diariocastellanos.net/site/'
+  if 'full_url' in args:
+    full_url = args['full_url']
+
+  soup = BeautifulSoup(read_clean(full_url))
+  today_date = datetime.now()+timedelta(hours=-3)
+
   builder = XMLBuild(conf, today_date)
-  
-  for n in soup.select('div.Noticia'):
+
+  # Tomamos la categoria si es una "seccion"
+  category = args.get('category')
+  if category:
+    category = soup.select('div.seccion')
+    if len(category) == 0:
+      return builder.get_value()
+    category = category[0].text.title()
+
+  def add_item(n, category=None):
+    
+    pubDate = n.find_all('div',{'class':'fecha'})
+
     item = {}
-    item['title']     = n.h3.text
-    #logging.error(' ************ %s' % n.h3.text)
-    item['link']      = n.h3.a['href'] # n.div.a['href']
-    item['guid']      = re.compile('\d+').findall(item['link'])[0]
-    item['category']  = n.h4.text
-    item['thumbnail'] = n.div.img['src'] if n.div else None
-    item['pubDate']   = date_add_str(today_date, n.p.strong.text)
-    item['subheader'] = n.p.text[6:]
+    item['title']     = n.find_all('div', {'class':'titulo'})[0].text.title()
+    item['link']      = n.find_all('a')[-1].attrs['href']
+    item['guid']      = re.compile('/noticia/(.+)').findall(item['link'])[0]
+    
+    # if len(pubDate):
+    #   item['pubDate'] = date2iso(get_noticia_date(pubDate[0].text))
+    
+    item['category']  = category if category is not None else n.a.text.upper()
+    item['thumbnail'] = n.img['src'] if n.img else None
+    item['subheader'] = n.p.text if n.p else None
     builder.add_item(item)
 
-  for n in soup.select('div.UltimoMomento li'):
-    item = {}
-    item['title']     = n.text[6:]
-    item['link']      = n.a['href']
-    item['guid']      = re.compile('\d+').findall(item['link'])[0]
-    item['pubDate']   = date_add_str(today_date, n.strong.text)
-    builder.add_item(item)
+  for n in soup.select('div.noticia-p1')+soup.select('div.noticia-p2'):
+    add_item(n, category)
+
+  for d in soup.select('div.seccionppal'):
+    category = d.a.h1.text.title()
+    for n in d.find_all('div', {'class':'noticia'}):
+      add_item(n, category)
 
   return builder.get_value()
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/Default.aspx'))
-  today_date = get_header_date(soup.select('p#Fecha')[0].text)
+  soup = BeautifulSoup(read_clean('http://diariocastellanos.net/site/'))
+  today_date = datetime.now()+timedelta(hours=-3)
   
   sections = set()
 
   builder = XMLBuild(conf, today_date)
-  for n in soup.select('div#Nav li a'):
+  for n in soup.select('div.menu li a'):
+    if n['href'] == '#': continue
     item = {}
-    item['title']     = n.text
+    item['title']     = n.text.title()
     item['link']      = n['href']
-    item['guid']      = item['link'][item['link'].rfind('/')+1:]
+    item['guid']      = item['link'][[x.start() for x in re.finditer('/', item['link'])][-2]+1:-1]
     item['pubDate']   = date_add_str(today_date, '00:00')
     
-    if item['guid'] != 'archivo.aspx' and item['guid'] not in sections:
+    if item['title'].lower() != 'portada' and item['guid'] not in sections:
       builder.add_section(item)
       sections.add(item['guid'])
 
@@ -72,60 +97,42 @@ def rss_menu(args):
 
 def rss_seccion(args):
   
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/%s' % args['host']))
-  today_date = get_header_date(soup.select('p#Fecha')[0].text)
-  
-  builder = XMLBuild(conf, today_date)
-  items = set()
-  
-  for n in soup.select('div.Noticia'):    
-    divs = n.find_all('div')
-    
-    item = {}
-    item['title']     = n.h3.text if n.h3 else n.h2.text
-    item['link']      = divs[-1].a['href'] if len(divs) else n.h3.a['href']
-    item['guid']      = re.compile('\d+').findall(item['link'])[0]
-    item['category']  = n.h4.text
-    item['thumbnail'] = n.div.img['src'] if n.div else None
-    item['pubDate']   = date_add_str(today_date, n.p.strong.text)
-    item['subheader'] = n.p.text[6:]
-    
-    if item['guid'] not in items:
-      builder.add_item(item)
-      items.add(item['guid'])
-
-  return builder.get_value()
+  full_url = 'http://diariocastellanos.net/site/seccion/%s/' % args['host'].lower()
+  return rss_index({'full_url':full_url, 'category':True})
 
 def rss_noticia(args):
 
-  # logging.error(' ---------------- rss_noticia args: %s' % str(args))
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/%s-dummy.note.aspx' % args['host']))
-  today_date = get_header_date(soup.select('p#Fecha')[0].text)
+  full_url = 'http://diariocastellanos.net/site/noticia/%s' % args['host']
+
+  html = read_clean(full_url, clean=False)
+  soup = BeautifulSoup(html)
+  today_date = datetime.now()+timedelta(hours=-3)
 
   builder = XMLBuild(conf, today_date)
   
-  head = soup.select('div.NotaHead')[0]
-  content = soup.select('div.NotaData')[0].__repr__().decode('utf-8')
+  n = soup.select('div.noticia')[0]
+  content = n.find_all('div',{'class':'txt'})[0].__repr__().decode('utf-8')
   content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
   
   # Sacamos thumbnail
-  img   = (soup.select('div.Foto img')[:1] or [None])[0]
-  if img: img = img['src']
+  img = (n.find_all('div', {'class':'img'})[:1] or [None])[0]
+  if img: img = img.img['src']
 
   # Sacamos galeria / Si hay galeria y no thumnail => la primer foto es el thumb
-  group = [tmp['src'] for tmp in soup.select('ul.ad-thumb-list img')]
-  if len(group) and img is None: img = group[0]
+  # group = [tmp['src'] for tmp in soup.select('ul.ad-thumb-list img')]
+  # if len(group) and img is None: img = group[0]
 
   item = {}
-  item['title']     = head.h2.text
-  item['link']      = soup.find_all('meta', {'property':'og:url'})[0].attrs['content']
-  item['guid']      = re.compile('\d+').findall(item['link'])[0]
-  item['category']  = head.h4.text
+  item['title']     = n.h1.text
+  item['link']      = full_url
+  item['guid']      = args['host']
+  category = re.compile('<h2 class="volanta" class="">(.+?)</h1>').findall(html)
+  item['category']  = category[0] if len(category) else soup.select('div.seccion')[0].text.title()
   item['thumbnail'] = img
-  item['group']     = group
-  item['has_gallery'] = 'true' if len(group) > 0 else 'false'
-  item['pubDate']   = date_add_str(today_date, head.p.strong.text)
-  item['subheader'] = head.p.text[6:]
+  # item['group']     = group
+  # item['has_gallery'] = 'true' if len(group) > 0 else 'false'
+  # item['pubDate']   = date2iso(get_noticia_date(n.time.text))
+  item['subheader'] = n.find_all('h2')[-1].text
   item['content']   = content
   
   builder.add_item(item)
@@ -134,43 +141,41 @@ def rss_noticia(args):
 
 def rss_funebres(args):
 
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/funebres.aspx'))
-  today_date = get_header_date(soup.select('p#Fecha')[0].text)
+  html = read_clean('http://diariocastellanos.net/site/funebres/')
+  html = '<html><body>'+html[html.rfind('<div id="content-funebres">'):]
 
-  # Obtenemos las url funebres
-  urls = {}
-  for n in soup.select('div.Noticia'):
-    divs = n.find_all('div')
-    urls[divs[-1].a['href'] if len(divs) else n.h3.a['href']] = None
-
+  soup = BeautifulSoup(html)
+  today_date = datetime.now()+timedelta(hours=-3)
+  
   builder = XMLBuild(conf, today_date)
 
-  def handle_result(rpc, url):
-    result = rpc.get_result()
-    if result.status_code == 200: 
-      soup = BeautifulSoup(clean_content(result.content))
-      content = soup.select('div.NotaData')[0].__repr__().decode('utf-8')
-      content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
+  item  = {}
+  for div in soup.select('div#content-funebres div'):
+    if div['class'][0] == 'fecha':
+      if len(item): 
+        item['description'] = content
+        builder.add_funebre(item)
       
-      txt = soup.select('strong.Time')[0].text
-      if '/' in txt:
-        tmp = [int(a) for a in txt.split('/') +[datetime.now().year]]
-        tmp = datetime(year=tmp[2], month=tmp[1], day=tmp[0])
-      else:
-        tmp = datetime.now()
-      item = {}
-      item['title']       = 'Funebres %s' % tmp.strftime('%d/%m')
-      item['description'] = content
-      item['link']        = url
-      item['guid']        = re.compile('\d+').findall(item['link'])[0]
-      item['pubDate']     = tmp.strftime("%a, %d %b %Y %H:%M:%S")
-      item['category']    = 'Funebres %s' % tmp.strftime('%d/%m')
+      tmp = get_noticia_date(div.text)
+      item  = {}
+      item['title']     = date2spanish(tmp)
+      item['link']      = 'http://diariocastellanos.net/site/funebres/' 
+      item['guid']      = 'no_guid'
+      item['pubDate']   = tmp.strftime("%a, %d %b %Y %H:%M:%S")
+      item['category']  = item['title']
+      content = ''
 
-      builder.add_funebre(item)
+    elif div['class'][0] == 'tipo':
+      content += '<p><h1>%s</h1></p><br/>' % div.text
+    elif div['class'][0] == 'titulo':
+      content += '<b>%s</b></br>' % div.text
+    elif div['class'][0] == 'texto':
+      content += '<p>%s</p></br>' % div.text
 
-  # Traemos en paralelo (primeras 4)
-  multi_fetch(urls.keys()[:4], handle_result)
-
+  if len(item): 
+    item['description'] = content
+    builder.add_funebre(item)
+  
   # HACK POR EL DIA (no se muestra nunca el LAST FUNEBRE)
   builder.add_funebre({})
   
@@ -246,7 +251,7 @@ def get_mapping():
       'has_cartelera'    : True,
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
+        'android': { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },
         'iphone':  { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },
         'ipad':    { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] }
     }
