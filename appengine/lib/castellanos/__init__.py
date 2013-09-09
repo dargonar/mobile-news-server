@@ -89,7 +89,7 @@ def rss_menu(args):
     item['guid']      = item['link'][[x.start() for x in re.finditer('/', item['link'])][-2]+1:-1]
     item['pubDate']   = date_add_str(today_date, '00:00')
     
-    if item['title'].lower() != 'portada' and item['guid'] not in sections:
+    if item['title'].lower().strip() != 'portada' and item['guid'] not in sections:
       builder.add_section(item)
       sections.add(item['guid'])
 
