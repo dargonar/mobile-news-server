@@ -18,7 +18,7 @@ from webapp2 import RequestHandler
 
 from utils import do_slugify
 from utils import FrontendHandler, get_or_404
-from utils import apps_id, in_cache, drop_cache, build_inner_url, get_xml
+from utils import apps_id, in_cache, drop_cache, build_inner_url, get_xml, get_mapping
 from utils import HtmlBuilderMixing, Jinja2Mixin
 
 from lhammer.xml2dict import XML2Dict
@@ -84,3 +84,26 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     inverted = dict((v,k) for k,v in apps_id.iteritems())
     for name, appid in inverted.items():
       taskqueue.add(queue_name='download2', url='/download/newspaper', params={'appid':appid})
+
+  def download_one(self, **kwargs):    
+    taskqueue.add(queue_name='download2', url='/download/newspaper', params={'appid':kwargs['newspaper']})
+
+  def download_clasifieds(self, **kwargs):
+        self.re_build_html_and_images(appid, 'menu://', 'small', 'pt')
+        self.re_build_html_and_images(appid, 'menu://', 'big',   'pt')
+    
+
+  def download_extras(self, **kwargs):    
+    inverted = dict((v,k) for k,v in apps_id.iteritems())
+    for name, appid in inverted.items():
+      mapping =  get_mapping(name)
+      if mapping.extras['has_clasificados']:
+
+
+    self.re_build_html_and_images(appid, 'menu://', 'small', 'pt')
+    self.re_build_html_and_images(appid, 'menu://', 'big',   'pt')
+    
+
+
+
+

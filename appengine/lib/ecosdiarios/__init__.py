@@ -36,7 +36,7 @@ def get_section_date(strdate):
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hhmm[0]), int(hhmm[1]))
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/'))
+  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False))
   today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -59,7 +59,7 @@ def rss_index(args):
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/'))
+  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False))
   today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -78,7 +78,7 @@ def rss_menu(args):
 
 def rss_section(args):
 
-  soup = BeautifulSoup(read_clean('%s/index.php?option=com_content&view=category&layout=blog&id=%s&Itemid=3' % (main_url, args['host'])))
+  soup = BeautifulSoup(read_clean('%s/index.php?option=com_content&view=category&layout=blog&id=%s&Itemid=3' % (main_url, args['host']), use_cache=False))
   today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
   
   builder = XMLBuild(conf, today_date)
@@ -106,7 +106,7 @@ def rss_noticia(args):
 
   full_url = 'http://www.ecosdiariosweb.com.ar/index.php?option=com_content&view=article&id=%s' % args['host']
 
-  soup = BeautifulSoup(read_clean(full_url))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -136,7 +136,7 @@ def rss_funebres(args):
 
   full_url = 'http://www.ecosdiariosweb.com.ar/index.php?option=com_content&view=category&layout=blog&id=7&Itemid=5'
 
-  soup = BeautifulSoup(read_clean(full_url))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -174,7 +174,7 @@ def rss_farmacia(args):
 
   full_url = 'http://www.ecosdiariosweb.com.ar/index.php?option=com_content&view=category&layout=blog&id=9&Itemid=13'
 
-  soup = BeautifulSoup(read_clean(full_url))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
 
   builder = XMLBuild(conf, today_date)

@@ -33,7 +33,7 @@ def rss_index(args):
   if 'full_url' in args:
     full_url = args['full_url']
 
-  soup = BeautifulSoup(read_clean(full_url))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   today_date = datetime.now()+timedelta(hours=-3)
 
   builder = XMLBuild(conf, today_date)
@@ -75,7 +75,7 @@ def rss_index(args):
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://diariocastellanos.net/site/'))
+  soup = BeautifulSoup(read_clean('http://diariocastellanos.net/site/', use_cache=False))
   today_date = datetime.now()+timedelta(hours=-3)
   
   sections = set()
@@ -104,7 +104,7 @@ def rss_noticia(args):
 
   full_url = 'http://diariocastellanos.net/site/noticia/%s' % args['host']
 
-  html = read_clean(full_url, clean=False)
+  html = read_clean(full_url, clean=False, use_cache=False)
   soup = BeautifulSoup(html)
   today_date = datetime.now()+timedelta(hours=-3)
 
@@ -141,7 +141,7 @@ def rss_noticia(args):
 
 def rss_funebres(args):
 
-  html = read_clean('http://diariocastellanos.net/site/funebres/')
+  html = read_clean('http://diariocastellanos.net/site/funebres/', use_cache=False)
   html = '<html><body>'+html[html.rfind('<div id="content-funebres">'):]
 
   soup = BeautifulSoup(html)

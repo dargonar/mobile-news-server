@@ -4,11 +4,12 @@ from webapp2 import Route
 def get_rules():
     
     rules = [
-      Route('/download/article'   ,  name='backend/download_article'    , handler='apps.backend.download.DownloadAll:download_article'),
-      Route('/download/section'   ,  name='backend/download_section'    , handler='apps.backend.download.DownloadAll:download_section'),
-      Route('/download/newspaper' ,  name='backend/download_newspaper'  , handler='apps.backend.download.DownloadAll:download_newspaper'),
+      Route('/download/article'         ,  name='backend/download_article'    , handler='apps.backend.download.DownloadAll:download_article'),
+      Route('/download/section'         ,  name='backend/download_section'    , handler='apps.backend.download.DownloadAll:download_section'),
+      Route('/download/newspaper'       ,  name='backend/download_newspaper'  , handler='apps.backend.download.DownloadAll:download_newspaper'),
       
-      Route('/download/all'       ,  name='backend/download_all'        , handler='apps.backend.download.DownloadAll:download_all'),
+      Route('/download/all'             ,  name='backend/download_all'        , handler='apps.backend.download.DownloadAll:download_all'),
+      Route('/download/one/<newspaper>' ,  name='backend/download_one'        , handler='apps.backend.download.DownloadAll:download_one'),
       
    #    Route('/download/eldia'   ,  name='backend/download'        , handler='apps.backend.download.ElDia:download'),
    #    Route('/download/feed'    ,  name='backend/download_feed'   , handler='apps.backend.download.ElDia:download_feed'),

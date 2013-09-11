@@ -34,7 +34,7 @@ def get_noticia_date(strdate):
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hh), int(mm))
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/'))
+  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/', use_cache=False))
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -69,7 +69,7 @@ def rss_index(args):
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/'))
+  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/', use_cache=False))
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -91,7 +91,7 @@ def rss_menu(args):
 
 def rss_section(args):
 
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/subseccion/4/%s/dummy.html' % args['host']))
+  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/subseccion/4/%s/dummy.html' % args['host'], use_cache=False))
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
   
   builder = XMLBuild(conf, today_date)
@@ -114,7 +114,7 @@ def rss_noticia(args):
 
   full_url = 'http://www.pregon.com.ar/nota/%s/dummy.html' % args['host']
 
-  soup = BeautifulSoup(read_clean(full_url))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -137,7 +137,7 @@ def rss_noticia(args):
 
 def rss_funebres(args):
 
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/subseccion/2/1/funebres.html'))
+  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/subseccion/2/1/funebres.html', use_cache=False))
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   # Obtenemos las url funebres
