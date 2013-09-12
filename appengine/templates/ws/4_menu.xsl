@@ -11,27 +11,19 @@
         {% endfor %}
         
         {% if cfg.has_clasificados %}
-          {% set inner_url = 'http://www.ecosdiariosweb.com.ar/clasificados/clasificados.pdf' if appid == 'ecosdiarios' else 'clasificados://list' %}
-         
-        <li><a class="vip2" href="{{inner_url}}">Clasificados</a></li>
+        <li><a class="vip2" href="{{cfg.has_clasificados}}">Clasificados</a></li>
         {% endif %}
         
         {% if cfg.has_funebres %}
-          {% set inner_url = 'funebres://' %}
-          
-        <li><a class="vip2" href="{{inner_url}}">Fúnebres</a></li>
+        <li><a class="vip2" href="{{cfg.has_funebres}}">Fúnebres</a></li>
         {% endif %}
 
         {% if cfg.has_farmacia %}
-          {% set inner_url = 'http://circulorafaela.com.ar/farmacias.htm' if appid == 'castellanos' else 'farmacia://' %}
-          
-        <li><a class="vip2" href="{{inner_url}}">Farmacias de turno</a></li>
+        <li><a class="vip2" href="{{cfg.has_farmacia}}">Farmacias de turno</a></li>
         {% endif %}
         
         {% if cfg.has_cartelera %}
-          {% set inner_url = 'http://www.rafaela.gov.ar/cine/' if appid == 'castellanos' else 'cartelera://' %}
-          
-        <li><a class="vip2" href="{{inner_url}}">Cartelera de cine</a></li>
+        <li><a class="vip2" href="{{cfg.has_cartelera}}">Cartelera de cine</a></li>
         {% endif %}
 
         <li class="vip2_close"></li>

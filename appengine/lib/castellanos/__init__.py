@@ -29,7 +29,7 @@ def date2spanish(date):
 def rss_index(args):
 
   # Puede ser la main o nos llaman de rss_section para parsear una seccion
-  full_url = 'http://diariocastellanos.net/site/'
+  full_url = 'http://www.diariocastellanos.net/'
   if 'full_url' in args:
     full_url = args['full_url']
 
@@ -75,7 +75,7 @@ def rss_index(args):
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://diariocastellanos.net/site/', use_cache=False))
+  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/', use_cache=False))
   today_date = datetime.now()+timedelta(hours=-3)
   
   sections = set()
@@ -97,12 +97,12 @@ def rss_menu(args):
 
 def rss_seccion(args):
   
-  full_url = 'http://diariocastellanos.net/site/seccion/%s/' % args['host'].lower()
+  full_url = 'http://www.diariocastellanos.net/seccion/%s/' % args['host'].lower()
   return rss_index({'full_url':full_url, 'category':True})
 
 def rss_noticia(args):
 
-  full_url = 'http://diariocastellanos.net/site/noticia/%s' % args['host']
+  full_url = 'http://www.diariocastellanos.net/noticia/%s' % args['host']
 
   html = read_clean(full_url, clean=False, use_cache=False)
   soup = BeautifulSoup(html)
@@ -110,7 +110,7 @@ def rss_noticia(args):
 
   builder = XMLBuild(conf, today_date)
   
-  n = soup.select('div.noticia')[0]
+  n = soup.select('div#main div.noticia')[0]
   content = n.find_all('div',{'class':'txt'})[0].__repr__().decode('utf-8')
   content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
   
@@ -141,7 +141,7 @@ def rss_noticia(args):
 
 def rss_funebres(args):
 
-  html = read_clean('http://diariocastellanos.net/site/funebres/', use_cache=False)
+  html = read_clean('http://diariocastellanos.net/funebres/', use_cache=False)
   html = '<html><body>'+html[html.rfind('<div id="content-funebres">'):]
 
   soup = BeautifulSoup(html)
@@ -159,7 +159,7 @@ def rss_funebres(args):
       tmp = get_noticia_date(div.text)
       item  = {}
       item['title']     = date2spanish(tmp)
-      item['link']      = 'http://diariocastellanos.net/site/funebres/' 
+      item['link']      = 'http://www.diariocastellanos.net/funebres/' 
       item['guid']      = 'no_guid'
       item['pubDate']   = tmp.strftime("%a, %d %b %Y %H:%M:%S")
       item['category']  = item['title']
@@ -246,9 +246,9 @@ def get_mapping():
     ]),
     'extras': {
       'has_clasificados' : False,
-      'has_funebres'     : True,
-      'has_farmacia'     : True,
-      'has_cartelera'    : True,
+      'has_funebres'     : 'funebres://',
+      'has_farmacia'     : 'http://circulorafaela.com.ar/farmacias.htm',
+      'has_cartelera'    : 'http://www.rafaela.gov.ar/cine/',
     },
     'config': {
         'android': { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },

@@ -11,6 +11,10 @@ def get_rules():
       Route('/download/all'             ,  name='backend/download_all'        , handler='apps.backend.download.DownloadAll:download_all'),
       Route('/download/one/<newspaper>' ,  name='backend/download_one'        , handler='apps.backend.download.DownloadAll:download_one'),
       
+      Route('/download/extras'          ,  name='backend/download_extras'     , handler='apps.backend.download.DownloadAll:download_extras'),
+      Route('/download/clasificados'    ,  name='backend/download_claisf'     , handler='apps.backend.download.DownloadAll:download_clasificados'),
+      Route('/download/page'            ,  name='backend/download_page'       , handler='apps.backend.download.DownloadAll:download_page'),
+      
    #    Route('/download/eldia'   ,  name='backend/download'        , handler='apps.backend.download.ElDia:download'),
    #    Route('/download/feed'    ,  name='backend/download_feed'   , handler='apps.backend.download.ElDia:download_feed'),
    #    Route('/download/article' ,  name='backend/download_article', handler='apps.backend.download.ElDia:download_article'),

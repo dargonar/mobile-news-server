@@ -88,22 +88,45 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
   def download_one(self, **kwargs):    
     taskqueue.add(queue_name='download2', url='/download/newspaper', params={'appid':kwargs['newspaper']})
 
-  def download_clasifieds(self, **kwargs):
-        self.re_build_html_and_images(appid, 'menu://', 'small', 'pt')
-        self.re_build_html_and_images(appid, 'menu://', 'big',   'pt')
+  def download_clasificados(self, **kwargs):
+    self.request.charset = 'utf-8'
+    appid = self.request.params.get('appid')
+
+    self.re_build_html_and_images(appid, 'clasificados://list', 'small', 'pt')
     
+    #self.re_build_html_and_images(appid, 'clasificados://list', 'big',   'pt')
+
+    # Iteramos todas los items
+    xmlstr = get_xml(appid, 'clasificados://list', use_cache=True)
+    xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
+
+    items = [i.guid.value for i in xml.rss.channel.item]
+    for item in items:
+      url = 'clasificados://%s' % item
+      taskqueue.add(queue_name='download2', url='/download/page', params={'appid': appid, 'url': url})
+
+  def download_page(self, **kwargs):
+    self.request.charset = 'utf-8'
+    appid = self.request.params.get('appid')
+    url   = self.request.params.get('url')
+
+    self.re_build_html_and_images(appid, url, 'small', 'pt')
+    self.re_build_html_and_images(appid, url, 'big',   'pt')
 
   def download_extras(self, **kwargs):    
     inverted = dict((v,k) for k,v in apps_id.iteritems())
-    for name, appid in inverted.items():
-      mapping =  get_mapping(name)
-      if mapping.extras['has_clasificados']:
-
-
-    self.re_build_html_and_images(appid, 'menu://', 'small', 'pt')
-    self.re_build_html_and_images(appid, 'menu://', 'big',   'pt')
     
+    for name, appid in inverted.items():
+      extras =  get_mapping(appid)['extras']
+      
+      if extras['has_clasificados'] == 'clasificados://list':
+        taskqueue.add(queue_name='download2', url='/download/clasificados', params={'appid':appid})
 
+      if extras['has_funebres']  == 'funebres://':
+        taskqueue.add(queue_name='download2', url='/download/page', params={'appid':appid, 'url':extras['has_funebres']})
 
+      if extras['has_farmacia']  == 'farmacia://':
+        taskqueue.add(queue_name='download2', url='/download/page', params={'appid':appid, 'url':extras['has_farmacia']})
 
-
+      if extras['has_cartelera']  == 'cartelera://':
+        taskqueue.add(queue_name='download2', url='/download/page', params={'appid':appid, 'url':extras['has_cartelera']})

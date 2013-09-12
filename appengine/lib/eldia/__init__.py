@@ -148,10 +148,10 @@ def get_mapping():
       }),
     ]),
     'extras': {
-      'has_clasificados' : True,
-      'has_funebres'     : True,
-      'has_farmacia'     : True,
-      'has_cartelera'    : True,
+      'has_clasificados' : 'clasificados://list',
+      'has_funebres'     : 'funebres://',
+      'has_farmacia'     : 'farmacia://',
+      'has_cartelera'    : 'cartelera://',
     },
     'config': {
         'android': { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-2'] },

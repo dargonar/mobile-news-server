@@ -254,9 +254,9 @@ def get_mapping():
       }),
     ]),
     'extras': {
-      'has_clasificados' : True,
-      'has_funebres'     : True,
-      'has_farmacia'     : True,
+      'has_clasificados' : 'http://www.ecosdiariosweb.com.ar/clasificados/clasificados.pdf',
+      'has_funebres'     : 'funebres://',
+      'has_farmacia'     : 'farmacia://',
       'has_cartelera'    : False,
     },
     'config': {

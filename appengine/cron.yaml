@@ -2,3 +2,8 @@ cron:
 - description: Baja los articulos y secciones de todos los diarios
   url: /download/all
   schedule: every 1 hours
+
+- description: Baja Farmacias Funebres Cartelera y Clasificados
+  url: /download/extras
+  schedule: every day 08:00
+  timezone: America/Argentina/Buenos_Aires

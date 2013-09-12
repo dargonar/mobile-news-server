@@ -236,7 +236,7 @@ def get_mapping():
     ]),
     'extras': {
       'has_clasificados' : False,
-      'has_funebres'     : True,
+      'has_funebres'     : 'funebres://',
       'has_farmacia'     : False,
       'has_cartelera'    : False,
     },
