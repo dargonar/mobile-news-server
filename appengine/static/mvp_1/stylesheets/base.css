@@ -990,6 +990,7 @@ ul.apps {
 		ul.apps li.iphone a 				{ background-position: 0px -2px; }
 		ul.apps li.android a 				{ background-position: 0px -36px; }	
     ul.apps li.blackberry a 	   { background-position: 0px -104px; }	  
+    ul.apps li.blackberry_disabled a 	   { background-position: 0px -138px; }	  
 
 ul.social {
 	list-style: none;

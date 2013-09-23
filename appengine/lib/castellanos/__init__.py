@@ -53,7 +53,10 @@ def rss_index(args):
     item = {}
     item['title']     = n.find_all('div', {'class':'titulo'})[0].text.title()
     item['link']      = n.find_all('a')[-1].attrs['href']
-    item['guid']      = re.compile('/noticia/(.+)').findall(item['link'])[0]
+    matches = re.compile('/noticia/(.+)').findall(item['link'])
+    item['guid'] = '#'
+    if len(matches)>0:
+      item['guid']      = matches[0]
     
     # if len(pubDate):
     #   item['pubDate'] = date2iso(get_noticia_date(pubDate[0].text))
