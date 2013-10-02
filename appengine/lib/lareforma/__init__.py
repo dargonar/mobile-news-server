@@ -8,11 +8,11 @@ from datetime import datetime, timedelta
 from utils import days, months, date_add_str, read_clean, clean_content, multi_fetch, date2iso
 from xmlbuild import XMLBuild
 
-conf = {  'title'       : u'DIARIO CASTELLANOS',
-          'url'         : u'http://www.diariocastellanos.net',
-          'description' : u'El diario de Rafaela, Argentina - Con la verdad no ofendo ni temo',
-          'copyright'   : u'2013, Editora del Centro, Propiedad Intelectual N84.363, todos los derechos reservados',
-          'logo'        : u'http://www.diariocastellanos.net/images/header/castellanos.png' }
+conf = {  'title'       : u'DIARIO LA REFORMA',
+          'url'         : u'http://www.diariolareforma.com.ar/',
+          'description' : u'Diario La Reforma - El diario de la Pampa',
+          'copyright'   : u'LA REFORMA S.R.L. - Copyright 2012',
+          'logo'        : u'http://www.diariolareforma.com.ar/2013/wp-content/themes/lareforma/images/logo.png' }
 
 
 # 15 de Agosto de 2013 | 22:35 hs.
@@ -29,7 +29,7 @@ def date2spanish(date):
 def rss_index(args):
 
   # Puede ser la main o nos llaman de rss_section para parsear una seccion
-  full_url = 'http://www.diariocastellanos.net/'
+  full_url = 'http://www.diariolareforma.com.ar/'
   if 'full_url' in args:
     full_url = args['full_url']
 
@@ -78,14 +78,15 @@ def rss_index(args):
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/', use_cache=False))
+  url   = u'http://diariolareforma.com.ar/'
+  soup  = BeautifulSoup(read_clean(url, use_cache=False))
   today_date = datetime.now()+timedelta(hours=-3)
   
   sections = set()
 
   builder = XMLBuild(conf, today_date)
-  for n in soup.select('div.menu li a'):
-    if n['href'] == '#': continue
+  for n in soup.select('ul#suckerfishnav li.menu-item a'):
+    if n.text.title().lower().strip() in ['inicio', u'necrológicas', 'autos']: continue
     item = {}
     item['title']     = n.text.title()
     item['link']      = n['href']
@@ -254,8 +255,8 @@ def get_mapping():
       'has_cartelera'    : 'http://www.rafaela.gov.ar/cine/',
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-4'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-4'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-4'] }
+        'android': { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },
+        'iphone':  { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },
+        'ipad':    { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] }
     }
   } 
