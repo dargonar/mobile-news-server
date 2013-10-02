@@ -44,6 +44,11 @@ def rss_index(args):
   tmp = soup.select('table.blog table.contentpaneopen')
   for i in xrange(len(tmp)/2): 
     head, body = tmp[2*i], tmp[2*i+1]
+    
+    # Blank notice
+    if head.tr.a is None:
+      continue
+
     p = body.find_all('p')
 
     item = {}
