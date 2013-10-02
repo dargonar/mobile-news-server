@@ -155,7 +155,7 @@ def get_mapping():
     },
     'config': {
         'android': { 'ad_mob': 'a15220df4b9a5bb', 'google_analytics' : ['UA-32663760-2', 'UA-39206160-1'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-2', 'UA-39206160-1'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-2', 'UA-39206160-1'] }
+        'iphone':  { 'ad_mob': 'a1524b35152a9c5', 'google_analytics' : ['UA-32663760-2', 'UA-39206160-1'] },
+        'ipad':    { 'ad_mob': 'a1524b31e05d5f9', 'google_analytics' : ['UA-32663760-2', 'UA-39206160-1'] }
     }
   } 
