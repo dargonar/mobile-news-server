@@ -18,5 +18,6 @@ testbed.activate()
 policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
 testbed.init_datastore_v3_stub(consistency_policy=policy)
 testbed.init_taskqueue_stub()
+testbed.init_urlfetch_stub()
 testbed.init_memcache_stub()
 print sys.path
