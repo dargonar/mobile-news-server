@@ -35,6 +35,7 @@ apps_id = {
   'com.diventi.pregon'      : 'pregon',
   'com.diventi.castellanos' : 'castellanos',
   'com.diventi.ecosdiarios' : 'ecosdiarios',
+  'com.diventi.lareforma' : 'lareforma',
 }
 
 def multi_fetch(urls, handle_result):
@@ -55,7 +56,7 @@ def multi_fetch(urls, handle_result):
 
 def date2iso(date):
   return date.strftime("%a, %d %b %Y %H:%M:%S")
-  
+ 
 def date_add_str(today_date, hhmm):
   parts = hhmm.split(':')
   if len(parts)<2: parts = [0,0]
@@ -103,12 +104,12 @@ def set_cache(inner_url, content, mem_only=False):
     cc.put()
 
 def in_cache(inner_url):
-  #return False #HACK
+  return False #HACK
   dbkey = db.Key.from_path('CachedContent', inner_url)
   return CachedContent.all(keys_only=True).filter('__key__', dbkey).get() is not None
 
 def read_cache(inner_url, mem_only=False):
-  #return None #HACK
+  return None #HACK
   content = memcache.get(inner_url)
   if content is None and not mem_only:
     tmp = CachedContent.get(db.Key.from_path('CachedContent', inner_url))
@@ -315,7 +316,7 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
   mapping = get_mapping(appid)
 
   # Obtenemos el template
-  page_name = ''  
+  page_name = url.split('?')[0]  
   template  = ''
   httpurl   = ''
 

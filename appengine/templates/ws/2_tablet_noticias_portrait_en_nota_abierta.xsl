@@ -3,7 +3,12 @@
   {{ cc.Head('layout_tablet') }}
   <body class="{{appid}} portrait" onload="onLoad('{{page_name}}')">
     <div id="index">
-      <div class="seccion list">{{'Principal' if 'section://main' in raw_url else data.item.0.category }}</div>
+      {% if 'section://columnistas' in raw_url%}
+        <div class="seccion list">Columnistas</div>
+      {% else %}
+        <div class="seccion list">{{'Principal' if 'section://main' in raw_url else data.item.0.category }}</div>
+      {% endif %}
+      
       <div class="menu portrait_news_list_container">
         {% set list_width = data.item|length * 192 %}
         <ul class="portrait_news_list" style="width:{{list_width}}px;">
