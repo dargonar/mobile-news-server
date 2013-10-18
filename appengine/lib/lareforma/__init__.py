@@ -31,8 +31,9 @@ def get_noticia_date(strdate):
   inx = months.index(month)
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hh), int(mm))
 
-def get_index_item(element):
-    head          = element.find_all('div',{'class':'titles-cont'})[0].h3.a
+def get_index_item(element, is_funebre=False):
+    
+    head          = element.find_all('div',{'class':'titles-cont'})[0].h3.a if not is_funebre else element.find_all('div',{'class':'titles-cont'})[0].h3
     article_date  = get_header_date(element.find_all('span',{'class':'category-fecha'})[0].text )
     if len(element.find_all('div',{'class':'thumbNotes'}))>0:
       img_div       = element.find_all('div',{'class':'thumbNotes'})[0]
@@ -42,14 +43,16 @@ def get_index_item(element):
     
     item = {}
     item['title']     = head.text
-    item['link']      = head['href']
-    item['guid']      = item['link'].split('/')[-2]
+    item['link']      = head['href'] if not is_funebre else '#'
+    item['guid']      = item['link'].split('/')[-2] if not is_funebre else '?'
     item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
     item['rawDate']   = article_date
     item['category']  = element.find_all('span',{'class':'category'})[0].text
     item['thumbnail'] = img_div.a.img['src'] if img_div and img_div.a and img_div.a.img else None
-    item['subheader'] = sub_h.p.text if sub_h.p else None
-    
+    if not is_funebre:
+      item['subheader'] = sub_h.p.text if sub_h.p else None
+    else:
+      item['description'] = sub_h.p.text if sub_h.p else None
     return item    
     
 def rss_index(args):
@@ -104,7 +107,7 @@ def rss_menu(args):
     item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
   
-  #Recontra hacko para coumnistas
+  #Recontra hacko para columnistas
   item = {}
   item['title']     = u'COLUMNISTAS'
   item['link']      = u'#'
@@ -163,75 +166,55 @@ def rss_seccion_columnistas(args):
 def rss_noticia(args): ############### HASTA AQUI ###################
 
   full_url = 'http://www.diariolareforma.com.ar/2013/%s/' % args['host']
-
+  # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
+  # soup = BeautifulSoup(urlopen(httpurl, timeout=25).read())
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   today_date = datetime.now()+timedelta(hours=-3)
 
   builder = XMLBuild(conf, today_date)
-
-  # element = div#content-post
-  # category = span.category li a.text
-  # titulo = div.titles-cont-post h1 a.text
-  # bajada = div.extract-post p
-  # contenido = div.content-post-text .html
-  # img = div.foto-gallery a img["src"]
-  
-  body = soup.select('div.main div.col1')[0]
  
-  divimg = body.find_all('div',{'class':'fotonota'})
-
+  body = soup.select('div#content-post')[0]
+ 
+  divimg = body.find_all('div',{'class':'foto-gallery'})
+  
+  content = body.find_all('div',{'class':'content-post-text'})[0]
+  del content['class']
+      
   item = {}
   item['title']     = body.h1.text
-  item['category']  = body.h2.text
+  item['category']  = body.find_all('span',{'class':'category'})[0].li.a.text
   item['link']      = full_url
   item['guid']      = args['host']
-  item['thumbnail'] = divimg[0].img['src'] if len(divimg) else None
-  item['pubDate']   = date2iso(get_noticia_date(body.strong.text))
-  item['content']   = body.find_all('div',{'class':'cc2'})[0].p.__repr__().decode('utf-8')
+  item['thumbnail'] = divimg[0].a.img['src'] if len(divimg)>0 and divimg[0].a else None
+  item['pubDate']   = date2iso(today_date)
+  item['content']   = content.__repr__().decode('utf-8')
   
   builder.add_item(item)
   return builder.get_value()
 
 def rss_funebres(args):
 
-  soup = BeautifulSoup(read_clean('http://www.diariolareforma.com.ar/subseccion/2/1/funebres.html', use_cache=False))
-  today_date = get_header_date(soup.select('div.clima div')[-1].text)
-
-  # Obtenemos las url funebres
-  urls = {}
-  for n in soup.select('div.contLineaTitulo h1 a'):
-    urls[n['href']] = None
+  soup = BeautifulSoup(read_clean('http://www.diariolareforma.com.ar/2013/category/necrologicas/', use_cache=False))
+  today_date = get_header_date(soup.select('#column1 div.box span.category-fecha')[0].text)
 
   builder = XMLBuild(conf, today_date)
-
-  def handle_result(rpc, url):
-    result = rpc.get_result()
-    if result.status_code == 200: 
-      soup = BeautifulSoup(clean_content(result.content))
-      content = soup.select('div.main div.col1 div.cc2')[0].__repr__().decode('utf-8')
-      #content = re.compile(r'<br.*?/>').sub('', content)
-      #content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
-
-      tmp = get_noticia_date(soup.select('div.main div.col1 strong')[0].text)
-
-      item = {}
-      item['title']       = 'Sepelios %s' % tmp.strftime('%d/%m')
-      item['description'] = content
-      item['link']        = url
-      item['guid']        = re.compile('\d+').findall(item['link'])[0]
-      item['pubDate']     = tmp.strftime("%a, %d %b %Y %H:%M:%S")
-      item['category']    = 'Sepelios %s' % tmp.strftime('%d/%m')
-
-      builder.add_funebre(item)
-
-  # Traemos en paralelo (primeras 4)
-  multi_fetch(urls.keys()[:4], handle_result)
-
-  # HACK POR EL DIA (no se muestra nunca el LAST FUNEBRE)
+  
+  notas1 = soup.select('#column1 div.box')
+  notas2 = soup.select('#column2 div.box')
+  
+  for i in xrange(max(len(notas1), len(notas2))):
+    if len(notas1)>i:
+      item = get_index_item(notas1[i], is_funebre=True)
+      if item is not None: builder.add_funebre(item)    
+    if len(notas2)>i:
+      item = get_index_item(notas2[i], is_funebre=True)
+      if item is not None: builder.add_funebre(item)    
+  
   builder.add_funebre({})
   
   return builder.get_value()
 
+  
 #
 # TEMPLATES MAPPING
 #
@@ -297,12 +280,12 @@ def get_mapping():
     'extras': {
       'has_clasificados' : False,
       'has_funebres'     : 'funebres://',
-      'has_farmacia'     : 'http://circulorafaela.com.ar/farmacias.htm',
-      'has_cartelera'    : 'http://www.rafaela.gov.ar/cine/',
+      'has_farmacia'     : False,
+      'has_cartelera'    : 'http://cinegranpampa.com.ar/',
     },
     'config': {
-        'android': { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },
-        'iphone':  { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] },
-        'ipad':    { 'ad_mob': 'a1521debeb75556', 'google_analytics' : ['UA-32663760-3'] }
+        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
+        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
+        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] }
     }
   } 
