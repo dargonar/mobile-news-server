@@ -45,7 +45,7 @@ def get_index_item(element, is_funebre=False):
     item['title']     = head.text
     item['link']      = head['href'] if not is_funebre else '#'
     item['guid']      = item['link'].split('/')[-2] if not is_funebre else '?'
-    item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
+    # item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
     item['rawDate']   = article_date
     item['category']  = element.find_all('span',{'class':'category'})[0].text
     item['thumbnail'] = img_div.a.img['src'] if img_div and img_div.a and img_div.a.img else None
@@ -104,7 +104,7 @@ def rss_menu(args):
     item['title']     = cat.a.text
     item['link']      = cat.a['href']
     item['guid']      = guid.strip()
-    item['pubDate']   = date_add_str(today_date, '00:00')
+    # item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
   
   #Recontra hacko para columnistas
@@ -112,7 +112,7 @@ def rss_menu(args):
   item['title']     = u'COLUMNISTAS'
   item['link']      = u'#'
   item['guid']      = u'COLUMNISTAS'
-  item['pubDate']   = date_add_str(today_date, '00:00')
+  # item['pubDate']   = date_add_str(today_date, '00:00')
   builder.add_section(item)
   
   return builder.get_value()
@@ -120,8 +120,7 @@ def rss_menu(args):
 def rss_seccion(args):
   
   if args['host'].lower() == u'columnistas':
-    return rss_section_columnistas(args)
-  # Ojo con la seccion recontra hackeada u'COLUMNISTAS'
+    return rss_seccion_columnistas(args) # Ojo con la seccion recontra hackeada u'COLUMNISTAS'
   
   full_url = 'http://www.diariolareforma.com.ar/2013/category/%s/' % args['host'].lower()
   return rss_index({'full_url':full_url, 'category':True})
@@ -186,7 +185,7 @@ def rss_noticia(args): ############### HASTA AQUI ###################
   item['link']      = full_url
   item['guid']      = args['host']
   item['thumbnail'] = divimg[0].a.img['src'] if len(divimg)>0 and divimg[0].a else None
-  item['pubDate']   = date2iso(today_date)
+  #item['pubDate']   = date2iso(today_date)
   item['content']   = content.__repr__().decode('utf-8')
   
   builder.add_item(item)
