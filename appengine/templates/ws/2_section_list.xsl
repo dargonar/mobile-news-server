@@ -6,7 +6,11 @@
       {% if page_name == 'section://columnistas'%}
         <label class="lbl_titulo_seccion">Columnistas</label>
       {% else %}
-        <label class="lbl_titulo_seccion">{{data.item.0.category}}</label>
+        {% if data and data.item|length>0 %}
+          <label class="lbl_titulo_seccion">{{data.item.0.category}}</label>
+        {% else %}
+          <label class="lbl_titulo_seccion">No hay noticias</label>
+        {% endif %}
       {% endif %}
     </div>
     {{ cc.UpdatedAt() }}
