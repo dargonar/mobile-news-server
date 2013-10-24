@@ -85,16 +85,16 @@ def rss_menu(args):
   for cat in soup.select('ul#suckerfishnav li'):
   
     if (u'menu-item-object-category' not in cat['class']): # and (u'menu-item-object-page' not in cat['class']):
-      logging.error(' -- NO EN CLASS' + str(cat['class']))
+      #logging.error(' -- NO EN CLASS' + str(cat['class']))
       continue
     if not cat.a or not cat.a.get('href'):
-      logging.error(' -- NO HAY a_link' + str(cat))
+      # logging.error(' -- NO HAY a_link' + str(cat))
       continue
     if cat.a.text.lower() == 'principal' or cat.a.text.lower() == u'necrológicas':
-      logging.error(' -- es principal ' + str(cat))
+      # logging.error(' -- es principal ' + str(cat))
       continue
     if cat.findParent('ul').get('id') != 'suckerfishnav':
-      logging.error(' -- NO es hijo directo' + str(cat))
+      # logging.error(' -- NO es hijo directo' + str(cat))
       continue
     
     link = cat.a['href'] 
