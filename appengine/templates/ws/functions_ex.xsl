@@ -4,6 +4,24 @@
   <div class="calendario">{{item.pubDate|datetime('%Y')}}</div>
 {%- endmacro %}
 
+{% macro avisos_cartelera(items, columna) -%}
+  {% for item in items %}
+  {% if loop.index0 % 3 == columna %}
+  {{ aviso_cartelera(item) }}
+  {% endif %}
+  {% endfor %}
+{%- endmacro %}
+
+{% macro aviso_cartelera(item) -%}
+  <div class="rubro">
+  {{item.category}}
+  </div>
+  <div class="cartelera_item">
+    <p class="carte_title">{{item.title}}</p>
+    <p class="carte_desc">{{item.content.value}}</p>
+  </div>
+{%- endmacro %}
+
 {% macro avisos_clasificados(items, columna) -%}
   {% for item in items %}
   {% if loop.index0 % 3 == columna and not loop.last %}
@@ -35,6 +53,21 @@
 
 {% macro aviso_clasificado(item) -%}
   <div class="aviso clasi">
+    <p>{{item.description}}</p>
+  </div>
+{%- endmacro %}
+
+{% macro avisos_clasificados2(items, columna) -%}
+  {% for item in items %}
+  {% if loop.index0 % 3 == columna and not loop.last %}
+  {{ aviso_clasificado2(item) }}
+  {% endif %}
+  {% endfor %}
+{%- endmacro %}
+{% macro aviso_clasificado2(item) -%}
+  <div class="aviso clasi">
+    <span class="right"><b>{{item.category}}</b></span>
+    <span><b>{{item.title}}</b></span>
     <p>{{item.description}}</p>
   </div>
 {%- endmacro %}
@@ -188,6 +221,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="css/{{layout}}.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/{{layout}}.css" /> TEST HACK -->
     <script type="text/javascript" src="js/functions.js"></script>
   </head>
 {%- endmacro %}

@@ -162,7 +162,7 @@ def rss_seccion_columnistas(args):
   
   return builder.get_value()
   
-def rss_noticia(args): ############### HASTA AQUI ###################
+def rss_noticia(args): 
 
   full_url = 'http://www.diariolareforma.com.ar/2013/%s/' % args['host']
   # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
