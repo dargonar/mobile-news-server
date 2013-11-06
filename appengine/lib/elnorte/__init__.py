@@ -61,7 +61,8 @@ def get_noticia_date(strdate):
   return datetime(year=year, month=inx+1, day=day)
   
 # Martes. 29-10-2013
-def get_header_date(strdate):
+def get_header_date(soup_obj):
+  strdate = soup_obj.select('#hoc #hic div.middle span.date')[0].text if soup_obj.select('#hoc #hic div.middle span.date') and len(soup_obj.select('#hoc #hic div.middle span.date'))>0 else soup_obj.select('#hocj #hic div.middle span.date')[0].text
   parts = strdate.split('. ')[1].strip().split('-')
   return datetime(year=int(parts[2]), month=int(parts[1]), day=int(parts[0]))
 
@@ -160,7 +161,7 @@ def get_index_mini_heading(element, today_date):
 def rss_index(args):
   soup = BeautifulSoup(read_clean('http://www.diarioelnorte.com.ar/', use_cache=False))
 #  soup = BeautifulSoup(urlopen('http://www.diarioelnorte.com.ar/', timeout=25).read())
-  today_date = get_header_date(soup.select('#hoc #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
   notas = soup.select('#content div.left div.main-article ')+soup.select('#content div.left div.two-cols div.col1 div.article')+soup.select('#content div.left div.two-cols div.col2 div.article')
@@ -193,8 +194,8 @@ def rss_index(args):
 def rss_menu(args):
   
   soup = BeautifulSoup(read_clean('http://www.diarioelnorte.com.ar/', use_cache=False))
-  today_date = get_header_date(soup.select('#hoc #hic div.middle span.date')[0].text)
-  
+  today_date = get_header_date(soup)
+
   builder = XMLBuild(conf, today_date)
 
   for cat in soup.select('#hoc #hic div.bottom div.left ul.mainmenu li a'):
@@ -230,7 +231,7 @@ def rss_seccion(args):
   
   full_url = 'http://www.diarioelnorte.com.ar/%s' % args['host'].lower()
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  today_date = get_header_date(soup.select('#hoc #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
   cats1 = soup.select('#content div.left div.two-cols div.col1 div.category')
@@ -281,7 +282,7 @@ def rss_sub_seccion(args):
   
   full_url = 'http://www.diarioelnorte.com.ar/%s' % args['host'].lower()
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  today_date = get_header_date(soup.select('#hocj #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
   category = soup.select('#content div.left div.main-article')[0].h5.text
@@ -308,7 +309,7 @@ def rss_noticia(args):
   
 def get_noticia_item(soup, full_url, args=None):
   
-  today_date = get_header_date(soup.select('#hoc #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   
   body = soup.select('#content div.left div.main-article')[0]
   
@@ -371,7 +372,7 @@ def rss_funebres(args):
   full_url = 'http://diarioelnorte.com.ar/necrologicas.html'
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
   #soup = BeautifulSoup(urlopen(full_url, timeout=25).read())
-  today_date = get_header_date(soup.select('#hocj #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   
   body = soup.select('#content div.left div.main-article')[0]
   
@@ -436,7 +437,7 @@ def rss_clasificados_section(args): # falta
   # traemos el listado para ver a q url tenemos que pegarle
   soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=True))
   section_name = args['host'].lower()
-  today_date = get_header_date(soup.select('#hocj #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   
   cats = soup.select('#content div.col1 div')+soup.select('#content div.col2 div')+soup.select('#content div.center div')
   urls = {}
@@ -511,7 +512,7 @@ def get_items_clasificados(soup):
 def rss_cartelera(args):
   
   soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/seccion_cartelera.html', use_cache=False))
-  today_date = get_header_date(soup.select('#hoc #hic div.middle span.date')[0].text)
+  today_date = get_header_date(soup)
   
   builder = XMLBuild(conf, today_date)
 
@@ -637,8 +638,8 @@ def get_mapping():
       'has_cartelera'    : 'cartelera://',
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] }
+        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
+        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
+        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] }
     }
   } 

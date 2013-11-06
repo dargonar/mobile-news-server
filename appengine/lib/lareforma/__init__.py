@@ -283,8 +283,8 @@ def get_mapping():
       'has_cartelera'    : 'http://cinegranpampa.com.ar/',
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-3'] }
+        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-7'] },
+        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-7'] },
+        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-7'] }
     }
   } 

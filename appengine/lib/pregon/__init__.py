@@ -241,8 +241,8 @@ def get_mapping():
       'has_cartelera'    : False,
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-4'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-4'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-4'] }
+        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-5'] },
+        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-5'] },
+        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-5'] }
     }
   } 

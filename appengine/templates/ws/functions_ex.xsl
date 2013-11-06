@@ -241,10 +241,19 @@
   {% endif %}
   
   {% if node.category %}
-  <label class="seccion">{{ 'Información Gral' if node.category == 'Información 
-  General' else node.category }}
+  <label class="seccion">
+  {% if node.category|trim == 'Información General' %}
+    {{ 'Inf. General' }}
+  {% else %}
+    {% if node.category|trim == 'Nacionales/Internacionales' %}
+      {{ 'Nac./Internac.' }}
+    {% else %}
+      {{ node.category|trim }}
+    {% endif %}
   {% endif %}
   </label>
+  {% endif %}
+  
 
 {%- endmacro %}
 
