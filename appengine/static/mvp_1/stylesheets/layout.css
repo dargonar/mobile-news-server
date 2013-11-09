@@ -711,7 +711,6 @@ CLASIFICADOS
 /* ---------------------------------------- */
 
 /* ---------------------------------------- */
-/* BEGIN ECOS --------------------------- */
 .lareforma #clasificados .columna .encabezado .rubro, .lareforma #clasificados .columna .encabezado .titulo ,
 .lareforma #listado li a .seccion , .lareforma  #nota .seccion {	color:#1065b0!important;}
 .lareforma .media_link .ico_video {
@@ -732,6 +731,29 @@ CLASIFICADOS
 .lareforma #titulo_seccion {
 	background-color:#1065b0;
 }
-/* END ECOS ----------------------------- */
+/* ---------------------------------------- */
+/* ---------------------------------------- */
+
+/* ---------------------------------------- */
+.elnorte #clasificados .columna .encabezado .rubro, .elnorte #clasificados .columna .encabezado .titulo ,
+.elnorte #listado li a .seccion , .elnorte  #nota .seccion {  color:#386b98!important;}
+.elnorte .media_link .ico_video {
+  background-image:url(../img/ico_video_elnorte.png) !important;
+}
+.elnorte .media_link .ico_plus {
+  background-image:url(../img/ico_plus_elnorte.png) !important;
+}
+.elnorte .media_link .ico_audio {
+  background-image:url(../img/ico_audio_elnorte.png) !important;
+}
+.elnorte .media_link .ico_galeria {
+  background-image:url(../img/ico_galeria_elnorte.png) !important;
+}
+.elnorte .media_link .ico_video, .elnorte .media_link .ico_audio, .elnorte .media_link .ico_galeria , .elnorte .media_link .ico_plus {
+  background-color:#0088cd;
+}
+.elnorte #titulo_seccion {
+  background-color:#0088cd;
+}
 /* ---------------------------------------- */
 /* ---------------------------------------- */

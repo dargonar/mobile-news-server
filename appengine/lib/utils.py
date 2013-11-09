@@ -37,7 +37,7 @@ apps_id = {
   'com.diventi.castellanos' : 'castellanos',
   'com.diventi.ecosdiarios' : 'ecosdiarios',
   'com.diventi.lareforma'   : 'lareforma',
-  'com.diventi.elnorte'   : 'elnorte',
+  'com.diventi.elnorte'     : 'elnorte',
 }
 
 def multi_fetch(urls, handle_result):
