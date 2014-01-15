@@ -431,12 +431,15 @@ div.screenshot_grid {
 div.releases {
 	padding-top: 15px;
 }
-	article.release {
+	
+	.pdf_header_fake {background-color: #e1e1e1; padding:10px!important;}
+	.pdf_bottom_hr, article.release {
 		overflow: hidden;
 		margin-bottom: 25px;
 		padding-bottom: 15px;
 		border-bottom: 1px solid #e1e1e1;
-		width: 525px;
+		/*width: 525px;*/
+		width: 505px;
 	}
 	article.release:last-child { border: none; padding-bottom: 0; }
 			article.release h2{
@@ -480,6 +483,12 @@ div.releases {
 							min-width: 35px;
 							text-align: center;
 						}
+						
+						article.release ul li.pdf_stylish span b, article.release ul li.pdf_stylish, article.release span.pdf_stylish  {
+							font-size: 14px!important;
+							line-height: 20px!important;
+						}
+
 						article.release ul li.new span b      { background: #1fa3e0; }
 						article.release ul li.fix span b 	    { background: #6bbd43; }
 						article.release ul li.improved span b { background: #53b9d7; }
@@ -648,6 +657,28 @@ h2 {
   h2.icon.people 		{ background-position: 0px -336px; }
   h2.icon.cart2 		{ background-position: 0px -378px; }
   h2.icon.adver 		{ background-position: 0px -420px; }
+
+	h2.icon.adira.caract {
+		background: url('/mvp_1/images/adira_assets/179-notepad.png') no-repeat 10px 5px;}
+	h2.icon.adira.mejoras {
+		background: url('/mvp_1/images/adira_assets/16-line-chart.png') no-repeat 10px 5px;}
+	h2.icon.adira.cloud {
+		background: url('/mvp_1/images/adira_assets/56-cloud.png') no-repeat 10px 10px;}
+	h2.icon.adira.price {
+		background: url('/mvp_1/images/adira_assets/172-pricetag.png') no-repeat 10px 10px;}
+	h2.icon.adira.right {
+		background: url('/mvp_1/images/adira_assets/138-scales.png') no-repeat 10px 10px;}
+	h2.icon.adira.newspaperico {
+		background: url('/mvp_1/images/adira_assets/166-newspaper.png') no-repeat 10px 10px;}
+
+
+	h2.icon.adira {
+		height: 32px;
+		padding: 10px 0px 0px 60px;
+		font-size: 17px;
+	}
+
+
 h3 {
 	font-size: 14px;
 	color: #353535;

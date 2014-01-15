@@ -47,6 +47,9 @@
   </div>
   {% endif %}
   <div class="aviso fune">
+    {% if item.title and item.title|length>0%}
+      <p>{{item.title}}</p>
+    {% endif %}
     <p>{{item.description}}</p>
   </div>
 {%- endmacro %}

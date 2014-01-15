@@ -355,7 +355,7 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
 def get_xml(appid, url, use_cache=False):
   
   inner_url = build_inner_url('xml', appid, url)
- 
+  # use_cache=False #HACK
   result = None
   if use_cache: 
     result = read_cache(inner_url, mem_only=True)
@@ -401,7 +401,7 @@ class HtmlBuilderMixing(object):
 
 
   def build_html_and_images(self, appid, url, size, ptls, use_cache=True):
-    
+    # use_cache=False #HACK    
     try: 
       inner_url = build_inner_url('html', appid, url, size)
 
