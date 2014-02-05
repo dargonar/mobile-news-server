@@ -77,6 +77,12 @@ class XMLBuild():
 
     if item.get('thumbnail') is not None:
       self.write( u'<media:thumbnail url="%s"></media:thumbnail>' % item['thumbnail'] )
+
+    if item.get('video') is not None:
+      self.write( u'<media:content url="%s" type="video"></media:content>' % item['video'] )
+
+    if item.get('audio') is not None:
+      self.write( u'<media:content url="%s" type="audio/mpeg"></media:content>' % item['audio'] )
     
     if item.get('content') is not None:
       self.write( u'<news:content type="html" meta="contenido"><![CDATA[%s]]></news:content>' % ns(item,'content'))

@@ -16,11 +16,22 @@ conf = {  'title'       : u'ECOSDIARIOS',
 
 main_url = 'http://www.ecosdiariosweb.com.ar/'
 
+def get_guid(href):
+  guid = href.split('_')[0] 
+  if 'http://' in href:
+    matches = re.compile('.ar/(.+)_').findall(href)
+    guid = '#'
+    if len(matches)>0:
+      guid      = matches[0]
+  return guid
+
 # Necochea, viernes 16 de agosto 2013
 def get_header_date(strdate):
-  parts = filter(lambda a: a != 'de', strdate.split())[2:]
-  inx = months.index(parts[1].lower())
-  return datetime(int(parts[2]), inx+1, int(parts[0]))
+  parts   = filter(lambda a: a != 'de', strdate.split())[2:]
+  inx     = months.index(parts[2].lower())
+  hour    = int(parts[5].split(':')[0]) 
+  minute  = int(parts[5].split(':')[1]) 
+  return datetime(day=int(parts[1]), month=inx+1, year=int(parts[3]), hour=hour, minute=minute)
 
 # viernes 16 de agosto 2013
 def get_funebre_date(strdate):
@@ -37,101 +48,249 @@ def get_section_date(strdate):
 
 def rss_index(args):
   soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False))
-  today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
 
-  tmp = soup.select('table.blog table.contentpaneopen')
-  for i in xrange(len(tmp)/2): 
-    head, body = tmp[2*i], tmp[2*i+1]
-    
-    # Blank notice
-    if head.tr.a is None:
-      continue
-
-    p = body.find_all('p')
-
+  # las del scroll de fotos
+  tmp = soup.select('div.wrap div.contenedor div.col3 div.col1  div.w620 div.nota.notafinal div.slide620 div.scrollable620 a')
+  for i in xrange(len(tmp)): 
+    a = tmp[i]
     item = {}
-    item['title']     = head.tr.a.text.strip()
-    item['link']      = '%s/%s' % (main_url, head.tr.a['href'])
-    item['guid']      = re.compile('&id=(\d+)').findall(item['link'])[0]
-    item['category']  = body.tr.td.span.text.strip()
-    item['thumbnail'] = ('%s/%s' % (main_url, p[0].img['src'])) if len(p) > 1 and p[0].img is not None else None
-    item['subheader'] = p[-1].text
+    item['title']     = a.find_all('div',attrs={'class':'titularslide620'})[0].text.strip()
+    item['link']      = '%s%s' % (main_url, a['href'])
+    item['guid']      = get_guid(a['href'])
+    item['category']  = 'Portada'
+    item['thumbnail'] = a.img['src'] if a.img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['subheader'] = None
     builder.add_item(item)
+  
+  tmp = soup.select('div.wrap div.contenedor div.col3 div.col1  div.w620 div.noticias3 div.w193')
+  for i in xrange(len(tmp)): 
+    img = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
+    a = tmp[i].find_all('h3')[0].a
+    category = 'Portada'
+    if '/notas-de-opinion/' in a['href'] or '/el-comentario/' in a['href']:
+      category = u'Opinión'
+    else:
+      if '/arte-espectaculos/' in a['href']:
+        category = u'Arte y Espectáculos'
+    
+    item = {}
+    item['title']     = a.text.strip()
+    item['link']      = '%s%s' % (main_url, a['href'])
+    item['guid']      = get_guid(a['href'])
+    item['category']  = category
+    item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['subheader'] = None
+    builder.add_item(item)
+
+  tmp = soup.select('div.wrap div.contenedor div.col3 div.col1 div.w620 div.nota div.modulo_seccion div.box div.f-left')
+  for i in xrange(len(tmp)): 
+    img         = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
+    a           = tmp[i].find_all('h6')[0].a
+    subbheader  = tmp[i].find_all('p')[0].text.strip()
+    item = {}
+    item['title']     = a.text.strip()
+    item['link']      = '%s%s' % (main_url, a['href'])
+    item['guid']      = get_guid(a['href'])
+    item['category']  = 'Deportes'
+    item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['subheader'] = subbheader
+    builder.add_item(item)
+
+  tmp = soup.select('div.wrap div.contenedor div.col3 div.col1 div.w620 div.cont_video620 div.videos620_thumb li')
+  for i in xrange(len(tmp)): 
+    a           = tmp[i].a
+    img         = a.find_all('img')[0] if len(a.find_all('img'))>0 else None
+    title       = a.find_all('div',attrs={'class':'tit'})[0].text.strip()
+    item = {}
+    item['title']     = title
+    item['link']      = '%s%s' % (main_url, a['href'])
+    item['guid']      = get_guid(a['href'])
+    item['category']  = u'Galería de videos'
+    item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['subheader'] = None
+    builder.add_item(item)
+
+  # tmp = soup.select('div.wrap div.contenedor div.col3 div.col1 div.w620 div.slide620_4noticias div.scrollable620 a')
+  # for i in xrange(len(tmp)): 
+  #   a           = tmp[i]
+  #   img         = a.find_all('img')[0] if len(a.find_all('img'))>0 else None
+  #   title       = a.find_all('strong')[0].text.strip()
+  #   item = {}
+  #   item['title']     = title
+  #   item['link']      = '%s/%s' % (main_url, a['href'])
+  #   item['guid']      = get_guid(a['href'])
+  #   item['category']  = u'Fotoreportajes'
+  #   item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+  #   item['subheader'] = None
+  #   builder.add_item(item)
+
+  tmp = soup.select('div.wrap div.contenedor div.col3 div.col2 div.nota300')
+  for i in xrange(len(tmp)): 
+    category    = tmp[i].find_all('div',attrs={'class':'cabezal'})
+    notas       = tmp[i].find_all('div',attrs={'class':'f-left'})
+    
+    if len(category)==0 or len(notas)==0:
+      if len(category)>0 and len(tmp[i].find_all('div',attrs={'class':'notafinal'}))>0:
+        category_txt  = category[0].text.strip() 
+        img           = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
+        a             = tmp[i].find_all('p')[0].a
+        item = {}
+        item['title']     = a.text.strip()
+        item['link']      = '%s%s' % (main_url, a['href'])
+        item['guid']      = get_guid(a['href'])
+        item['category']  = category_txt
+        item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+        item['subheader'] = None
+        builder.add_item(item)
+
+      else:
+        continue
+
+    category_txt  = category[0].text.strip() 
+    
+    for x in xrange(len(notas)):
+      img         = notas[x].find_all('div',attrs={'class':'fotoNota'})[0].a.img
+      a           = notas[x].find_all('h6')[0].a
+      
+      item = {}
+      item['title']     = a.text.strip()
+      item['link']      = '%s%s' % (main_url, a['href'])
+      item['guid']      = get_guid(a['href'])
+      item['category']  = category_txt
+      item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+      item['subheader'] = None
+      builder.add_item(item)
+  return builder.get_value()
+
+  # tmp = soup.select('table.blog table.contentpaneopen')
+  # for i in xrange(len(tmp)/2): 
+  #   head, body = tmp[2*i], tmp[2*i+1]
+    
+  #   # Blank notice
+  #   if head.tr.a is None:
+  #     continue
+
+  #   p = body.find_all('p')
+
+  #   item = {}
+  #   item['title']     = head.tr.a.text.strip()
+  #   item['link']      = '%s/%s' % (main_url, head.tr.a['href'])
+  #   item['guid']      = re.compile('&id=(\d+)').findall(item['link'])[0]
+  #   item['category']  = body.tr.td.span.text.strip()
+  #   item['thumbnail'] = ('%s/%s' % (main_url, p[0].img['src'])) if len(p) > 1 and p[0].img is not None else None
+  #   item['subheader'] = p[-1].text
+  #   builder.add_item(item)
 
   return builder.get_value()
 
 def rss_menu(args):
   
   soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False))
-  today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
-  for n in soup.select('div#nav ul')[0].find_all('li')[1].ul.find_all('li'):
+
+  for n in soup.select('div.cabecera div.contenedor div.cont-menu ul.menu')[0].find_all('li'):
+    if n.a['href'] is None or len(n.a['href'])==0:
+      if n.a.text.strip().lower() == 'servicios':
+        break
+      continue
     item = {}
-    item['title']     = n.a.text
-    item['link']      = n.a['href']
-    item['guid']      = re.compile('&id=(\d+)').findall(item['link'])[0]
-    item['pubDate']   = date_add_str(today_date, '00:00')
+    item['title']     = n.a.text.strip().capitalize() #title() #upper()
+    item['link']      = n.a['href'].strip().replace('/', '')
+    item['guid']      = n.a['href'].strip().replace('/', '')
+    item['pubDate']   = today_date
     
-    # No incluimos 'Fúnebres' ni 'Línea Directa'
-    if int(item['guid']) != 7 and int(item['guid']) != 34:
-        builder.add_section(item)
+    builder.add_section(item)
 
   return builder.get_value()
 
 def rss_section(args):
 
-  soup = BeautifulSoup(read_clean('%s/index.php?option=com_content&view=category&layout=blog&id=%s&Itemid=3' % (main_url, args['host']), use_cache=False))
-  today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  soup = BeautifulSoup(read_clean('%s%s/' % (main_url, args['host']), use_cache=False))
+  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
   
   builder = XMLBuild(conf, today_date)
 
-  category = soup.select('div.componentheading')[0].text
-  
-  tmp = soup.select('table.blog table.contentpaneopen')
-  for i in xrange(len(tmp)/2): 
-    head, body = tmp[2*i], tmp[2*i+1]
-    p = body.find_all('p')
-    
+  category = ''
+  for n in soup.select('div.cabecera div.contenedor div.cont-menu ul.menu')[0].find_all('li'):
+    if n.a['href'].replace('/', '') == args['host']:
+      category = n.a.text.strip().capitalize()
+      break
+
+  tmp = soup.select('div.wrap div.contenedor div.seccion div.col3 div.col1 div.nota620_apaisada')
+  for i in xrange(len(tmp)): 
+    img         = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
+    volanta     = tmp[i].find_all('div',attrs={'class':'volanta'})[0].text.strip()
+    a           = tmp[i].find_all('h5')[0].a
+    subbheader  = tmp[i].find_all('p')[0].text.strip()
+
     item = {}
-    item['title']     = head.tr.a.text.strip()
-    item['link']      = '%s/%s' % (main_url, head.tr.a['href'])
-    item['guid']      = re.compile('&id=(\d+)').findall(item['link'])[0]
-    item['category']  = category
-    item['thumbnail'] = ('%s/%s' % (main_url, p[0].img['src'])) if len(p) > 1 and p[0].img is not None else None
-    item['pubDate']   = date2iso(get_section_date(body.tr.td.text))
-    item['subheader'] = p[-1].text
+    item['title']       = a.text.strip()
+    item['link']        = '%s%s' % (main_url, a['href'])
+    item['guid']        = get_guid(a['href'])
+    item['category']    = volanta.capitalize()
+    item['description'] = category
+    item['thumbnail']   = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['subheader']   = subbheader
     builder.add_item(item)
 
   return builder.get_value()
 
 def rss_noticia(args):
 
-  full_url = 'http://www.ecosdiariosweb.com.ar/index.php?option=com_content&view=article&id=%s' % args['host']
+  full_url = 'http://www.ecosdiariosweb.com.ar/%s' % args['host']
 
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
 
-  tmp = soup.select('table#majtable table.contentpaneopen')
-  header, body = tmp[0], tmp[1]
+  tmp = soup.select('div.wrap div.contenedor div.seccion div.col3 div.col1 div.notaint')
 
-  content = u''
-  for p in body.find_all('tr')[1].td.find_all('p'): 
-    content = content + p.__repr__().decode('utf-8')
-  content = re.compile(r'<img.*?/>').sub('', content)
+  if len(tmp)==0 and 'videos/' in args['host']:
+    # estamos en video
+    tmp = soup.select('div.wrap div.contenedor div.seccion div.col3 div.col1 div.video-grande')
+    video_url = tmp[0].find_all('iframe')[0]['src']
+    title = tmp[0].find_all('div', attrs={'class','bajada'})[0].text.strip()
 
-  p = body.find_all('tr')[1].td.p
+    item = {}
+    item['category']  = u'Galería de videos'
+    #item['subheader'] = tmp[0].h3.text.strip()
+    item['title']     = title
+    item['link']      = full_url
+    item['guid']      = args['host']
+    item['thumbnail'] = 'http://img.youtube.com/vi/%s/0.jpg' % video_url.split('/')[-1:]
+    item['video']     = video_url
+    item['pubDate']   = today_date
+    
+    builder.add_item(item)
+    return builder.get_value()
+  
+  content       = u''
+  content_divs  = tmp[0].find_all('div',attrs={'id':'noticiaint'})[0]
+  extracted_img = content_divs.find_all('div',attrs={'class':'w300'})[0].extract()
+  for div in content_divs.find_all('div'):
+    content = content + div.__repr__().decode('utf-8')
+  
+  #content = re.compile(r'<img.*?/>').sub('', content)
+
+  img_div = extracted_img.find_all('img', attrs={'itemprop':'image'}) #tmp[0].find_all('div', attrs={'class':'fotoNota-ext'})[0]
+  
+  volanta = tmp[0].find_all('div',attrs={'class':'volanta'})
 
   item = {}
-  item['title']     = header.tr.td.text
+  item['lead']      = volanta[0].text.strip() if volanta and len(volanta) else None
+  item['category']  = volanta[0].text.strip().capitalize() if volanta and len(volanta) else None
+  item['subheader'] = tmp[0].h3.text.strip()
+  item['title']     = tmp[0].h1.text.strip()
   item['link']      = full_url
-  item['guid']      = args['host']
-  item['thumbnail'] = ('%s/%s' % (main_url, p.img['src'])) if p and p.img else None
-  item['pubDate']   = date2iso(get_section_date(body.tr.td.text))
+  item['guid']      = args['host'] #('%s/%s' % (main_url, img_div[0]['src'])) if img_div and img_div[0] else None
+  item['thumbnail'] = ('%s%s' % (main_url, img_div[0]['src'])) if img_div and img_div[0] else None
+  item['pubDate']   = today_date
   item['content']   = content
   
   builder.add_item(item)
@@ -139,36 +298,34 @@ def rss_noticia(args):
 
 def rss_funebres(args):
 
-  full_url = 'http://www.ecosdiariosweb.com.ar/index.php?option=com_content&view=category&layout=blog&id=7&Itemid=5'
+  full_url = u'http://www.ecosdiariosweb.com.ar/p/contenidos/funebres.html'
 
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  #today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
 
-  tmp = soup.select('table.blog table.contentpaneopen')
-  for i in xrange(len(tmp)/2): 
-    head, body = tmp[2*i], tmp[2*i+1]
-    date = get_funebre_date(head.tr.td.text)
+  title = u'Fúnebres %s' % today_date.strftime('%d/%m')
+  content = ''
+  obj = soup.select('div#noticiaint div div')[2].select('div > div > div > div > div > div > div > div > div > div > div')[5]
+  while obj: 
 
-    content = u''
-    if body.find_all('tr')[0].td.p is not None:
-      contents = body.find_all('tr')[0].td.find_all('p')
-    else:
-      contents = body.find_all('tr')[0].td.find_all('div',attrs={'id':'cke_pastebin'})
+    if obj.__repr__().decode('utf-8').replace(u'\n\r',u'').replace(u'\n',u'') == u'<div><br/></div>':
+      item = {}
+      item['title']       = u''
+      item['description'] = content
+      item['link']        = full_url
+      item['guid']        = full_url #re.compile('&id=(\d+)').findall(item['link'])[0]
+      item['pubDate']     = date2iso(today_date)
+      item['category']    = title
+      builder.add_funebre(item)  
+      obj     = obj.find_next_sibling('div')
+      content = ''
+      continue
 
-    for p in contents:
-      content = content + p.__repr__().decode('utf-8')
-
-    item = {}
-    item['title']       = 'Funebres %s' % date.strftime('%d/%m')
-    item['description'] = content
-    item['link']        = full_url
-    item['guid']        = re.compile('&id=(\d+)').findall(item['link'])[0]
-    item['pubDate']     = date2iso(date)
-    item['category']    = 'Funebres %s' % date.strftime('%d/%m')
-
-    builder.add_funebre(item)
+    content = content + obj.__repr__().decode('utf-8')
+    obj     = obj.find_next_sibling('div')
 
   # HACK POR EL DIA (no se muestra nunca el LAST FUNEBRE)
   builder.add_funebre({})
@@ -177,18 +334,21 @@ def rss_funebres(args):
 
 def rss_farmacia(args):
 
-  full_url = 'http://www.ecosdiariosweb.com.ar/index.php?option=com_content&view=category&layout=blog&id=9&Itemid=13'
+  full_url = u'http://www.ecosdiariosweb.com.ar/p/contenidos/farmacias-de-turno.html'
 
   soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
+  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
   
-  tmp = soup.select('div#cke_pastebin')[0].text
-  tmp = tmp.replace(u'\n\r',u'</br>')
-  tmp = tmp.replace(u'\n',u'</br>')
-  
-  builder.add_raw(tmp)
+  content=''
+  obj = soup.select('div#noticiaint div div div div div p')[0]
+  obj = obj.find_next_sibling('div')
+  while obj: 
+    content = content + obj.__repr__().decode('utf-8')
+    obj     = obj.find_next_sibling('div')
+
+  builder.add_raw(content)
   return builder.get_value()
 
 def get_classifieds():
@@ -259,7 +419,7 @@ def get_mapping():
       }),
     ]),
     'extras': {
-      'has_clasificados' : 'http://www.ecosdiariosweb.com.ar/clasificados/clasificados.pdf',
+      'has_clasificados' : 'http://www.ecosdiarios.com/clasificados/clasificados.pdf',
       'has_funebres'     : 'funebres://',
       'has_farmacia'     : 'farmacia://',
       'has_cartelera'    : False,

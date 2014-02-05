@@ -7,7 +7,11 @@
         <label class="lbl_titulo_seccion">Columnistas</label>
       {% else %}
         {% if data and data.item|length>0 %}
-          <label class="lbl_titulo_seccion">{{data.item.0.category}}</label>
+          {% if appid == 'ecosdiarios'%}
+            <label class="lbl_titulo_seccion">{{data.item.0.description}}</label>
+          {% else %}
+            <label class="lbl_titulo_seccion">{{data.item.0.category}}</label>
+          {% endif %}
         {% else %}
           <label class="lbl_titulo_seccion">No hay noticias</label>
         {% endif %}

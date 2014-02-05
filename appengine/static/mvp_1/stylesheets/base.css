@@ -391,7 +391,8 @@ div.screenshot_grid {
 	a.fancybox {
 		display: block;
 		position: relative;
-		width: 145px;
+		height: 276px;
+		/*width: 145px;
 		height: 100px;
 		margin-bottom: 8px;
 		overflow: hidden;
@@ -402,7 +403,7 @@ div.screenshot_grid {
     -webkit-box-shadow: rgba(0,0,0, 0.3) 0px 0px 5px;
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
-		border-radius: 3px;
+		border-radius: 3px;*/
 	}
 	div.screenshot_grid div img,
 	a.fancybox img {

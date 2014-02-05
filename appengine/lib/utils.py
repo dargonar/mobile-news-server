@@ -28,7 +28,7 @@ from webapp2 import abort, cached_property, RequestHandler, Response, HTTPExcept
 from webapp2_extras import jinja2, sessions, json
 
 days   = ['lunes','martes', u'miércoles', 'jueves', 'viernes', u'sábado', 'domingo']
-months = ['enero', 'febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 months_min = ['ene', 'feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']
 
 apps_id = { 
@@ -111,7 +111,7 @@ def in_cache(inner_url):
   return CachedContent.all(keys_only=True).filter('__key__', dbkey).get() is not None
 
 def read_cache(inner_url, mem_only=False):
-  # return None #HACK
+  #return None #HACK
   content = memcache.get(inner_url)
   if content is None and not mem_only:
     tmp = CachedContent.get(db.Key.from_path('CachedContent', inner_url))

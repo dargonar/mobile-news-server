@@ -15,16 +15,17 @@ from utils import FrontendHandler, get_or_404
 class Index(FrontendHandler):
   def get(self, **kwargs):
     #return self.render_response('mvp_1/_index.html', form=self.form, **kwargs)
-    return self.render_response('mvp_1/_index.html', form=self.form, **kwargs)
+    return self.render_response('mvp_1/home.html', form=self.form, **kwargs)
   
   def demo(self, **kwargs):
     return self.render_response('mvp_1/_demo.html')
     
   def slug(self, **kwargs):
-    if kwargs['slug'] not in ['que_hacemos', 'faq', 'diarios' , 'contacto', 'updates_original']:
+    slug = kwargs['slug'].lower()
+    if slug not in ['que_hacemos', 'faq', 'diarios' , 'contacto', 'updates_original']:
       return self.redirect_to('mvp/index')
-    kwargs['go_to']=kwargs['slug']
-    return self.render_response('mvp_1/_index.html', form=self.form, **kwargs)
+    kwargs['go_to']=slug
+    return self.render_response('mvp_1/%s.html' % slug, form=self.form, **kwargs)
 
   def post(self, **kwargs):
     self.request.charset  = 'utf-8'
