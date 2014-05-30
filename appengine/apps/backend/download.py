@@ -72,8 +72,12 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     # Iteramos todas las secciones y las mandamos a bajar
     xmlstr = get_xml(appid, 'menu://', use_cache=True)
     xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
+		
+		try:
+			sections = [i.guid.value for i in xml.rss.channel.item] + ['main']
+		except:
+			logging.error('>> FAILED appid %s' % appid)
 
-    sections = [i.guid.value for i in xml.rss.channel.item] + ['main']
 
     for section in sections:
      taskqueue.add(queue_name='download2', url='/download/section', params={'appid': appid, 'section': section})
