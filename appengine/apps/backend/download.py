@@ -73,10 +73,10 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     xmlstr = get_xml(appid, 'menu://', use_cache=True)
     xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
 		
-		try:
-			sections = [i.guid.value for i in xml.rss.channel.item] + ['main']
-		except:
-			logging.error('>> FAILED appid %s' % appid)
+    try:
+      sections = [i.guid.value for i in xml.rss.channel.item] + ['main']
+    except:
+      logging.error('>> FAILED appid %s' % appid)
 
 
     for section in sections:
