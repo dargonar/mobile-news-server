@@ -6,7 +6,12 @@
       {% if 'section://columnistas' in raw_url%}
         <div class="seccion list">Columnistas</div>
       {% else %}
-        <div class="seccion list">{{'Principal' if 'section://main' in raw_url else data.item.0.category }}</div>
+        <div class="seccion list">{{'Principal'}}
+        {% if data.item and 'section://main' in raw_url %}
+          {{data.item.0.category}}
+        {% else %}
+        {% endif %}
+        </div>
       {% endif %}
       
       <div class="menu portrait_news_list_container">

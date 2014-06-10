@@ -6,7 +6,7 @@
       {% if page_name == 'section://columnistas'%}
         <label class="lbl_titulo_seccion">Columnistas</label>
       {% else %}
-        {% if data and data.item|length>0 %}
+        {% if data and data.item and data.item|length>0 %}
           {% if appid == 'ecosdiarios'%}
             <label class="lbl_titulo_seccion">{{data.item.0.description}}</label>
           {% else %}
