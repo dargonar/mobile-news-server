@@ -7,7 +7,7 @@
         <div class="seccion list">Columnistas</div>
       {% elif 'section://main' in raw_url %} 
         <div class="seccion list">{{'Principal'}}</div>
-      {% else %}
+      {% elif data.item %}
         <div class="seccion list">{{data.item.0.category}}</div>
       {% endif %}
       <div class="menu portrait_news_list_container">
