@@ -80,7 +80,9 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
 
 
     for section in sections:
-     taskqueue.add(queue_name='download2', url='/download/section', params={'appid': appid, 'section': section})
+      logging.error('>> trying section %s  // appid %s' % (section, appid))
+      taskqueue.add(queue_name='download2', url='/download/section', params={'appid': appid, 'section': section})
+      break
       
   def download_all(self, **kwargs):    
     # Mantenemos una lista de lo que fuimos mandando a bajar
