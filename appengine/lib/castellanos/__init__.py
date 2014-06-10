@@ -101,6 +101,7 @@ def rss_menu(args):
 def rss_seccion(args):
   
   full_url = 'http://www.diariocastellanos.net/seccion/%s/' % args['host'].lower()
+  logging.error('  section url ==> %s' % full_url)
   return rss_index({'full_url':full_url, 'category':True})
 
 def rss_noticia(args):
