@@ -5,15 +5,11 @@
     <div id="index">
       {% if 'section://columnistas' in raw_url%}
         <div class="seccion list">Columnistas</div>
+      {% elif 'section://main' in raw_url %} 
+        <div class="seccion list">{{'Principal'}}</div>
       {% else %}
-        <div class="seccion list">{{'Principal'}}
-        {% if data.item and 'section://main' in raw_url %}
-          {{data.item.0.category}}
-        {% else %}
-        {% endif %}
-        </div>
+        <div class="seccion list">{{data.item.0.category}}</div>
       {% endif %}
-      
       <div class="menu portrait_news_list_container">
         {% set list_width = data.item|length * 192 %}
         <ul class="portrait_news_list" style="width:{{list_width}}px;">
