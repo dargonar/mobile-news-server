@@ -62,14 +62,14 @@ def rss_index(args):
     #   item['pubDate'] = date2iso(get_noticia_date(pubDate[0].text))
     
     an_img = n.find_all('img')
-    logging.error('-----------------------')
-    logging.error(an_img)
+    #logging.error('-----------------------')
+    #logging.error(an_img)
     if an_img and len(an_img) > 0:
       if an_img[0]['data-original']:
         an_img = an_img[0]['data-original']
       elif an_img[0]['src']:
         an_img = an_img[0]['src']
-    logging.error(an_img)
+    #logging.error(an_img)
     item['category']  = category if category is not None else n.a.text.upper()
     item['thumbnail'] = an_img if an_img else None
     item['subheader'] = n.p.text if n.p else None
