@@ -63,12 +63,12 @@ def rss_index(args):
     
     an_img = n.find_all('img')
     logging.error('-----------------------')
-    #logging.error(an_img)
+    logging.error(an_img)
     if an_img and len(an_img) > 0:
-      if an_img[0]['data-original'] and len(an_img[0]['data-original']) > 0:
+      if an_img[0]['data-original']:
         an_img = an_img[0]['data-original']
-      else:
-        an_img = an_img[0]['src'] if an_img[0]['src']
+      elif an_img[0]['src']:
+        an_img = an_img[0]['src']
     logging.error(an_img)
     item['category']  = category if category is not None else n.a.text.upper()
     item['thumbnail'] = an_img if an_img else None
