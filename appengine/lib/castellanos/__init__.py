@@ -60,9 +60,11 @@ def rss_index(args):
     
     # if len(pubDate):
     #   item['pubDate'] = date2iso(get_noticia_date(pubDate[0].text))
-    
+    an_img = n.find_all('img')
+    if an_img and len(an_img) > 0 
+      an_img = an_img[0]['src']
     item['category']  = category if category is not None else n.a.text.upper()
-    item['thumbnail'] = n.img['src'] if n.img else None
+    item['thumbnail'] = an_img if an_img else None
     item['subheader'] = n.p.text if n.p else None
     builder.add_item(item)
 
