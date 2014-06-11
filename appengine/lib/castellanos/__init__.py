@@ -129,8 +129,9 @@ def rss_noticia(args):
   content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
   
   # Sacamos thumbnail
-  img = (n.find_all('div', {'class':'img'})[:1] or [None])[0]
-  if img: img = img.img['src']
+  img = (n.find_all('div', {'class':'img'}) or [None])[-1]
+  if img:
+    img = img.img['src'] if hasattr(img, 'img') else None
 
   # Sacamos galeria / Si hay galeria y no thumnail => la primer foto es el thumb
   # group = [tmp['src'] for tmp in soup.select('ul.ad-thumb-list img')]

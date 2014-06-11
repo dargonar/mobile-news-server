@@ -419,25 +419,22 @@ class HtmlBuilderMixing(object):
 
         # Reemplazamos las imagens por el sha1 de la url
         imgs = []
-        items = [] 
   
         if 'item' in r.rss.channel:
-          if type(r.rss.channel.item) == type([]):
-            items = r.rss.channel.item
-          else:
-            items = [r.rss.channel.item]
+          if not 'content' in r.rss.channel.item and type(r.rss.channel.item) != type([]):
+            r.rss.channel.item = [r.rss.channel.item]
 
-        for i in items:
-          if hasattr(i, 'thumbnail'):
-            img = unicode(i.thumbnail.attrs.url)
-            i.thumbnail.attrs.url = sha1(img).digest().encode('hex')
-            imgs.append(img)
-
-          if hasattr(i, 'group'):
-            for ct in i.group.content:
-              img = unicode(ct.attrs.url)
-              ct.attrs.url = sha1(img).digest().encode('hex')
+          for i in r.rss.channel.item:
+            if hasattr(i, 'thumbnail'):
+              img = unicode(i.thumbnail.attrs.url)
+              i.thumbnail.attrs.url = sha1(img).digest().encode('hex')
               imgs.append(img)
+
+            if hasattr(i, 'group'):
+              for ct in i.group.content:
+                img = unicode(ct.attrs.url)
+                ct.attrs.url = sha1(img).digest().encode('hex')
+                imgs.append(img)
 
         # Armamos la direccion del xml    
         httpurl, args, template, page_name, extras_map = get_httpurl(appid, url, size, ptls)
