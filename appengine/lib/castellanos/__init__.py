@@ -129,7 +129,7 @@ def rss_noticia(args):
   content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
   
   # Sacamos thumbnail
-  img = (n.find_all('div', {'class':'img'}) or [None])[-1]
+  img = n.find_all('div', {'class':'img'})
   if img:
     img = img.img['src'] if hasattr(img, 'img') else None
 

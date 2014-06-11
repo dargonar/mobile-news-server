@@ -18,6 +18,7 @@ from StringIO import StringIO
 from models import CachedContent
 from datetime import datetime, timedelta
 
+from lhammer.oodict import OODict
 from lhammer.xml2dict import XML2Dict
 
 from google.appengine.ext import db
@@ -419,22 +420,29 @@ class HtmlBuilderMixing(object):
 
         # Reemplazamos las imagens por el sha1 de la url
         imgs = []
+        items = []
   
         if 'item' in r.rss.channel:
-          if not 'content' in r.rss.channel.item and type(r.rss.channel.item) != type([]):
-            r.rss.channel.item = [r.rss.channel.item]
+          if type(r.rss.channel.item) == OODict:
+            items = [r.rss.channel.item]
+          else:
+            items = r.rss.channel.item
 
-          for i in r.rss.channel.item:
-            if hasattr(i, 'thumbnail'):
-              img = unicode(i.thumbnail.attrs.url)
-              i.thumbnail.attrs.url = sha1(img).digest().encode('hex')
+        for i in items:
+
+          if hasattr(i, 'thumbnail'):
+            img = unicode(i.thumbnail.attrs.url)
+            i.thumbnail.attrs.url = sha1(img).digest().encode('hex')
+            imgs.append(img)
+
+          if hasattr(i, 'group'):
+            for ct in i.group.content:
+              img = unicode(ct.attrs.url)
+              ct.attrs.url = sha1(img).digest().encode('hex')
               imgs.append(img)
 
-            if hasattr(i, 'group'):
-              for ct in i.group.content:
-                img = unicode(ct.attrs.url)
-                ct.attrs.url = sha1(img).digest().encode('hex')
-                imgs.append(img)
+        if 'item' in r.rss.channel and not 'content' in r.rss.channel.item and type(r.rss.channel.item) != type([]):
+          r.rss.channel.item = [r.rss.channel.item]
 
         # Armamos la direccion del xml    
         httpurl, args, template, page_name, extras_map = get_httpurl(appid, url, size, ptls)

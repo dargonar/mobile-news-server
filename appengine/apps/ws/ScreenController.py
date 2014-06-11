@@ -54,19 +54,25 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     appid = self.request.params['appid'] # nombre de la app
     url   = self.request.params['url']   # url interna
 
-    r = get_xml(appid, url, use_cache=True)
+    use_cache = self.str2bool(self.request.params.get('use_cache'))
+    r = get_xml(appid, url, use_cache=use_cache)
     
     self.response.headers['Content-Type'] ='text/xml'
     
     return self.response.write(r)
       
+  def str2bool(self, v):
+    if v is None or not isinstance(v,basestring): return False
+    return v.lower() in ("yes", "true", "t", "1")
+
   def get_html(self, **kwargs):  
     appid = self.request.params['appid'] # nombre de la app
     url   = self.request.params['url']   # url interna
     size  = self.request.params['size']  # small, big
     ptls  = self.request.params['ptls']  # pt, ls
-    
-    content, images = self.build_html_and_images(appid, url, size, ptls)
+
+    use_cache = self.str2bool(self.request.params.get('use_cache'))
+    content, images = self.build_html_and_images(appid, url, size, ptls, use_cache)
     
     # self.response.write(apps_id[appid])
     # return
