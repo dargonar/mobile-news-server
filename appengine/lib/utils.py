@@ -77,8 +77,11 @@ def clean_content(content):
   content = etree.tostring(tree.getroot(), pretty_print=True, method="html")
   return content
 
-def read_url_clean(httpurl, clean=True):
+def read_url_clean(httpurl, clean=True, encoding=None):
   content = urlopen(httpurl, timeout=25).read()
+  if encoding:
+    content=content.decode(encoding).encode('utf-8')
+    content=content.replace(encoding,'utf-8')
   if clean:
     return clean_content(content)
   return content
@@ -125,14 +128,14 @@ def read_cache(inner_url, mem_only=False):
   # logging.info('using cache for %s' % inner_url)
   return content
 
-def read_clean(httpurl, clean=True, use_cache=True):
+def read_clean(httpurl, clean=True, use_cache=True, encoding=None):
   content = None
   # use_cache=False #HACK
   if use_cache:
     content = memcache.get(httpurl)  
 
   if content is None:
-    content = read_url_clean(httpurl, clean=clean)
+    content = read_url_clean(httpurl, clean=clean, encoding=encoding)
     memcache.set(httpurl, content)
   
   return content
