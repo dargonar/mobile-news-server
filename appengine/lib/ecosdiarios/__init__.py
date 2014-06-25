@@ -28,14 +28,6 @@ def fullimg(url):
 def get_guid(href):
   return re.compile('\d+').findall(href)[-1]
 
-  guid = href.split('_')[0] 
-  if 'http://' in href:
-    matches = re.compile('.ar/(.+)_').findall(href)
-    guid = '#'
-    if len(matches)>0:
-      guid      = matches[0]
-  return guid
-
 # Necochea, viernes 16 de agosto 2013
 def get_header_date(strdate):
   parts   = filter(lambda a: a != 'de', strdate.split())[2:]
@@ -246,7 +238,7 @@ def rss_section(args):
     item['guid']        = get_guid(a['href'])
     item['category']    = volanta.capitalize()
     item['description'] = category
-    item['thumbnail']   = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['thumbnail']   = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
     item['subheader']   = subbheader
     builder.add_item(item)
 
