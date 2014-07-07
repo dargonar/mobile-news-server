@@ -61,18 +61,28 @@ def rss_index(args):
     # if len(pubDate):
     #   item['pubDate'] = date2iso(get_noticia_date(pubDate[0].text))
     
+    an_img = n.find_all('img')
+    #logging.error('-----------------------')
+    #logging.error(an_img)
+    if an_img and len(an_img) > 0:
+      if an_img[0]['data-original']:
+        an_img = an_img[0]['data-original']
+      elif an_img[0]['src']:
+        an_img = an_img[0]['src']
+    #logging.error(an_img)
     item['category']  = category if category is not None else n.a.text.upper()
-    item['thumbnail'] = n.img['src'] if n.img else None
+    item['thumbnail'] = an_img if an_img else None
     item['subheader'] = n.p.text if n.p else None
     builder.add_item(item)
 
   for n in soup.select('div.noticia-p1')+soup.select('div.noticia-p2'):
     add_item(n, category)
-
+  
   for d in soup.select('div.seccionppal'):
     category = d.a.h1.text.title()
     for n in d.find_all('div', {'class':'noticia'}):
       add_item(n, category)
+
 
   return builder.get_value()
 
@@ -101,6 +111,7 @@ def rss_menu(args):
 def rss_seccion(args):
   
   full_url = 'http://www.diariocastellanos.net/seccion/%s/' % args['host'].lower()
+  logging.error('  section url ==> %s' % full_url)
   return rss_index({'full_url':full_url, 'category':True})
 
 def rss_noticia(args):
@@ -118,8 +129,9 @@ def rss_noticia(args):
   content = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content)
   
   # Sacamos thumbnail
-  img = (n.find_all('div', {'class':'img'})[:1] or [None])[0]
-  if img: img = img.img['src']
+  img = n.find_all('div', {'class':'img'})
+  if img:
+    img = img.img['src'] if hasattr(img, 'img') else None
 
   # Sacamos galeria / Si hay galeria y no thumnail => la primer foto es el thumb
   # group = [tmp['src'] for tmp in soup.select('ul.ad-thumb-list img')]

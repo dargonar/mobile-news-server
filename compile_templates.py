@@ -16,7 +16,12 @@ base_path = os.getcwd()
 app_path = os.path.join(base_path, 'appengine')
 
 if platform.system() == 'Darwin':
-  gae_path = os.path.join(base_path, '/Applications/GoogleAppEngineLauncher.app/Contents//Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine/')
+
+  dir1 = '/Applications/GoogleAppEngineLauncher.app/Contents//Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine/'
+  dir2 = os.path.expanduser('~/google-cloud-sdk/platform/google_appengine/')
+  dirposta = dir1 if os.path.isdir(dir1) else dir2
+
+  gae_path = os.path.join(base_path, dirposta)
 else:
   gae_path = os.path.join(base_path, r'C:\Program Files (x86)\Google\google_appengine')
 

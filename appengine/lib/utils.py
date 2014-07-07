@@ -18,6 +18,7 @@ from StringIO import StringIO
 from models import CachedContent
 from datetime import datetime, timedelta
 
+from lhammer.oodict import OODict
 from lhammer.xml2dict import XML2Dict
 
 from google.appengine.ext import db
@@ -76,8 +77,11 @@ def clean_content(content):
   content = etree.tostring(tree.getroot(), pretty_print=True, method="html")
   return content
 
-def read_url_clean(httpurl, clean=True):
+def read_url_clean(httpurl, clean=True, encoding=None):
   content = urlopen(httpurl, timeout=25).read()
+  if encoding:
+    content=content.decode(encoding).encode('utf-8')
+    content=content.replace(encoding,'utf-8')
   if clean:
     return clean_content(content)
   return content
@@ -124,14 +128,14 @@ def read_cache(inner_url, mem_only=False):
   # logging.info('using cache for %s' % inner_url)
   return content
 
-def read_clean(httpurl, clean=True, use_cache=True):
+def read_clean(httpurl, clean=True, use_cache=True, encoding=None):
   content = None
   # use_cache=False #HACK
   if use_cache:
     content = memcache.get(httpurl)  
 
   if content is None:
-    content = read_url_clean(httpurl, clean=clean)
+    content = read_url_clean(httpurl, clean=clean, encoding=encoding)
     memcache.set(httpurl, content)
   
   return content
@@ -419,15 +423,16 @@ class HtmlBuilderMixing(object):
 
         # Reemplazamos las imagens por el sha1 de la url
         imgs = []
-        items = [] 
+        items = []
   
         if 'item' in r.rss.channel:
-          if type(r.rss.channel.item) == type([]):
-            items = r.rss.channel.item
-          else:
+          if type(r.rss.channel.item) == OODict:
             items = [r.rss.channel.item]
+          else:
+            items = r.rss.channel.item
 
         for i in items:
+
           if hasattr(i, 'thumbnail'):
             img = unicode(i.thumbnail.attrs.url)
             i.thumbnail.attrs.url = sha1(img).digest().encode('hex')
@@ -438,6 +443,9 @@ class HtmlBuilderMixing(object):
               img = unicode(ct.attrs.url)
               ct.attrs.url = sha1(img).digest().encode('hex')
               imgs.append(img)
+
+        if 'item' in r.rss.channel and not 'content' in r.rss.channel.item and type(r.rss.channel.item) != type([]):
+          r.rss.channel.item = [r.rss.channel.item]
 
         # Armamos la direccion del xml    
         httpurl, args, template, page_name, extras_map = get_httpurl(appid, url, size, ptls)

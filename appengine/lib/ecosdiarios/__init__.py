@@ -16,14 +16,17 @@ conf = {  'title'       : u'ECOSDIARIOS',
 
 main_url = 'http://www.ecosdiariosweb.com.ar/'
 
+def fullimg(url):
+  if url is None:
+    return url
+
+  if url.startswith('/'):
+    url = main_url[:-1] + url
+
+  return url
+
 def get_guid(href):
-  guid = href.split('_')[0] 
-  if 'http://' in href:
-    matches = re.compile('.ar/(.+)_').findall(href)
-    guid = '#'
-    if len(matches)>0:
-      guid      = matches[0]
-  return guid
+  return re.compile('\d+').findall(href)[-1]
 
 # Necochea, viernes 16 de agosto 2013
 def get_header_date(strdate):
@@ -47,7 +50,7 @@ def get_section_date(strdate):
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hhmm[0]), int(hhmm[1]))
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False))
+  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False, encoding='iso-8859-1'))
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -61,7 +64,7 @@ def rss_index(args):
     item['link']      = '%s%s' % (main_url, a['href'])
     item['guid']      = get_guid(a['href'])
     item['category']  = 'Portada'
-    item['thumbnail'] = a.img['src'] if a.img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['thumbnail'] = fullimg(a.img['src'] if a.img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
     item['subheader'] = None
     builder.add_item(item)
   
@@ -81,7 +84,7 @@ def rss_index(args):
     item['link']      = '%s%s' % (main_url, a['href'])
     item['guid']      = get_guid(a['href'])
     item['category']  = category
-    item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['thumbnail'] = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
     item['subheader'] = None
     builder.add_item(item)
 
@@ -95,7 +98,7 @@ def rss_index(args):
     item['link']      = '%s%s' % (main_url, a['href'])
     item['guid']      = get_guid(a['href'])
     item['category']  = 'Deportes'
-    item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['thumbnail'] = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
     item['subheader'] = subbheader
     builder.add_item(item)
 
@@ -109,7 +112,7 @@ def rss_index(args):
     item['link']      = '%s%s' % (main_url, a['href'])
     item['guid']      = get_guid(a['href'])
     item['category']  = u'Galería de videos'
-    item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['thumbnail'] = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
     item['subheader'] = None
     builder.add_item(item)
 
@@ -142,7 +145,8 @@ def rss_index(args):
         item['link']      = '%s%s' % (main_url, a['href'])
         item['guid']      = get_guid(a['href'])
         item['category']  = category_txt
-        item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+        item['thumbnail'] = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+
         item['subheader'] = None
         builder.add_item(item)
 
@@ -160,7 +164,7 @@ def rss_index(args):
       item['link']      = '%s%s' % (main_url, a['href'])
       item['guid']      = get_guid(a['href'])
       item['category']  = category_txt
-      item['thumbnail'] = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+      item['thumbnail'] = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
       item['subheader'] = None
       builder.add_item(item)
   return builder.get_value()
@@ -188,7 +192,7 @@ def rss_index(args):
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False))
+  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False, encoding='iso-8859-1'))
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -210,7 +214,7 @@ def rss_menu(args):
 
 def rss_section(args):
 
-  soup = BeautifulSoup(read_clean('%s%s/' % (main_url, args['host']), use_cache=False))
+  soup = BeautifulSoup(read_clean('%s%s/' % (main_url, args['host']), use_cache=False, encoding='iso-8859-1'))
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
   
   builder = XMLBuild(conf, today_date)
@@ -234,7 +238,7 @@ def rss_section(args):
     item['guid']        = get_guid(a['href'])
     item['category']    = volanta.capitalize()
     item['description'] = category
-    item['thumbnail']   = img['src'] if img is not None else None #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+    item['thumbnail']   = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
     item['subheader']   = subbheader
     builder.add_item(item)
 
@@ -242,9 +246,10 @@ def rss_section(args):
 
 def rss_noticia(args):
 
-  full_url = 'http://www.ecosdiariosweb.com.ar/%s' % args['host']
+  #full_url = 'http://www.ecosdiariosweb.com.ar/%s' % args['host']
+  full_url = 'http://www.ecosdiariosweb.com.ar/la-ciudad/1/1/1/pepe-%s.html' % args['host'] 
 
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False, encoding='iso-8859-1'))
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -300,7 +305,7 @@ def rss_funebres(args):
 
   full_url = u'http://www.ecosdiariosweb.com.ar/p/contenidos/funebres.html'
 
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False, encoding='iso-8859-1'))
   #today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
@@ -336,7 +341,7 @@ def rss_farmacia(args):
 
   full_url = u'http://www.ecosdiariosweb.com.ar/p/contenidos/farmacias-de-turno.html'
 
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False, encoding='iso-8859-1'))
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)

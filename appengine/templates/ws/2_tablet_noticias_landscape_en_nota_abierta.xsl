@@ -5,8 +5,10 @@
     <div id="landscape">
       {% if 'section://columnistas' in raw_url%}
         <div class="seccion list">Columnistas</div>
-      {% else %}
-        <div class="seccion list">{{'Principal' if 'section://main' in raw_url else data.item.0.category }}</div>
+      {% elif 'section://main' in raw_url %} 
+        <div class="seccion list">{{'Principal'}}</div>
+      {% elif data.item %}
+        <div class="seccion list">{{data.item.0.category}}</div>
       {% endif %}
       <div class="menu">
         <ul class="landscape_news_list">
