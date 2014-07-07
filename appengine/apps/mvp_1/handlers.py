@@ -13,6 +13,9 @@ from forms import RegisteredEditorForm
 from utils import FrontendHandler, get_or_404
 
 class Index(FrontendHandler):
+  def latincoin(self, **kwargs):
+    return self.render_response('mvp_1/latincoin.html', **kwargs)
+  
   def get(self, **kwargs):
     #return self.render_response('mvp_1/_index.html', form=self.form, **kwargs)
     return self.render_response('mvp_1/home.html', form=self.form, **kwargs)
