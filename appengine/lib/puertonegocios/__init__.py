@@ -89,7 +89,7 @@ def rss_index(args):
     item['category']  = u'Noticias'
     item['subheader'] = UnicodeDammit(nota.div.p.text).unicode_markup
     item['link']      = fullpath(nota.div.h4.a['href'])
-    item['guid']      = get_guid(nota.div.h4.a['href'])
+    item['guid']      = fullpath(nota.div.h4.a['href']) #get_guid(nota.div.h4.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -103,7 +103,7 @@ def rss_index(args):
     item['category']  = 'Noticias'
     item['subheader'] = UnicodeDammit(nota.p.text).unicode_markup
     item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = get_guid(nota.h3.a['href'])
+    item['guid']      = fullpath(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -119,7 +119,7 @@ def rss_index(args):
     item['category']  = 'Noticias'
     item['subheader'] = ''
     item['link']      = fullpath(nota.a['href'])
-    item['guid']      = get_guid(nota.a['href'])
+    item['guid']      = fullpath(nota.a['href']) #get_guid(nota.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -133,7 +133,7 @@ def rss_index(args):
     item['category']  = u'Opinión'
     item['subheader'] = ''
     item['link']      = fullpath(nota.h4.a['href'])
-    item['guid']      = get_guid(nota.h4.a['href'])
+    item['guid']      = fullpath(nota.h4.a['href']) #get_guid(nota.h4.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -149,7 +149,7 @@ def rss_index(args):
     item['category']  = u'Zoom'
     item['subheader'] = ''
     item['link']      = fullpath(nota.a['href'])
-    item['guid']      = get_guid(nota.a['href'])
+    item['guid']      = fullpath(nota.a['href']) #get_guid(nota.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -176,7 +176,7 @@ def rss_menu(args):
     item = {}
     item['title']     = striphtml(cat.encode(formatter='html').decode('utf8')) if cat.text.lower().strip()!= 'revistas' else 'Ediciones anteriores'
     item['link']      = cat['href']
-    item['guid']      = guid.strip()
+    item['guid']      = cat['href'] #guid.strip()
     # item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
     
@@ -233,7 +233,7 @@ def get_noticias_seccion(builder, soup):
     bajada = nota.find_all('div',{'class':'catItemIntroText'})
     item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
     item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = get_guid(nota.h3.a['href'])
+    item['guid']      = fullpath(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -247,7 +247,7 @@ def get_noticias_seccion(builder, soup):
     bajada = nota.find_all('div',{'class':'catItemIntroText'})
     item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
     item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = get_guid(nota.h3.a['href'])
+    item['guid']      = fullpath(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
   return builder
