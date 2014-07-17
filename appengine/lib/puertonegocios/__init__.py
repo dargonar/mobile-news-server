@@ -275,7 +275,9 @@ def rss_noticia(args):
   item['category']  = cat
   item['link']      = full_url
   item['guid']      = args['host'] if args else get_guid(full_url)
-  item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
+  img_div = nota.find_all('div',{'class':'imagenNoticia'})
+  if img_div and len(img_div)>0:
+    item['thumbnail'] = fullpath(img_div[0].img['src']) if img_div[0].img else None
   item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
   item['rawDate']   = article_date
   content = nota.find_all('div',{'class':'itemFullText'})
