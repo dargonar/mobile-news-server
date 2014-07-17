@@ -111,12 +111,12 @@ def set_cache(inner_url, content, mem_only=False):
     cc.put()
 
 def in_cache(inner_url):
-  # return False #HACK
+  return False #HACK
   dbkey = db.Key.from_path('CachedContent', inner_url)
   return CachedContent.all(keys_only=True).filter('__key__', dbkey).get() is not None
 
 def read_cache(inner_url, mem_only=False):
-  #return None #HACK
+  return None #HACK
   content = memcache.get(inner_url)
   if content is None and not mem_only:
     tmp = CachedContent.get(db.Key.from_path('CachedContent', inner_url))
@@ -131,7 +131,7 @@ def read_cache(inner_url, mem_only=False):
 
 def read_clean(httpurl, clean=True, use_cache=True, encoding=None):
   content = None
-  # use_cache=False #HACK
+  use_cache=False #HACK
   if use_cache:
     content = memcache.get(httpurl)  
 
@@ -360,7 +360,7 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
 def get_xml(appid, url, use_cache=False):
   
   inner_url = build_inner_url('xml', appid, url)
-  # use_cache=False #HACK
+  use_cache=False #HACK
   result = None
   if use_cache: 
     result = read_cache(inner_url, mem_only=True)
@@ -406,7 +406,7 @@ class HtmlBuilderMixing(object):
 
 
   def build_html_and_images(self, appid, url, size, ptls, use_cache=True):
-    # use_cache=False #HACK    
+    use_cache=False #HACK    
     try: 
       inner_url = build_inner_url('html', appid, url, size)
 
@@ -418,7 +418,8 @@ class HtmlBuilderMixing(object):
         # Traemos el xml, le quitamos los namespaces 
         xml = get_xml(appid, url, use_cache=use_cache)
         xml = re.sub(r'<(/?)\w+:(\w+/?)', r'<\1\2', xml)
-
+        
+        #logging.error('---------*--------'+xml)
         # Y lo transformamos en un dict
         r = XML2Dict().fromstring(xml.encode('utf-8'))
 
@@ -436,7 +437,10 @@ class HtmlBuilderMixing(object):
 
           if hasattr(i, 'thumbnail'):
             img = unicode(i.thumbnail.attrs.url)
-            i.thumbnail.attrs.url = sha1(img).digest().encode('hex')
+
+            i.thumbnail.attrs.url = sha1(img).digest().encode('hex') #HACK
+            #i.thumbnail.attrs.url = img #HACK
+            
             imgs.append(img)
 
           if hasattr(i, 'group'):
@@ -458,6 +462,7 @@ class HtmlBuilderMixing(object):
         set_cache(inner_url, result, mem_only=False)
 
       imgs = result[1].split(',') if result[1] else []
+      #logging.error(result[0])
       return result[0], imgs
 
     except Exception as e:

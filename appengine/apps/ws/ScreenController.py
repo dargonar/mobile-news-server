@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# ñ
 import logging
 import StringIO
 import urllib2
@@ -74,7 +75,7 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     use_cache = self.str2bool(self.request.params.get('use_cache'))
     content, images = self.build_html_and_images(appid, url, size, ptls, use_cache)
     
-    # self.response.write(apps_id[appid])
+    # self.response.write(apps_id[appid]) 
     # return
     
     # Set up headers for browser to correctly recognize HTML

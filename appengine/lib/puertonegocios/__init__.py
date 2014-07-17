@@ -1,25 +1,33 @@
 # -*- coding: utf-8 -*-
+#from __future__ import unicode_literals
+
 import logging
 import re
 import threading
 
 from bs4 import BeautifulSoup
+from bs4 import UnicodeDammit
 from collections import OrderedDict
 from datetime import datetime, timedelta
 from utils import days, months_min, date_add_str, read_clean, clean_content, multi_fetch, date2iso
 from xmlbuild import XMLBuild
 
-conf = {  'title'       : u'DIARIO EL NORTE',
-          'url'         : u'http://www.diarioelnorte.com.ar/',
-          'description' : u'Diario El Norte - San Nicolás de los Arroyos',
-          'copyright'   : u'EL NORTE Editora y Periodística S.A. - Copyright 1996-2013',
-          'logo'        : u'http://diarioelnorte.com.ar/images/logo.png' }
+
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
+
+conf = {  'title'       : u'PUERTO NEGOCIOS',
+          'url'         : u'http://www.puertonegocios.com/',
+          'description' : u'Puerto Negocios - Arcadia Consultora - Santa Fe',
+          'copyright'   : u'Consultora Arcadia S.A. - Copyright 1996-2014',
+          'logo'        : u'http://puertonegocios.com/images/gt06/logo.png' }
 
 
 def get_guid(href):
   guid = href.split('_')[0] 
   if 'http://' in href:
-    matches = re.compile('.ar/(.+)_').findall(href)
+    matches = re.compile('/index.php/facebook/item/(.+)_').findall(href)
     guid = '#'
     if len(matches)>0:
       guid      = matches[0]
@@ -46,9 +54,9 @@ def get_noticia_list_date(strdate, today_date):
     year = today_date.year-1
   return datetime(year=year, month=inx+1, day=int(day), hour=int(hh), minute=int(mm), second=00)
 
-# 29 Oct 2013 (07:00) | # 29 Oct 2013 |
+# 08 Jul, 2014
 def get_noticia_date(strdate):
-  parts = strdate.split('|')[0].strip().split(' ')
+  parts = strdate.strip().replace(',','').split(' ')
   
   day=int(parts[0])
   month = parts[1].lower() if parts[1].lower()!='set' else 'sep'
@@ -62,477 +70,216 @@ def get_noticia_date(strdate):
   
 # Martes. 29-10-2013
 def get_header_date(soup_obj):
-  strdate = soup_obj.select('#hoc #hic div.middle span.date')[0].text if soup_obj.select('#hoc #hic div.middle span.date') and len(soup_obj.select('#hoc #hic div.middle span.date'))>0 else soup_obj.select('#hocj #hic div.middle span.date')[0].text
-  parts = strdate.split('. ')[1].strip().split('-')
-  return datetime(year=int(parts[2]), month=int(parts[1]), day=int(parts[0]))
-
-# 07:00 | 
-def get_main_noticia_date(strdate, today_date):
-  hh, mm = strdate.split('|')[0].strip().split(':')
-  return today_date+timedelta(hours=int(hh), minutes=int(mm))
-
-def get_index_item(element, today_date, is_main=False, category=None):
-  head          = element.h2.a if is_main else element.h3.a
-  article_date  = None
-  if is_main:
-    article_date  = get_main_noticia_date(element.find_all('span',{'class':'time'})[0].text, today_date) #07:00 | 
-  else:
-    article_date  = get_noticia_list_date(element.find_all('span',{'class':'time'})[0].text, today_date) 
-  
-  img_div = None
-  if is_main:
-    img_container = element.find_all('div',{'class':'two-cols'})
-    if len(img_container)>0:
-      img_container = img_container[0].find_all('div',{'class':'col1'})
-      if len(img_container)>0:
-        img_div       = img_container[0]
-  else:
-    img_container = element.find_all('div',{'class':'image'})
-    if len(img_container)>0:
-      img_div       = img_container[0]
-  
-  sub_h         = element.find_all('p',{'class':'excerpt'})[0]
-  if sub_h and sub_h.span:
-    spantime      = sub_h.span.extract()
-  
-  item = {}
-  item['title']     = head.text
-  item['link']      = fullpath(head['href'])
-  item['guid']      = get_guid(head['href']) #head['href'].split('_')[0]
-  item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
-  item['rawDate']   = article_date
-  item['category']  = element.h5.text if category is None else category
-  item['thumbnail'] = fullpath(img_div.a.img['src']) if img_div and img_div.a and img_div.a.img else None
-  item['subheader'] = sub_h.text if sub_h else None
-  
-  return item    
-  
-def get_index_tabbed_item(element, today_date):
-  title          = element.find_all('div',{'class':'content'})[0].h3.text
-  link           = element.find_all('a',{'class':'more'})[0]
-  article_date   = get_main_noticia_date(element.find_all('span',{'class':'time'})[0].text, today_date) 
-  
-  img_div = None
-  img_container = element.find_all('div',{'class':'image'})
-  if len(img_container)>0:
-    img_div       = img_container[0]
-
-  sub_h         = element.find_all('p',{'class':'excerpt'})
-  if len(sub_h)>0:
-    sub_h=sub_h[0]
-    amore=sub_h.a.extract()
-    spantime=sub_h.span.extract()
-  else:
-    sub_h=None
-    
-  item = {}
-  item['title']     = title
-  item['link']      = fullpath(link['href'])
-  item['guid']      = get_guid(link['href'])
-  item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
-  item['rawDate']   = article_date
-  item['category']  = 'Deportes'
-  item['thumbnail'] = fullpath(img_div.a.img['src']) if img_div and img_div.a and img_div.a.img else None
-  item['subheader'] = sub_h.text if sub_h else None
-  
-  return item    
-
-def get_index_mini_heading(element, today_date):
-  head           = element.h4.a
-  
-  sub_h         = element.find_all('p',{'class':'excerpt'})
-  if len(sub_h)>0:
-    sub_h=sub_h[0].text
-  else:
-    sub_h=None
-    
-  item = {}
-  item['title']     = head.text
-  item['link']      = fullpath(head['href'])
-  item['guid']      = get_guid(head['href'])
-  #item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
-  item['rawDate']   = today_date
-  item['category']  = element.h5.text.split('|')[0].strip()
-  #item['thumbnail'] = fullpath(img_div.a.img['src']) if img_div and img_div.a and img_div.a.img else None
-  item['subheader'] = sub_h.__repr__().decode('utf-8') if sub_h else None
-  
-  return item    
+  return datetime.now()
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.puertonegocios.com/', use_cache=False))
+  soup = BeautifulSoup(read_clean(conf['url'], use_cache=False, clean=False))
   #today_date = get_header_date(soup)
   builder = XMLBuild(conf, datetime.now())
   
-  notas = soup.select('#gaass200 ul.ga-navigator li')
-  
+  notas = soup.select('#gaass200 div.ga-main-item')
   for i in xrange(len(notas)):
     nota = notas[i]
     item = {}
-    item['title']     = nota.div.h4.text
+    item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
+    #fullpath(nota.img['src']) if nota.img else None
+    item['title']     = UnicodeDammit(nota.div.h4.a.text).unicode_markup
+    item['category']  = u'Noticias'
+    item['subheader'] = UnicodeDammit(nota.div.p.text).unicode_markup
+    item['link']      = fullpath(nota.div.h4.a['href'])
+    item['guid']      = get_guid(nota.div.h4.a['href'])
+    #items.append(item)
     builder.add_item(item)    
+
+  notas = soup.select('#innertop div.hnews')
+  for i in xrange(len(notas)):
+    nota = notas[i]
+    item = {}
+    item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
+    #fullpath(nota.img['src']) if nota.img else None
+    item['title']     = UnicodeDammit(nota.h3.a.text).unicode_markup
+    item['category']  = 'Noticias'
+    item['subheader'] = UnicodeDammit(nota.p.text).unicode_markup
+    item['link']      = fullpath(nota.h3.a['href'])
+    item['guid']      = get_guid(nota.h3.a['href'])
+    #items.append(item)
+    builder.add_item(item)    
+
+  notas = soup.select('#innertop div.news-related ul li')
+  for i in xrange(len(notas)):
+    nota = notas[i]
+    if not nota.p:
+      continue
+    item = {}
+    item['thumbnail'] = fullpath(nota.a.img['src']) if nota.a.img else None
+    #fullpath(nota.img['src']) if nota.img else None
+    item['title']     = UnicodeDammit(nota.p.a.text).unicode_markup
+    item['category']  = 'Noticias'
+    item['subheader'] = ''
+    item['link']      = fullpath(nota.a['href'])
+    item['guid']      = get_guid(nota.a['href'])
+    #items.append(item)
+    builder.add_item(item)    
+
+  notas = soup.select('ul#pa-popular li')
+  for i in xrange(len(notas)):
+    nota = notas[i]
+    item = {}
+    item['thumbnail'] = None #fullpath(nota.a.img['src']) if nota.img else None
+    #fullpath(nota.img['src']) if nota.img else None
+    item['title']     = UnicodeDammit(nota.h4.a.text).unicode_markup
+    item['category']  = u'Opinión'
+    item['subheader'] = ''
+    item['link']      = fullpath(nota.h4.a['href'])
+    item['guid']      = get_guid(nota.h4.a['href'])
+    #items.append(item)
+    builder.add_item(item)    
+
+  notas = soup.select('div.recent-news ul li')
+  for i in xrange(len(notas)):
+    nota = notas[i]
+    if not nota.p or not nota.p.a:
+      continue
+    item = {}
+    item['thumbnail'] = fullpath(nota.a.img['src']) if nota.a.img else None
+    #fullpath(nota.img['src']) if nota.img else None
+    item['title']     = UnicodeDammit(nota.p.a.text).unicode_markup
+    item['category']  = u'Zoom'
+    item['subheader'] = ''
+    item['link']      = fullpath(nota.a['href'])
+    item['guid']      = get_guid(nota.a['href'])
+    #items.append(item)
+    builder.add_item(item)    
+
 
   return builder.get_value()
 
+def striphtml(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
+
+import cgi    
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.diarioelnorte.com.ar/', use_cache=False))
+  soup = BeautifulSoup(read_clean(conf['url'], use_cache=False, clean=False))
   today_date = get_header_date(soup)
 
   builder = XMLBuild(conf, today_date)
 
-  for cat in soup.select('#hoc #hic div.bottom div.left ul.mainmenu li a'):
-    if cat.text.lower().strip() in ['inicio' , u'necrológicas' , u'clasificados']:
+  for cat in soup.select('#header ul.jt-menu li a'):
+    if cat.text.lower().strip() in ['puerto negocios', 'contacto', 'facebook']: #'revistas'
       continue
     link = fullpath(cat['href'])
     guid = cat['href'] 
     item = {}
-    item['title']     = cat.text
+    item['title']     = striphtml(cat.encode(formatter='html').decode('utf8')) if cat.text.lower().strip()!= 'revistas' else 'Ediciones anteriores'
     item['link']      = cat['href']
     item['guid']      = guid.strip()
     # item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
-  
-  for cat in soup.select('#hoc #hic div.bottom div.left ul.submenu2 li a'):
-    if cat.text.lower().strip() in ['locales' , u'necrológicas' , u'clasificados']:
-      continue
-    link = fullpath(cat['href'])
-    guid = cat['href'] 
-    item = {}
-    item['title']     = cat.text
-    item['link']      = cat['href']
-    item['guid']      = guid.strip()
-    # item['pubDate']   = date_add_str(today_date, '00:00')
-    builder.add_section(item)
-  
+    
   return builder.get_value()
   
 def rss_seccion(args):
   
-  if 'sub_seccion' in args['host'].lower():
-    return rss_sub_seccion(args)
-  
-  full_url = 'http://www.diarioelnorte.com.ar/%s' % args['host'].lower()
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  full_url = fullpath(args['host'].lower())
+  logging.error('------------'+full_url)
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False, clean=False))
   today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
-  cats1 = soup.select('#content div.left div.two-cols div.col1 div.category')
-  cats2 = soup.select('#content div.left div.two-cols div.col2 div.category')
+  if soup.select('#header ul.jt-menu li.active a')[0].text.strip().lower()=='revistas':
+    builder = get_revistas(builder, soup)
+    return builder.get_value()
   
-  for i in xrange(max(len(cats1), len(cats2))):
-    if len(cats1)>i:
-      items = get_category_items(cats1[i], today_date)
-      if items and len(items)>0: 
-        for item in items:
-          builder.add_item(item)    
-    if len(cats2)>i:
-      items = get_category_items(cats2[i], today_date)
-      if items and len(items)>0: 
-        for item in items:
-          builder.add_item(item)    
-    
+  builder = get_noticias_seccion(builder, soup)
+  soup = BeautifulSoup(read_clean(full_url+'?start=6', use_cache=False, clean=False))
+  builder = get_noticias_seccion(builder, soup)
   return builder.get_value()
 
-def get_category_items(cat, today_date):
-  category = cat.h5.text
-  items = []
-  for cat_item in cat.select('div.article'):
-    article_date  = get_noticia_list_date(cat_item.find_all('span',{'class':'time'})[0].text, today_date) 
-    
-    sub_h         = cat_item.find_all('p',{'class':'excerpt'})[0]
-    if sub_h and sub_h.span:
-      spantime      = sub_h.span.extract()
-    
-    img_div=None
-    img_container = cat_item.find_all('div',{'class':'image'})
-    if len(img_container)>0:
-      img_div       = img_container[0]
+def get_revistas(builder, soup):
+  notas = soup.select('#itemListLeading div.itemContainer')
+  for i in xrange(len(notas)):
+    nota = notas[i]
+    descarga_link = nota.find_all('div',{'class':'itemAttachmentsBlock'})
+    if not descarga_link  or not len(descarga_link) or descarga_link[0].a is None:
+      continue
     
     item = {}
-    item['title']     = cat_item.h3.a.text
-    item['link']      = fullpath(cat_item.h3.a['href'])
-    item['guid']      = get_guid(cat_item.h3.a['href'])
-    item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
-    item['rawDate']   = article_date
-    item['category']  = category
-    item['thumbnail'] = fullpath(img_div.a.img['src']) if img_div and img_div.a and img_div.a.img else None
-    item['subheader'] = sub_h.text if sub_h else None
-    items.append(item)
-  return items
-  
-def rss_sub_seccion(args):
-  
-  full_url = 'http://www.diarioelnorte.com.ar/%s' % args['host'].lower()
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  today_date = get_header_date(soup)
-  builder = XMLBuild(conf, today_date)
-  
-  category = soup.select('#content div.left div.main-article')[0].h5.text
-  #category = soup.select('#content div.left div.main-article')[0].find_all('h5',{'class':'sub'})[0].text
-  
-  notas = soup.select('#content div.left div.main-article div')
+    item['thumbnail'] = fullpath(nota.find_all('div',{'class':'catItemImageBlock'})[0].img['src']) if nota.find_all('div',{'class':'catItemImageBlock'})[0].img else None
+    item['title']     = nota.find_all('div',{'class':'catItemHeaderText'})[0].span.text 
+    item['category']  = 'Ediciones anteriores'
+    item['subheader'] = None
+    item['link']      = fullpath(descarga_link[0].a['href'])
+    item['guid']      = fullpath(descarga_link[0].a['href'])
+    builder.add_item(item)
+  return builder
+   
+def get_noticias_seccion(builder, soup):
+  category = soup.select('#header ul.jt-menu li.active a')[0].text
+  notas = soup.select('#itemListLeading div.catItemView')
   for i in xrange(len(notas)):
-    item = get_index_item(notas[i], today_date, is_main=False, category=category)
-    if item is not None: builder.add_item(item)    
-    
-  return builder.get_value()
+    nota = notas[i]
+    item = {}
+    item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
+    item['title']     = nota.h3.a.text 
+    item['category']  = category
+    bajada = nota.find_all('div',{'class':'catItemIntroText'})
+    item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
+    item['link']      = fullpath(nota.h3.a['href'])
+    item['guid']      = get_guid(nota.h3.a['href'])
+    #items.append(item)
+    builder.add_item(item)    
+
+  notas = soup.select('#itemListPrimary div.catItemView')
+  for i in xrange(len(notas)):
+    nota = notas[i]
+    item = {}
+    item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
+    item['title']     = nota.h3.a.text 
+    item['category']  = category
+    bajada = nota.find_all('div',{'class':'catItemIntroText'})
+    item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
+    item['link']      = fullpath(nota.h3.a['href'])
+    item['guid']      = get_guid(nota.h3.a['href'])
+    #items.append(item)
+    builder.add_item(item)    
+  return builder
+
 
 def rss_noticia(args): 
   
-  full_url = 'http://diarioelnorte.com.ar/%s_dummy.html' % args['host']
+  full_url = fullpath(args['host'])
   # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
   # soup = BeautifulSoup(urlopen(httpurl, timeout=25).read())
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  
-  item, today_date = get_noticia_item(soup, full_url, args)
+  soup = BeautifulSoup(read_clean(full_url, use_cache=False, clean=False))
+  today_date = datetime.now()
   builder = XMLBuild(conf, today_date)
-  builder.add_item(item)
-  return builder.get_value()
   
-def get_noticia_item(soup, full_url, args=None):
+  nota = soup.select('#k2Container')[0]
   
-  today_date = get_header_date(soup)
+  article_date  = get_noticia_date(nota.find_all('span',{'class':'userItemDateCreated'})[0].text) 
   
-  body = soup.select('#content div.left div.main-article')[0]
-  
-  article_date  = get_noticia_date(body.find_all('span',{'class':'time'})[0].text) 
-
-  img_div=None
-  img_container = body.find_all('div',{'class':'image'})
-  if len(img_container)>0:
-    img_div       = img_container[0]
-  
-  content = body.find_all('div',{'class':'excerpt'})[0]
-  
-  # quito el span de la fecha del content, dado que ya la utilice y no debo mostrarla.
-  if content and content.span:
-    spantime      = content.span.extract()
-  
-  # obtengo el subheader extrayendoselo del content.
-  sub_h  = content.find_all('p')[0].extract()
-  if sub_h and sub_h.strong:
-    sub_h = sub_h.strong
-  
-  #obtengo la iamgen extrayendosela del content.
-  images      = content.find_all('div',{'class','image'})
-  if len(images)>0:
-    image = content.find_all('div',{'class','image'})[0].extract()
-  
-  # armo el content con los 'p' que quedaron vivos.
-  content_string = u''
-  if args:
-    for p in content.find_all('p'):
-      del p['class']
-      del p['style']
-      content_string = content_string + p.__repr__().decode('utf-8')
-  else:
-    content_string =content.text
-    
-  # le sumo al content el autor de la nota si existe.
-  footer = body.find_all('div',{'class':'footer'})
-  if args and len(footer)>0:
-    footer=footer[0]
-    del footer['class']
-    del footer['style']
-    content_string = content_string + '<p>%s</p>' % footer.__repr__().decode('utf-8')
+  cat = soup.select('#header ul.jt-menu li.active a')[0].text.strip() 
+  if cat in ['puerto negocios', 'revistas', 'contacto', 'facebook']:
+    cat = 'Noticias'
   
   item = {}
-  item['title']     = body.h2.text
-  item['category']  = body.find_all('span',{'class':'category'})[0].text
+  item['title']     = nota.h2.text
+  item['category']  = cat
   item['link']      = full_url
   item['guid']      = args['host'] if args else get_guid(full_url)
-  item['thumbnail'] = fullpath(img_div.a.img['src']) if img_div and img_div.a and img_div.a.img else None
+  item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
   item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
   item['rawDate']   = article_date
-  item['content']   = content_string
-  item['subheader'] = sub_h.text if sub_h else ''
+  content = nota.find_all('div',{'class':'itemFullText'})
+  item['content']   = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', content[0].__repr__().decode('utf-8')) if content and len(content) else ''
+  subheader = nota.find_all('div',{'class':'itemIntroText'})
+  item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', subheader[0].__repr__().decode('utf-8')) if subheader and len(subheader) else ''
   
-  return item, today_date
-
-def rss_funebres(args):
-
-  full_url = 'http://diarioelnorte.com.ar/necrologicas.html'
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
-  #soup = BeautifulSoup(urlopen(full_url, timeout=25).read())
-  today_date = get_header_date(soup)
-  
-  body = soup.select('#content div.left div.main-article')[0]
-  
-  article_date  = get_noticia_date(body.find_all('span',{'class':'time'})[0].text) 
-  
-  category = body.h2.text
-  builder = XMLBuild(conf, today_date)
-  
-  for p in body.select('div.excerpt p'):
-    del p['class']
-    del p['style']
-
-    text = p.text #__repr__().decode('utf-8')
-    if text =='' or text.lower()=='avisos funebres' or text=='<br>':
-      print 'puto'
-      continue
-    print 'ORKOT'
-    item = {}
-    item['title']     = ''
-    item['link']      = full_url
-    item['guid']      = '?'
-    #item['pubDate']   = article_date.strftime("%a, %d %b %Y %H:%M:%S") 
-    item['rawDate']   = article_date
-    item['category']  = category
-    item['description'] = text
-    
-    builder.add_funebre(item)    
-      
-  builder.add_funebre({})
-  
+  builder.add_item(item)
   return builder.get_value()
 
-def rss_clasificados(args):
-
-  builder = XMLBuild(conf, datetime.now())
-  
-  for _id, title in get_classifieds().items():
-    item = {}
-    item['title'] = title
-    item['link']  = 'clasificados://%s' % _id
-    item['guid']  = _id
-
-    builder.add_item(item)
-
-  return builder.get_value()
-
-def get_classifieds():
-  
-  soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=False))
-  
-  items = OrderedDict([])
-  
-  cats = soup.select('#content div.col1 div.category')+soup.select('#content div.col2 div.category')+soup.select('#content div.center div.category')
-  
-  for i in xrange(len(cats)):
-    item=cats[i]
-    if item.h5.span.text.strip().lower()!='0 avisos':
-      items.update({item.h1.span.text.strip():item.h1.span.text.strip()})
-  return items
-
-def rss_clasificados_section(args): # falta
-  # traemos el listado para ver a q url tenemos que pegarle
-  soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=True))
-  section_name = args['host'].lower()
-  today_date = get_header_date(soup)
-  
-  cats = soup.select('#content div.col1 div')+soup.select('#content div.col2 div')+soup.select('#content div.center div')
-  urls = {}
-  section_name = 'automotores'
-  for i in xrange(len(cats)):
-    item=cats[i]
-    if 'category' not in item['class']:
-      continue
-    #print '-- ' + item.h1.span.text.lower().strip()
-    if item.h1.span.text.lower().strip()!=section_name:
-      continue
-    # estoy parado en la categoria, me tengo que ir al next sibling
-    next_item = item.find_next_siblings('div', limit=1)[0]
-    while next_item and 'sport-heading' in next_item['class']:
-      a=next_item.h3.select('a')
-      if len(a)==0:
-        next_item = next_item.find_next_siblings('div', limit=1)
-        if len(next_item)>0:
-          next_item = next_item[0]
-        else:
-          next_item=None
-        continue
-      urls[fullpath(next_item.h3.a['href'])] = None
-      next_item = next_item.find_next_siblings('div', limit=1)
-      if len(next_item)>0:
-        next_item = next_item[0]
-      else:
-        next_item=None
-    break
-  
-  funlock  = threading.Lock()
-  items = []
-  
-  def handle_result(rpc, url):
-    result = rpc.get_result()
-    if result.status_code == 200: 
-      
-      soup = BeautifulSoup(clean_content(result.content))
-      avisos = get_items_clasificados(soup)
-      with funlock:
-        for item in avisos:
-          items.append(item)
-
-  # Traemos en paralelo (primeras 4)
-  multi_fetch(urls.keys()[:8], handle_result)
-  
-  builder = XMLBuild(conf, today_date)
-  for item in sorted(items, key=lambda x: x['category'], reverse=False):
-    builder.add_item(item)
-  
-  return builder.get_value()
-
-def get_items_clasificados(soup):
-  category = soup.select('#coc div.category h2 span.gris')[0].text.strip().split('|')[1]
-  div = soup.select('#coc #content2 div.col3')[0].find('div')
-  items = []
-  now=datetime.now().strftime("%a, %d %b %Y %H:%M:%S")  
-  while div and div.name =='div':
-    item = {}
-    item['title']       = div.select('div.category h3 span')[0].text
-    item['description'] = div.select('p.excerpt')[0].text
-    item['category']    = category
-    item['pubDate']     = now
-    items.append(item)
-    div = div.find_next_siblings('div', limit=1)
-    if len(div)>0:
-      div = div[0]
-    else:
-      div=None
-  return items
-    
-def rss_cartelera(args):
-  
-  soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/seccion_cartelera.html', use_cache=False))
-  today_date = get_header_date(soup)
-  
-  builder = XMLBuild(conf, today_date)
-
-  # Obtenemos las url de cada item de cartelera
-  urls = {}
-  
-  cats1 = soup.select('#content div.left div.two-cols div.col1 div.category')
-  cats2 = soup.select('#content div.left div.two-cols div.col2 div.category')
-  
-  for i in xrange(max(len(cats1), len(cats2))):
-    if len(cats1)>i:
-      for cat_item in cats1[i].select('div.article'):
-        urls[fullpath(cat_item.h3.a['href'])] = None
-    if len(cats2)>i:
-      for cat_item in cats2[i].select('div.article'):
-        urls[fullpath(cat_item.h3.a['href'])] = None
-  
-  funlock  = threading.Lock()
-  items = []
-  
-  def handle_result(rpc, url):
-    result = rpc.get_result()
-    if result.status_code == 200: 
-      
-      soup = BeautifulSoup(clean_content(result.content))
-      item, today_date = get_noticia_item(soup, url)
-      with funlock:
-        items.append(item)
-
-  # Traemos en paralelo (primeras 4)
-  multi_fetch(urls.keys()[:8], handle_result)
-  
-  builder = XMLBuild(conf, today_date)
-  for item in sorted(items, key=lambda x: x['rawDate'], reverse=False):
-    builder.add_item(item)
-  
-  return builder.get_value()
-  
 #
 # TEMPLATES MAPPING
 #
@@ -614,10 +361,10 @@ def get_mapping():
       }),
     ]),
     'extras': {
-      'has_clasificados' : 'clasificados://list',
-      'has_funebres'     : 'funebres://',
-      'has_farmacia'     : 'http://diarioelnorte.com.ar/farmacias-de-turno.html',
-      'has_cartelera'    : 'cartelera://',
+      'has_clasificados' : False,
+      'has_funebres'     : False,
+      'has_farmacia'     : False,
+      'has_cartelera'    : False
     },
     'config': {
         'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },

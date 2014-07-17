@@ -224,7 +224,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="css/{{layout}}.css" />
-    <!-- <link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/{{layout}}.css" /> TEST HACK -->
+    <!-- BEGIN HACK-->
+      <!-- link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/{{layout}}.css" / --> 
+    <!--END HACK -->
     <script type="text/javascript" src="js/functions.js"></script>
   </head>
 {%- endmacro %}
@@ -276,7 +278,10 @@
             {% if node.meta %}
               {{ MediaAttach(node.meta) }}
             {% endif %}          
+            <!-- BEGIN TEST HACK -->
             <div class="imagen_secundaria" id="{{node.thumbnail.attrs.url}}" style="background-image:url({{node.thumbnail.attrs.url}}.i) !important;">&nbsp;</div>
+            <!-- div class="imagen_secundaria" id="{{node.thumbnail.attrs.url}}" style="background-image:url({{node.thumbnail.attrs.url}}) !important;">&nbsp;</div -->
+            <!-- END TEST HACK -->
             <div class="img_loader">&nbsp;</div>
           </div>
         {% else %}
