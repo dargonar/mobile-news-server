@@ -111,12 +111,12 @@ def set_cache(inner_url, content, mem_only=False):
     cc.put()
 
 def in_cache(inner_url):
-  return False #HACK
+  # return False #HACK
   dbkey = db.Key.from_path('CachedContent', inner_url)
   return CachedContent.all(keys_only=True).filter('__key__', dbkey).get() is not None
 
 def read_cache(inner_url, mem_only=False):
-  return None #HACK
+  # return None #HACK
   content = memcache.get(inner_url)
   if content is None and not mem_only:
     tmp = CachedContent.get(db.Key.from_path('CachedContent', inner_url))
@@ -131,7 +131,7 @@ def read_cache(inner_url, mem_only=False):
 
 def read_clean(httpurl, clean=True, use_cache=True, encoding=None):
   content = None
-  use_cache=False #HACK
+  # use_cache=False #HACK
   if use_cache:
     content = memcache.get(httpurl)  
 
@@ -240,6 +240,8 @@ def if_not_none(value):
   return value
 
 def noticia_link(node, section_url=None):
+  if 'is_final=1' in node.link:
+    return node.link
   section = ''
   if section_url is not None and section_url.startswith('section://'):
     section_id = url_fix(section_url.split('://')[1])
@@ -360,7 +362,7 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
 def get_xml(appid, url, use_cache=False):
   
   inner_url = build_inner_url('xml', appid, url)
-  use_cache=False #HACK
+  # use_cache=False #HACK
   result = None
   if use_cache: 
     result = read_cache(inner_url, mem_only=True)
@@ -406,7 +408,7 @@ class HtmlBuilderMixing(object):
 
 
   def build_html_and_images(self, appid, url, size, ptls, use_cache=True):
-    use_cache=False #HACK    
+    # use_cache=False #HACK    
     try: 
       inner_url = build_inner_url('html', appid, url, size)
 
@@ -438,7 +440,7 @@ class HtmlBuilderMixing(object):
           if hasattr(i, 'thumbnail'):
             img = unicode(i.thumbnail.attrs.url)
 
-            i.thumbnail.attrs.url = sha1(img).digest().encode('hex') #HACK
+            i.thumbnail.attrs.url = sha1(img).digest().encode('hex') 
             #i.thumbnail.attrs.url = img #HACK
             
             imgs.append(img)

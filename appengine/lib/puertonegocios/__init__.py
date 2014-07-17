@@ -34,6 +34,8 @@ def get_guid(href):
   return guid
   
 def fullpath(path):
+  if path.startswith('puertonegocios.com/'):
+    return 'http://'+path
   if 'http://' in path:
     return path 
   if path[0]=='/':
@@ -190,6 +192,8 @@ def rss_seccion(args):
   
   if soup.select('#header ul.jt-menu li.active a')[0].text.strip().lower()=='revistas':
     builder = get_revistas(builder, soup)
+    soup = BeautifulSoup(read_clean(full_url+'?start=6', use_cache=False, clean=False))
+    builder = get_revistas(builder, soup)
     return builder.get_value()
   
   builder = get_noticias_seccion(builder, soup)
@@ -210,8 +214,10 @@ def get_revistas(builder, soup):
     item['title']     = nota.find_all('div',{'class':'catItemHeaderText'})[0].span.text 
     item['category']  = 'Ediciones anteriores'
     item['subheader'] = None
-    item['link']      = fullpath(descarga_link[0].a['href'])
-    item['guid']      = fullpath(descarga_link[0].a['href'])
+    revista_link = fullpath(descarga_link[0].a['href'])
+    revista_link = revista_link + '?is_final=1&_item=revista.pdf' if revista_link[-4:] != '.pdf' else revista_link
+    item['link']      = revista_link
+    item['guid']      = revista_link
     builder.add_item(item)
   return builder
    
