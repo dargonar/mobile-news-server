@@ -172,20 +172,24 @@ def rss_noticia(args):
 
   builder = XMLBuild(conf, today_date)
  
+  title = soup.find_all('div', {'class':'titles-cont-post'})[0]
+  
   body = soup.select('div#content-post')[0]
  
   divimg = body.find_all('div',{'class':'foto-gallery'})
   
-  content = body.find_all('div',{'class':'content-post-text'})[0]
-  del content['class']
-      
   item = {}
-  item['title']     = body.h1.text
+  item['title']     = title.h1.a.text
   item['category']  = body.find_all('span',{'class':'category'})[0].li.a.text
   item['link']      = full_url
   item['guid']      = args['host']
   item['thumbnail'] = divimg[0].a.img['src'] if len(divimg)>0 and divimg[0].a else None
   #item['pubDate']   = date2iso(today_date)
+  item['subheader'] = body.find_all('div',{'class':'extract-post'})[0].text
+  content = body.find_all('div',{'class':'contenido'})[0]
+  del content['class']
+  for strong in content.find_all('strong'):
+    strong.name='b'
   item['content']   = content.__repr__().decode('utf-8')
   
   builder.add_item(item)

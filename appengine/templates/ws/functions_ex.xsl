@@ -225,7 +225,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="css/{{layout}}.css" />
     <!-- BEGIN HACK-->
-      <!-- link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/{{layout}}.css" / --> 
+      <link rel="stylesheet" type="text/css" href="/mvp_1/stylesheets/{{layout}}.css" /> 
     <!--END HACK -->
     <script type="text/javascript" src="js/functions.js"></script>
   </head>
