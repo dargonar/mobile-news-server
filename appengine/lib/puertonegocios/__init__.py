@@ -23,15 +23,22 @@ conf = {  'title'       : u'PUERTO NEGOCIOS',
           'copyright'   : u'Consultora Arcadia S.A. - Copyright 1996-2014',
           'logo'        : u'http://puertonegocios.com/images/gt06/logo.png' }
 
-
 def get_guid(href):
-  guid = href.split('_')[0] 
-  if 'http://' in href:
-    matches = re.compile('/index.php/facebook/item/(.+)_').findall(href)
-    guid = '#'
-    if len(matches)>0:
-      guid      = matches[0]
-  return guid
+  guid = re.compile('\d+').findall(href)[0]
+  inx0=href.find('index.php/')
+  inx0+=10
+  inx1=href.find('/',inx0)
+  return href[inx0:inx1]+'-'+guid
+
+
+#def get_guid(href):
+  #guid = href.split('_')[0] 
+  #if 'http://' in href:
+    #matches = re.compile('/index.php/facebook/item/(.+)_').findall(href)
+    #guid = '#'
+    #if len(matches)>0:
+      #guid      = matches[0]
+  #return guid
   
 def fullpath(path):
   if path.startswith('puertonegocios.com/'):
@@ -89,7 +96,7 @@ def rss_index(args):
     item['category']  = u'Noticias'
     item['subheader'] = UnicodeDammit(nota.div.p.text).unicode_markup
     item['link']      = fullpath(nota.div.h4.a['href'])
-    item['guid']      = fullpath(nota.div.h4.a['href']) #get_guid(nota.div.h4.a['href'])
+    item['guid']      = get_guid(nota.div.h4.a['href']) #get_guid(nota.div.h4.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -103,7 +110,7 @@ def rss_index(args):
     item['category']  = 'Noticias'
     item['subheader'] = UnicodeDammit(nota.p.text).unicode_markup
     item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = fullpath(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
+    item['guid']      = get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -119,7 +126,7 @@ def rss_index(args):
     item['category']  = 'Noticias'
     item['subheader'] = ''
     item['link']      = fullpath(nota.a['href'])
-    item['guid']      = fullpath(nota.a['href']) #get_guid(nota.a['href'])
+    item['guid']      = get_guid(nota.a['href']) #get_guid(nota.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -133,7 +140,7 @@ def rss_index(args):
     item['category']  = u'Opinión'
     item['subheader'] = ''
     item['link']      = fullpath(nota.h4.a['href'])
-    item['guid']      = fullpath(nota.h4.a['href']) #get_guid(nota.h4.a['href'])
+    item['guid']      = get_guid(nota.h4.a['href']) #get_guid(nota.h4.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -149,7 +156,7 @@ def rss_index(args):
     item['category']  = u'Zoom'
     item['subheader'] = ''
     item['link']      = fullpath(nota.a['href'])
-    item['guid']      = fullpath(nota.a['href']) #get_guid(nota.a['href'])
+    item['guid']      = get_guid(nota.a['href']) #get_guid(nota.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -233,7 +240,7 @@ def get_noticias_seccion(builder, soup):
     bajada = nota.find_all('div',{'class':'catItemIntroText'})
     item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
     item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = fullpath(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
+    item['guid']      = get_guid(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -247,7 +254,7 @@ def get_noticias_seccion(builder, soup):
     bajada = nota.find_all('div',{'class':'catItemIntroText'})
     item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
     item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = fullpath(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
+    item['guid']      = get_guid(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
   return builder
@@ -255,7 +262,9 @@ def get_noticias_seccion(builder, soup):
 
 def rss_noticia(args): 
   
-  full_url = fullpath(args['host'])
+  parts = args['host'].split('-')
+  full_url = 'http://www.puertonegocios.com/index.php/%s/item/%s-dummy' % (parts[0], parts[1])
+
   # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
   # soup = BeautifulSoup(urlopen(httpurl, timeout=25).read())
   soup = BeautifulSoup(read_clean(full_url, use_cache=False, clean=False))
