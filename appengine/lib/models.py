@@ -12,6 +12,7 @@ class CachedContent(db.Model):
   appid              = db.StringProperty()
   url_type           = db.StringProperty()
   inner_url          = db.StringProperty()
+  last_modified      = db.StringProperty()
   created_at         = db.DateTimeProperty(auto_now_add=True)
 
 class RegisteredEditor(db.Model):

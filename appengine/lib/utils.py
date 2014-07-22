@@ -4,6 +4,7 @@ import urllib
 import urlparse
 import importlib
 import re
+import requests
 
 from HTMLParser import HTMLParser
 from dateutil.parser import parser
@@ -12,7 +13,6 @@ from re import *
 from hashlib import sha1
 
 from lxml import etree
-from urllib2 import urlopen
 from StringIO import StringIO
 
 from models import CachedContent
@@ -28,18 +28,18 @@ from google.appengine.api import urlfetch
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-days   = ['lunes','martes', u'miércoles', 'jueves', 'viernes', u'sábado', 'domingo']
-months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+days       = ['lunes','martes', u'miércoles', 'jueves', 'viernes', u'sábado', 'domingo']
+months     = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 months_min = ['ene', 'feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']
 
 apps_id = { 
-  'com.diventi.eldia'       : 'eldia',
-  'com.diventi.pregon'      : 'pregon',
-  'com.diventi.castellanos' : 'castellanos',
-  'com.diventi.ecosdiarios' : 'ecosdiarios',
-  'com.diventi.lareforma'   : 'lareforma',
-  'com.diventi.elnorte'     : 'elnorte',
-  'com.diventi.puertonegocios'     : 'puertonegocios',
+  'com.diventi.eldia'          : 'eldia',
+  'com.diventi.pregon'         : 'pregon',
+  'com.diventi.castellanos'    : 'castellanos',
+  'com.diventi.ecosdiarios'    : 'ecosdiarios',
+  'com.diventi.lareforma'      : 'lareforma',
+  'com.diventi.elnorte'        : 'elnorte',
+  'com.diventi.puertonegocios' : 'puertonegocios',
 }
 
 def multi_fetch(urls, handle_result):
@@ -79,13 +79,21 @@ def clean_content(content):
   return content
 
 def read_url_clean(httpurl, clean=True, encoding=None):
-  content = urlopen(httpurl, timeout=25).read()
+
+  r = requests.get(httpurl, timeout=25)
+  assert(r.status_code == 200)
+
+  content       = r.text
+  last_modified = r.headers.get('Last-Modified')
+
   if encoding:
     content=content.decode(encoding).encode('utf-8')
     content=content.replace(encoding,'utf-8')
+
   if clean:
-    return clean_content(content)
-  return content
+    content = clean_content(content)
+
+  return content, last_modified
 
 def drop_cache(inner_url):
   memcache.delete(inner_url)
@@ -99,15 +107,16 @@ def set_cache(inner_url, content, mem_only=False):
   # logging.info('** typeofcontent %s ' % str(type(content[0])) )
 
   if type(content[0]) != type(unicode()) and type(content[0]) != type(db.Text()):
-    content = (content[0].decode('utf-8'), content[1])
+    content = (content[0].decode('utf-8'), content[1], content[2])
 
   memcache.set(inner_url, content)
 
   if not mem_only:      
-    cc = CachedContent(key       =  db.Key.from_path('CachedContent', inner_url), 
-                       content   =  db.Text(content[0]),
-                       images    =  db.Text(content[1]),
-                       inner_url =  inner_url )
+    cc = CachedContent(key           = db.Key.from_path('CachedContent', inner_url),
+                       content       = db.Text(content[0]),
+                       images        = db.Text(content[1]),
+                       inner_url     = inner_url,
+                       last_modified = content[2])
     cc.put()
 
 def in_cache(inner_url):
@@ -123,7 +132,7 @@ def read_cache(inner_url, mem_only=False):
     if tmp is None:
       logging.info('*** NOT IN cache for %s' % inner_url)
       return None
-    content = (tmp.content, tmp.images)
+    content = (tmp.content, tmp.images, tmp.last_modified)
     #Lo levanto a memoria, no estaba pero si estaba en disco
     set_cache(inner_url, content, mem_only=True) 
   # logging.info('using cache for %s' % inner_url)
@@ -133,13 +142,13 @@ def read_clean(httpurl, clean=True, use_cache=True, encoding=None):
   content = None
   # use_cache=False #HACK
   if use_cache:
-    content = memcache.get(httpurl)  
+    content, last_modified = memcache.get(httpurl)  
 
   if content is None:
-    content = read_url_clean(httpurl, clean=clean, encoding=encoding)
-    memcache.set(httpurl, content)
+    content, last_modified = read_url_clean(httpurl, clean=clean, encoding=encoding)
+    memcache.set(httpurl, (content, last_modified) )
   
-  return content
+  return content, last_modified
 
 _slugify_strip_re = compile(r'[^\w\s-]')
 _slugify_hyphenate_re = compile(r'[-\s]+')
@@ -376,7 +385,7 @@ def get_xml(appid, url, use_cache=False):
       result = fnc(args)
     else:
       if '%s' in httpurl: httpurl = httpurl % args['host']
-      result = read_clean(httpurl, clean=False, use_cache=use_cache)
+      result,_ = read_clean(httpurl, clean=False, use_cache=use_cache)
       result = result.decode('utf-8')
 
       # HACKO el DIA:
@@ -392,10 +401,10 @@ def get_xml(appid, url, use_cache=False):
     if type(result) != type(unicode()):
       result = result.decode('utf-8')
 
-    result = (result, None)
+    result = (result, None, None)
     set_cache(inner_url, result, mem_only=True)
 
-  return result[0]
+  return result[0], result[2]
 
 class HtmlBuilderMixing(object):
   
@@ -418,7 +427,7 @@ class HtmlBuilderMixing(object):
 
       if result is None:
         # Traemos el xml, le quitamos los namespaces 
-        xml = get_xml(appid, url, use_cache=use_cache)
+        xml, last_modified = get_xml(appid, url, use_cache=use_cache)
         xml = re.sub(r'<(/?)\w+:(\w+/?)', r'<\1\2', xml)
         
         #logging.error('---------*--------'+xml)
@@ -460,12 +469,12 @@ class HtmlBuilderMixing(object):
         args = {'data': r.rss.channel, 'cfg': extras_map, 'page_name': page_name, 'raw_url':url , 'appid': apps_id[appid]}
         content = self.render_template('ws/%s' % template, **args)
 
-        result = (content, u','.join(imgs))
+        result = (content, u','.join(imgs), last_modified)
         set_cache(inner_url, result, mem_only=False)
 
       imgs = result[1].split(',') if result[1] else []
       #logging.error(result[0])
-      return result[0], imgs
+      return result[0], imgs, last_modified
 
     except Exception as e:
         import sys

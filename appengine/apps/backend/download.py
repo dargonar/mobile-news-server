@@ -2,11 +2,11 @@
 import logging
 import feedparser
 import hashlib
+import requests
 
 from email.utils import parsedate
 from datetime import datetime
 
-from urllib2 import urlopen
 from BeautifulSoup import BeautifulSoup
 
 from google.appengine.api import files, taskqueue
@@ -34,8 +34,26 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     # Iteramos todas las noticias de la seccion y las mandamos a bajar
     url = 'noticia://%s' % article
     for size in ['small', 'big']:
-      if in_cache(build_inner_url(appid, url, size)):
+
+      inner_url = build_inner_url(appid, url, size)
+
+      # Esta en cache?
+      if in_cache(inner_url):
+
+        cc = read_cache(inner_url)
+        assert(cc != None)
+
+        http_url = get_httpurl(appid, url, size=size)
+        r = requests.head(http_url, timeout=10)
+        assert(r.status_code == 200)
+
+        # Estaba en cache, pero fecha distinta ... lo "re-armo"
+        if cc.last_modified != r.headers.get('last-modified'):
+          self.re_build_html_and_images(appid, url, size, 'pt', use_cache=False)
+
         continue
+
+      # No estaba en cache, lo "armo"
       self.build_html_and_images(appid, url, size, 'pt', use_cache=False)
 
   def download_section(self, **kwargs):
