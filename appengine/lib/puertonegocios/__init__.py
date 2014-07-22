@@ -384,8 +384,8 @@ def get_mapping():
       'has_cartelera'    : False
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] }
+        'android': { 'ad_mob': 'ca-app-pub-2933940674266332/3668634004', 'google_analytics' : ['UA-32663760-9', 'UA-52969915-1'] },
+        'iphone':  { 'ad_mob': 'ca-app-pub-2933940674266332/2052300000', 'google_analytics' : ['UA-32663760-9', 'UA-52969915-1'] },
+        'ipad':    { 'ad_mob': 'ca-app-pub-2933940674266332/2052300000', 'google_analytics' : ['UA-32663760-9', 'UA-52969915-1'] } # del diario: , 'UA-52969915-1'
     }
   } 

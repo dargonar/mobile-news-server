@@ -31,7 +31,7 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     appid   = self.request.params.get('appid')
     article = self.request.params.get('article')
 
-    # Iteramos todas las noticias de la seccion y las mandamos a bajar
+    # Iteramos todas las noticias de la seccion y las mandamos a bajar // 1h
     url = 'noticia://%s' % article
     for size in ['small', 'big']:
 
