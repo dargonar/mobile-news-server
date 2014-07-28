@@ -159,7 +159,8 @@ def get_index_mini_heading(element, today_date):
   return item    
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.diarioelnorte.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.diarioelnorte.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
 #  soup = BeautifulSoup(urlopen('http://www.diarioelnorte.com.ar/', timeout=25).read())
   today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
@@ -189,11 +190,12 @@ def rss_index(args):
       item = get_index_mini_heading(notas3[i], today_date)
       if item is not None: builder.add_item(item)    
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.diarioelnorte.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.diarioelnorte.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup)
 
   builder = XMLBuild(conf, today_date)
@@ -222,7 +224,7 @@ def rss_menu(args):
     # item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
   
 def rss_seccion(args):
   
@@ -230,7 +232,8 @@ def rss_seccion(args):
     return rss_sub_seccion(args)
   
   full_url = 'http://www.diarioelnorte.com.ar/%s' % args['host'].lower()
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
@@ -249,7 +252,7 @@ def rss_seccion(args):
         for item in items:
           builder.add_item(item)    
     
-  return builder.get_value()
+  return builder.get_value(), last_modified 
 
 def get_category_items(cat, today_date):
   category = cat.h5.text
@@ -281,7 +284,8 @@ def get_category_items(cat, today_date):
 def rss_sub_seccion(args):
   
   full_url = 'http://www.diarioelnorte.com.ar/%s' % args['host'].lower()
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
@@ -293,19 +297,20 @@ def rss_sub_seccion(args):
     item = get_index_item(notas[i], today_date, is_main=False, category=category)
     if item is not None: builder.add_item(item)    
     
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_noticia(args): 
   
   full_url = 'http://diarioelnorte.com.ar/%s_dummy.html' % args['host']
   # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
   # soup = BeautifulSoup(urlopen(httpurl, timeout=25).read())
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   
   item, today_date = get_noticia_item(soup, full_url, args)
   builder = XMLBuild(conf, today_date)
   builder.add_item(item)
-  return builder.get_value()
+  return builder.get_value(), last_modified
   
 def get_noticia_item(soup, full_url, args=None):
   
@@ -370,7 +375,8 @@ def get_noticia_item(soup, full_url, args=None):
 def rss_funebres(args):
 
   full_url = 'http://diarioelnorte.com.ar/necrologicas.html'
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   #soup = BeautifulSoup(urlopen(full_url, timeout=25).read())
   today_date = get_header_date(soup)
   
@@ -403,13 +409,14 @@ def rss_funebres(args):
       
   builder.add_funebre({})
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_clasificados(args):
 
   builder = XMLBuild(conf, datetime.now())
   
-  for _id, title in get_classifieds().items():
+  list, last_modified = get_classifieds()
+  for _id, title in list.items():
     item = {}
     item['title'] = title
     item['link']  = 'clasificados://%s' % _id
@@ -417,11 +424,11 @@ def rss_clasificados(args):
 
     builder.add_item(item)
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def get_classifieds():
-  
-  soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=False))
+  html, last_modified = read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=False)
+  soup = BeautifulSoup(html)
   
   items = OrderedDict([])
   
@@ -431,11 +438,12 @@ def get_classifieds():
     item=cats[i]
     if item.h5.span.text.strip().lower()!='0 avisos':
       items.update({item.h1.span.text.strip():item.h1.span.text.strip()})
-  return items
+  return items, last_modified
 
 def rss_clasificados_section(args): # falta
   # traemos el listado para ver a q url tenemos que pegarle
-  soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=True))
+  html, last_modified = read_clean('http://diarioelnorte.com.ar/clasificados.php', use_cache=True)
+  soup = BeautifulSoup(html)
   section_name = args['host'].lower()
   today_date = get_header_date(soup)
   
@@ -488,7 +496,7 @@ def rss_clasificados_section(args): # falta
   for item in sorted(items, key=lambda x: x['category'], reverse=False):
     builder.add_item(item)
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def get_items_clasificados(soup):
   category = soup.select('#coc div.category h2 span.gris')[0].text.strip().split('|')[1]
@@ -510,8 +518,8 @@ def get_items_clasificados(soup):
   return items
     
 def rss_cartelera(args):
-  
-  soup = BeautifulSoup(read_clean('http://diarioelnorte.com.ar/seccion_cartelera.html', use_cache=False))
+  html, last_modified = read_clean('http://diarioelnorte.com.ar/seccion_cartelera.html', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup)
   
   builder = XMLBuild(conf, today_date)
@@ -549,7 +557,7 @@ def rss_cartelera(args):
   for item in sorted(items, key=lambda x: x['rawDate'], reverse=False):
     builder.add_item(item)
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
   
 #
 # TEMPLATES MAPPING

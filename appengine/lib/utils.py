@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import urllib
+import urllib2
 import urlparse
 import importlib
 import re
-import requests
+#import requests
 
 from HTMLParser import HTMLParser
 from dateutil.parser import parser
@@ -80,11 +81,18 @@ def clean_content(content):
 
 def read_url_clean(httpurl, clean=True, encoding=None):
 
-  r = requests.get(httpurl, timeout=25)
-  assert(r.status_code == 200)
+  url           = httpurl
+  result        = urllib2.urlopen(url, timeout=25)
+  
+  content       = result.read()
+  h             = result.info()
+  last_modified = h['Last-Modified'] if 'Last-Modified' in h.keys() or 'last-modified' in h.keys() else 'now'
+  
+  # r = requests.get(httpurl, timeout=25)
+  # assert(r.status_code == 200)
 
-  content       = r.text
-  last_modified = r.headers.get('Last-Modified')
+  # content       = r.text
+  # last_modified = r.headers.get('Last-Modified')
 
   if encoding:
     content=content.decode(encoding).encode('utf-8')
@@ -137,12 +145,15 @@ def read_cache(inner_url, mem_only=False):
     set_cache(inner_url, content, mem_only=True) 
   # logging.info('using cache for %s' % inner_url)
   return content
-
+  
 def read_clean(httpurl, clean=True, use_cache=True, encoding=None):
   content = None
+  last_modified = None
   # use_cache=False #HACK
   if use_cache:
-    content, last_modified = memcache.get(httpurl)  
+    cache = memcache.get(httpurl)  
+    if cache is not None:
+      content, last_modified = cache
 
   if content is None:
     content, last_modified = read_url_clean(httpurl, clean=clean, encoding=encoding)
@@ -379,13 +390,16 @@ def get_xml(appid, url, use_cache=False):
   if not result:
 
     httpurl, args, _, _, _ = get_httpurl(appid, url)
-    
-    if httpurl.startswith('X:'):
+    last_modified = None
+    if httpurl.startswith('X:'): 
+      # Todos los diarios que crawleamos.
       fnc = getattr(importlib.import_module(apps_id[appid]), httpurl.split()[1])
-      result = fnc(args)
+      result, last_modified = fnc(args)
     else:
+      # Todos los diarios que implementan el protocolo (ElDia).
       if '%s' in httpurl: httpurl = httpurl % args['host']
-      result,_ = read_clean(httpurl, clean=False, use_cache=use_cache)
+      # El last modified de el read_clean del diaior ElDia es mentiroso, dado que el verdadero esta en el HTML y no en el RSS.
+      result, last_modified = read_clean(httpurl, clean=False, use_cache=use_cache)
       result = result.decode('utf-8')
 
       # HACKO el DIA:
@@ -401,7 +415,7 @@ def get_xml(appid, url, use_cache=False):
     if type(result) != type(unicode()):
       result = result.decode('utf-8')
 
-    result = (result, None, None)
+    result = (result, None, last_modified)
     set_cache(inner_url, result, mem_only=True)
 
   return result[0], result[2]
@@ -474,7 +488,7 @@ class HtmlBuilderMixing(object):
 
       imgs = result[1].split(',') if result[1] else []
       #logging.error(result[0])
-      return result[0], imgs, last_modified
+      return result[0], imgs, result[2]
 
     except Exception as e:
         import sys

@@ -6,7 +6,7 @@ from xmlbuild import XMLBuild
 conf = {  'title'       : u'EL DIA',
           'url'         : u'http://www.eldia.com.ar',
           'description' : u'EL DIA',
-          'copyright'   : u'2013, El Dia',
+          'copyright'   : u'2014, El Dia',
           'logo'        : u'http://www.eldia.com.ar/imag/logo.png' }
 
 def rss_clasificados(args):

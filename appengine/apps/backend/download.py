@@ -2,7 +2,8 @@
 import logging
 import feedparser
 import hashlib
-import requests
+#import requests
+import urllib2
 
 from email.utils import parsedate
 from datetime import datetime
@@ -30,31 +31,40 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     self.request.charset = 'utf-8'
     appid   = self.request.params.get('appid')
     article = self.request.params.get('article')
-
+    link = None
+    if appid == 'eldia':
+      link = self.request.params.get('link')
     # Iteramos todas las noticias de la seccion y las mandamos a bajar // 1h
     url = 'noticia://%s' % article
     for size in ['small', 'big']:
 
-      inner_url = build_inner_url(appid, url, size)
+      inner_url = build_inner_url('html', appid, url, size)
 
       # Esta en cache?
-      if in_cache(inner_url):
+      if in_cache(inner_url) and appid=='eldia':
 
         cc = read_cache(inner_url)
         assert(cc != None)
-
-        http_url = get_httpurl(appid, url, size=size)
-        r = requests.head(http_url, timeout=10)
-        assert(r.status_code == 200)
+        
+        http_url = get_httpurl(appid, url, size=size) if appid!= 'eldia' else link
+        #r = requests.head(http_url, timeout=10)
+        request = urllib2.Request(http_url)
+        request.get_method = lambda : 'HEAD'
+        response = urllib2.urlopen(request)
+        h = response.info()
+        
+        assert(response.getcode() == 200)
+        #assert(r.status_code == 200)
 
         # Estaba en cache, pero fecha distinta ... lo "re-armo"
-        if cc.last_modified != r.headers.get('last-modified'):
-          self.re_build_html_and_images(appid, url, size, 'pt', use_cache=False)
+        #if cc.last_modified != r.headers.get('last-modified'):
+        if cc.last_modified != h['Last-Modified']:
+          self.re_build_html_and_images(appid, url, size, 'pt')
 
         continue
 
       # No estaba en cache, lo "armo"
-      self.build_html_and_images(appid, url, size, 'pt', use_cache=False)
+      self.build_html_and_images(appid, url, size, 'pt', use_cache=(size=='big'))
 
   def download_section(self, **kwargs):
     self.request.charset = 'utf-8'
@@ -63,7 +73,7 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
 
     # logging.error('>> DOWNLOADING SECTION %s' % section)
     # Borro las "decoraciones" seccion y las rearmo
-    self.re_build_html_and_images(appid,    'menu_section://%s' % section, 'big', 'pt')
+    self.re_build_html_and_images(appid, 'menu_section://%s' % section, 'big', 'pt')
     self.re_build_html_and_images(appid, 'ls_menu_section://%s' % section, 'big', 'ls')
 
     # Borramos las seccion y la rearmamos
@@ -71,11 +81,14 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     self.re_build_html_and_images(appid, 'section://%s' % section, 'small', 'pt')
 
     # Iteramos todas las noticias de la seccion y las mandamos a bajar
-    xmlstr = get_xml(appid, 'section://%s' % section, use_cache=True)
+    xmlstr, _ = get_xml(appid, 'section://%s' % section, use_cache=True)
     xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
     if 'item' in xml.rss.channel:
       for i in xml.rss.channel.item:
         if appid != 'ecosdiarios': continue
+        if appid == 'eldia': 
+          taskqueue.add(queue_name='download2', url='/download/article', params={'appid': appid, 'article': i.guid.value, 'url': i.link.value})
+          continue
         taskqueue.add(queue_name='download2', url='/download/article', params={'appid': appid, 'article': i.guid.value})
 
   def download_newspaper(self, **kwargs):
@@ -88,7 +101,7 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     self.re_build_html_and_images(appid, 'menu://', 'big',   'pt')
 
     # Iteramos todas las secciones y las mandamos a bajar
-    xmlstr = get_xml(appid, 'menu://', use_cache=True)
+    xmlstr, _ = get_xml(appid, 'menu://', use_cache=True)
     xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
 		
     try:
@@ -120,7 +133,7 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     #self.re_build_html_and_images(appid, 'clasificados://list', 'big',   'pt')
 
     # Iteramos todas los items
-    xmlstr = get_xml(appid, 'clasificados://list', use_cache=True)
+    xmlstr, _ = get_xml(appid, 'clasificados://list', use_cache=True)
     xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
 
     items = [i.guid.value for i in xml.rss.channel.item]

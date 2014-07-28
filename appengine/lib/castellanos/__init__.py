@@ -29,11 +29,12 @@ def date2spanish(date):
 def rss_index(args):
 
   # Puede ser la main o nos llaman de rss_section para parsear una seccion
-  full_url = 'http://www.diariocastellanos.net/'
+  full_url = conf['url']
   if 'full_url' in args:
     full_url = args['full_url']
-
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = datetime.now()+timedelta(hours=-3)
 
   builder = XMLBuild(conf, today_date)
@@ -84,11 +85,12 @@ def rss_index(args):
       add_item(n, category)
 
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_menu(args):
   
-  soup = BeautifulSoup(read_clean('http://www.diariocastellanos.net/', use_cache=False))
+  html, last_modified = read_clean('http://www.diariocastellanos.net/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = datetime.now()+timedelta(hours=-3)
   
   sections = set()
@@ -106,7 +108,7 @@ def rss_menu(args):
       builder.add_section(item)
       sections.add(item['guid'])
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_seccion(args):
   
@@ -118,7 +120,7 @@ def rss_noticia(args):
 
   full_url = 'http://www.diariocastellanos.net/noticia/%s' % args['host']
 
-  html = read_clean(full_url, clean=False, use_cache=False)
+  html, last_modified = read_clean(full_url, clean=False, use_cache=False)
   soup = BeautifulSoup(html)
   today_date = datetime.now()+timedelta(hours=-3)
 
@@ -151,12 +153,12 @@ def rss_noticia(args):
   item['content']   = content
   
   builder.add_item(item)
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 
 def rss_funebres(args):
 
-  html = read_clean('http://diariocastellanos.net/funebres/', use_cache=False)
+  html, last_modified = read_clean('http://diariocastellanos.net/funebres/', use_cache=False)
   html = '<html><body>'+html[html.rfind('<div id="content-funebres">'):]
 
   soup = BeautifulSoup(html)
@@ -194,7 +196,7 @@ def rss_funebres(args):
   # HACK POR EL DIA (no se muestra nunca el LAST FUNEBRE)
   builder.add_funebre({})
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 
 #

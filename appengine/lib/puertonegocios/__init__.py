@@ -82,7 +82,8 @@ def get_header_date(soup_obj):
   return datetime.now()
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean(conf['url'], use_cache=False, clean=False))
+  html, last_modified = read_clean(conf['url'], use_cache=False, clean=False)
+  soup = BeautifulSoup(html)
   #today_date = get_header_date(soup)
   builder = XMLBuild(conf, datetime.now())
   
@@ -161,7 +162,7 @@ def rss_index(args):
     builder.add_item(item)    
 
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def striphtml(data):
     p = re.compile(r'<.*?>')
@@ -169,8 +170,8 @@ def striphtml(data):
 
 import cgi    
 def rss_menu(args):
-  
-  soup = BeautifulSoup(read_clean(conf['url'], use_cache=False, clean=False))
+  html, last_modified = read_clean(conf['url'], use_cache=False, clean=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup)
 
   builder = XMLBuild(conf, today_date)
@@ -187,26 +188,27 @@ def rss_menu(args):
     # item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
     
-  return builder.get_value()
+  return builder.get_value(), last_modified
   
 def rss_seccion(args):
-  
   full_url = fullpath(args['host'].lower())
-  logging.error('------------'+full_url)
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False, clean=False))
+  html, last_modified = read_clean(full_url, use_cache=False, clean=False)
+  
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup)
   builder = XMLBuild(conf, today_date)
   
   if soup.select('#header ul.jt-menu li.active a')[0].text.strip().lower()=='revistas':
     builder = get_revistas(builder, soup)
-    soup = BeautifulSoup(read_clean(full_url+'?start=6', use_cache=False, clean=False))
+    html, _ = read_clean(full_url+'?start=6', use_cache=False, clean=False) 
+    soup = BeautifulSoup(html)
     builder = get_revistas(builder, soup)
-    return builder.get_value()
+    return builder.get_value(), last_modified
   
   builder = get_noticias_seccion(builder, soup)
   soup = BeautifulSoup(read_clean(full_url+'?start=6', use_cache=False, clean=False))
   builder = get_noticias_seccion(builder, soup)
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def get_revistas(builder, soup):
   notas = soup.select('#itemListLeading div.itemContainer')
@@ -259,15 +261,12 @@ def get_noticias_seccion(builder, soup):
     builder.add_item(item)    
   return builder
 
-
 def rss_noticia(args): 
   
   parts = args['host'].split('-')
   full_url = 'http://www.puertonegocios.com/index.php/%s/item/%s-dummy' % (parts[0], parts[1])
-
-  # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
-  # soup = BeautifulSoup(urlopen(httpurl, timeout=25).read())
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False, clean=False))
+  html, last_modified = read_clean(full_url, use_cache=False, clean=False)
+  soup = BeautifulSoup(html)
   today_date = datetime.now()
   builder = XMLBuild(conf, today_date)
   
@@ -295,7 +294,7 @@ def rss_noticia(args):
   item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', subheader[0].__repr__().decode('utf-8')) if subheader and len(subheader) else ''
   
   builder.add_item(item)
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 #
 # TEMPLATES MAPPING

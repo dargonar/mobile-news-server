@@ -50,7 +50,8 @@ def get_section_date(strdate):
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hhmm[0]), int(hhmm[1]))
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False, encoding='iso-8859-1'))
+  html, last_modified = read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False, encoding='iso-8859-1')
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -167,32 +168,11 @@ def rss_index(args):
       item['thumbnail'] = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
       item['subheader'] = None
       builder.add_item(item)
-  return builder.get_value()
-
-  # tmp = soup.select('table.blog table.contentpaneopen')
-  # for i in xrange(len(tmp)/2): 
-  #   head, body = tmp[2*i], tmp[2*i+1]
-    
-  #   # Blank notice
-  #   if head.tr.a is None:
-  #     continue
-
-  #   p = body.find_all('p')
-
-  #   item = {}
-  #   item['title']     = head.tr.a.text.strip()
-  #   item['link']      = '%s/%s' % (main_url, head.tr.a['href'])
-  #   item['guid']      = re.compile('&id=(\d+)').findall(item['link'])[0]
-  #   item['category']  = body.tr.td.span.text.strip()
-  #   item['thumbnail'] = ('%s/%s' % (main_url, p[0].img['src'])) if len(p) > 1 and p[0].img is not None else None
-  #   item['subheader'] = p[-1].text
-  #   builder.add_item(item)
-
-  return builder.get_value()
+  return builder.get_value() , last_modified
 
 def rss_menu(args):
-  
-  soup = BeautifulSoup(read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False, encoding='iso-8859-1'))
+  html, last_modified = read_clean('http://www.ecosdiariosweb.com.ar/', use_cache=False, encoding='iso-8859-1')
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -210,11 +190,11 @@ def rss_menu(args):
     
     builder.add_section(item)
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_section(args):
-
-  soup = BeautifulSoup(read_clean('%s%s/' % (main_url, args['host']), use_cache=False, encoding='iso-8859-1'))
+  html, last_modified = read_clean('%s%s/' % (main_url, args['host']), use_cache=False, encoding='iso-8859-1')
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
   
   builder = XMLBuild(conf, today_date)
@@ -242,14 +222,14 @@ def rss_section(args):
     item['subheader']   = subbheader
     builder.add_item(item)
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_noticia(args):
 
   #full_url = 'http://www.ecosdiariosweb.com.ar/%s' % args['host']
   full_url = 'http://www.ecosdiariosweb.com.ar/la-ciudad/1/1/1/pepe-%s.html' % args['host'] 
-
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False, encoding='iso-8859-1'))
+  html, last_modified = read_clean(full_url, use_cache=False, encoding='iso-8859-1')
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -299,13 +279,13 @@ def rss_noticia(args):
   item['content']   = content
   
   builder.add_item(item)
-  return builder.get_value()
+  return builder.get_value() , last_modified
 
 def rss_funebres(args):
 
   full_url = u'http://www.ecosdiariosweb.com.ar/p/contenidos/funebres.html'
-
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False, encoding='iso-8859-1'))
+  html, last_modified = read_clean(full_url, use_cache=False, encoding='iso-8859-1')
+  soup = BeautifulSoup(html)
   #today_date = get_header_date(soup.select('div#top_menu p')[-1].text)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
@@ -335,13 +315,13 @@ def rss_funebres(args):
   # HACK POR EL DIA (no se muestra nunca el LAST FUNEBRE)
   builder.add_funebre({})
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_farmacia(args):
 
   full_url = u'http://www.ecosdiariosweb.com.ar/p/contenidos/farmacias-de-turno.html'
-
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False, encoding='iso-8859-1'))
+  html, last_modified = read_clean(full_url, use_cache=False, encoding='iso-8859-1')
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -354,7 +334,7 @@ def rss_farmacia(args):
     obj     = obj.find_next_sibling('div')
 
   builder.add_raw(content)
-  return builder.get_value()
+  return builder.get_value() , last_modified
 
 def get_classifieds():
   return {}

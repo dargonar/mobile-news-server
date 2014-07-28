@@ -56,7 +56,7 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     url   = self.request.params['url']   # url interna
 
     use_cache = self.str2bool(self.request.params.get('use_cache'))
-    r = get_xml(appid, url, use_cache=use_cache)
+    r, _ = get_xml(appid, url, use_cache=use_cache)
     
     self.response.headers['Content-Type'] ='text/xml'
     
@@ -73,7 +73,7 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     ptls  = self.request.params['ptls']  # pt, ls
 
     use_cache = self.str2bool(self.request.params.get('use_cache'))
-    content, images = self.build_html_and_images(appid, url, size, ptls, use_cache)
+    content, images, _ = self.build_html_and_images(appid, url, size, ptls, use_cache)
     
     # self.response.write(apps_id[appid]) 
     # return
@@ -85,7 +85,7 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     
   def add_screen(self, outfile, appid, url, size, ptls):
 
-    content, images = self.build_html_and_images(appid, url, size, ptls)    
+    content, images, _ = self.build_html_and_images(appid, url, size, ptls)    
     file_names = get_filenames(url)
 
     outfile.writestr(file_names['content'], content.encode('utf-8'))

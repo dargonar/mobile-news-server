@@ -32,7 +32,6 @@ def get_noticia_date(strdate):
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hh), int(mm))
 
 def get_index_item(element, is_funebre=False):
-    
     head          = element.find_all('div',{'class':'titles-cont'})[0].h3.a if not is_funebre else element.find_all('div',{'class':'titles-cont'})[0].h3
     article_date  = get_header_date(element.find_all('span',{'class':'category-fecha'})[0].text )
     if len(element.find_all('div',{'class':'thumbNotes'}))>0:
@@ -56,7 +55,8 @@ def get_index_item(element, is_funebre=False):
     return item    
     
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.diariolareforma.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.diariolareforma.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
 #  soup = BeautifulSoup(urlopen('http://www.diariolareforma.com.ar/', timeout=25).read())
   today_date = get_header_date(soup.select('#column1 div.box span.category-fecha')[0].text)
 
@@ -73,11 +73,11 @@ def rss_index(args):
       item = get_index_item(notas2[i])
       if item is not None: builder.add_item(item)    
     
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_menu(args):
-  
-  soup = BeautifulSoup(read_clean('http://www.diariolareforma.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.diariolareforma.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('#column1 div.box span.category-fecha')[0].text)
 
   builder = XMLBuild(conf, today_date)
@@ -115,7 +115,7 @@ def rss_menu(args):
   # item['pubDate']   = date_add_str(today_date, '00:00')
   builder.add_section(item)
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
   
 def rss_seccion(args):
   
@@ -126,8 +126,8 @@ def rss_seccion(args):
   return rss_index({'full_url':full_url, 'category':True})
 
 def rss_seccion_columnistas(args):
-
-  soup = BeautifulSoup(read_clean('http://www.diariolareforma.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.diariolareforma.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('#column1 div.box span.category-fecha')[0].text)
 
   builder = XMLBuild(conf, today_date)
@@ -160,14 +160,15 @@ def rss_seccion_columnistas(args):
   for item in sorted(items, key=lambda x: x['rawDate'], reverse=False):
     builder.add_item(item)
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
   
 def rss_noticia(args): 
 
   full_url = 'http://www.diariolareforma.com.ar/2013/%s/' % args['host']
   # httpurl=u'http://www.diariolareforma.com.ar/2013/activistas-suspenden-la-audiencia-concedida-a-hernan-perez-orsi/'
   # soup = BeautifulSoup(urlopen(httpurl, timeout=25).read())
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = datetime.now()+timedelta(hours=-3)
 
   builder = XMLBuild(conf, today_date)
@@ -193,11 +194,11 @@ def rss_noticia(args):
   item['content']   = content.__repr__().decode('utf-8')
   
   builder.add_item(item)
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_funebres(args):
-
-  soup = BeautifulSoup(read_clean('http://www.diariolareforma.com.ar/2013/category/necrologicas/', use_cache=False))
+  html, last_modified = read_clean('http://www.diariolareforma.com.ar/2013/category/necrologicas/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('#column1 div.box span.category-fecha')[0].text)
 
   builder = XMLBuild(conf, today_date)
@@ -215,7 +216,7 @@ def rss_funebres(args):
   
   builder.add_funebre({})
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
   
 #

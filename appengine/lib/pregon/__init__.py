@@ -34,7 +34,8 @@ def get_noticia_date(strdate):
   return datetime(int(parts[2]), inx+1, int(parts[0]), int(hh), int(mm))
 
 def rss_index(args):
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.pregon.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -65,11 +66,11 @@ def rss_index(args):
     item['subheader'] = spans[1].text
     builder.add_item(item)    
     
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_menu(args):
-  
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/', use_cache=False))
+  html, last_modified = read_clean('http://www.pregon.com.ar/', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -87,11 +88,11 @@ def rss_menu(args):
     item['pubDate']   = date_add_str(today_date, '00:00')
     builder.add_section(item)
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_section(args):
-
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/subseccion/4/%s/dummy.html' % args['host'], use_cache=False))
+  html, last_modified = read_clean('http://www.pregon.com.ar/subseccion/4/%s/dummy.html' % args['host'], use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
   
   builder = XMLBuild(conf, today_date)
@@ -108,13 +109,12 @@ def rss_section(args):
     item['subheader'] = n.p.text
     builder.add_item(item)
 
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_noticia(args):
-
   full_url = 'http://www.pregon.com.ar/nota/%s/dummy.html' % args['host']
-
-  soup = BeautifulSoup(read_clean(full_url, use_cache=False))
+  html, last_modified = read_clean(full_url, use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   builder = XMLBuild(conf, today_date)
@@ -133,11 +133,11 @@ def rss_noticia(args):
   item['content']   = body.find_all('div',{'class':'cc2'})[0].p.__repr__().decode('utf-8')
   
   builder.add_item(item)
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 def rss_funebres(args):
-
-  soup = BeautifulSoup(read_clean('http://www.pregon.com.ar/subseccion/2/1/funebres.html', use_cache=False))
+  html, last_modified = read_clean('http://www.pregon.com.ar/subseccion/2/1/funebres.html', use_cache=False)
+  soup = BeautifulSoup(html)
   today_date = get_header_date(soup.select('div.clima div')[-1].text)
 
   # Obtenemos las url funebres
@@ -173,7 +173,7 @@ def rss_funebres(args):
   # HACK POR EL DIA (no se muestra nunca el LAST FUNEBRE)
   builder.add_funebre({})
   
-  return builder.get_value()
+  return builder.get_value(), last_modified
 
 
 def get_mapping():
