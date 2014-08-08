@@ -19,7 +19,7 @@ from webapp2 import RequestHandler
 
 from utils import do_slugify
 from utils import FrontendHandler, get_or_404
-from utils import apps_id, in_cache, drop_cache, build_inner_url, get_xml, get_mapping
+from utils import apps_id, in_cache, drop_cache, build_inner_url, get_xml, get_mapping, read_cache, get_httpurl, get_lastmodified
 from utils import HtmlBuilderMixing, Jinja2Mixin
 
 from lhammer.xml2dict import XML2Dict
@@ -31,38 +31,41 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     self.request.charset = 'utf-8'
     appid   = self.request.params.get('appid')
     article = self.request.params.get('article')
+    
+    section = None
     link = None
-    if appid == 'eldia':
-      link = self.request.params.get('link')
+    es_eldia = appid == 'eldia' or appid=='com.diventi.eldia'
+    if es_eldia: 
+      link    = self.request.params.get('link')
+      section = self.request.params.get('section')
+    
     # Iteramos todas las noticias de la seccion y las mandamos a bajar // 1h
-    url = 'noticia://%s' % article
+    url   = 'noticia://%s' % article
+    count = 0
     for size in ['small', 'big']:
 
       inner_url = build_inner_url('html', appid, url, size)
 
       # Esta en cache?
-      if in_cache(inner_url) and appid=='eldia':
-
+      if in_cache(inner_url) and es_eldia:
         cc = read_cache(inner_url)
         assert(cc != None)
         
-        http_url = get_httpurl(appid, url, size=size) if appid!= 'eldia' else link
-        #r = requests.head(http_url, timeout=10)
-        request = urllib2.Request(http_url)
-        request.get_method = lambda : 'HEAD'
-        response = urllib2.urlopen(request)
-        h = response.info()
+        if es_eldia: 
+          http_url = link
+        else
+          http_url, _, _, _, _ = get_httpurl(appid, url, size=size) 
         
-        assert(response.getcode() == 200)
-        #assert(r.status_code == 200)
+        last, code = get_lastmodified(http_url)
+        assert(code == 200)
+        
 
         # Estaba en cache, pero fecha distinta ... lo "re-armo"
-        #if cc.last_modified != r.headers.get('last-modified'):
-        if cc.last_modified != h['Last-Modified']:
+        if cc[2] != last:
           self.re_build_html_and_images(appid, url, size, 'pt')
-
+          count = count + 1
         continue
-
+      
       # No estaba en cache, lo "armo"
       self.build_html_and_images(appid, url, size, 'pt', use_cache=(size=='big'))
 
@@ -71,26 +74,31 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
     appid   = self.request.params.get('appid')
     section = self.request.params.get('section')
 
-    # logging.error('>> DOWNLOADING SECTION %s' % section)
+    #logging.error('>> DOWNLOADING SECTION %s' % section)
     # Borro las "decoraciones" seccion y las rearmo
     self.re_build_html_and_images(appid, 'menu_section://%s' % section, 'big', 'pt')
     self.re_build_html_and_images(appid, 'ls_menu_section://%s' % section, 'big', 'ls')
-
+    
+    #logging.error('>> DOWNLOADING SECTION %s - #2' % section)
+    
     # Borramos las seccion y la rearmamos
     self.re_build_html_and_images(appid, 'section://%s' % section, 'big',   'pt')
     self.re_build_html_and_images(appid, 'section://%s' % section, 'small', 'pt')
-
+    
+    #logging.error('>> DOWNLOADING SECTION %s - #3' % section)
+    
     # Iteramos todas las noticias de la seccion y las mandamos a bajar
     xmlstr, _ = get_xml(appid, 'section://%s' % section, use_cache=True)
     xml = XML2Dict().fromstring(xmlstr.encode('utf-8'))
     if 'item' in xml.rss.channel:
       for i in xml.rss.channel.item:
-        if appid != 'ecosdiarios': continue
-        if appid == 'eldia': 
-          taskqueue.add(queue_name='download2', url='/download/article', params={'appid': appid, 'article': i.guid.value, 'url': i.link.value})
+        #if appid != 'ecosdiarios' or appid!='com.diventi.ecosdiarios': continue
+        if appid == 'eldia' or appid=='com.diventi.eldia': 
+          taskqueue.add(queue_name='download2', url='/download/article', params={'appid': appid, 'article': i.guid.value, 'link': i.link, 'section':section})
+          #logging.error('--------- llame a bajar noticia:' + i.guid.value)
           continue
         taskqueue.add(queue_name='download2', url='/download/article', params={'appid': appid, 'article': i.guid.value})
-
+      
   def download_newspaper(self, **kwargs):
     
     self.request.charset = 'utf-8'
@@ -111,7 +119,7 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
 
 
     for section in sections:
-      logging.error('>> trying section %s  // appid %s' % (section, appid))
+      # logging.error('>> trying section %s  // appid %s' % (section, appid))
       taskqueue.add(queue_name='download2', url='/download/section', params={'appid': appid, 'section': section})
       
   def download_all(self, **kwargs):    

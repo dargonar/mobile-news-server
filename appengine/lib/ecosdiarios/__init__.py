@@ -195,10 +195,30 @@ def rss_menu(args):
 def rss_section(args):
   html, last_modified = read_clean('%s%s/' % (main_url, args['host']), use_cache=False, encoding='iso-8859-1')
   soup = BeautifulSoup(html)
-  today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
-  
+  #today_date = get_header_date(soup.select('div.cabecera div.logo div.fecha p')[-1].text)
+  today_date = datetime.now()
   builder = XMLBuild(conf, today_date)
 
+  if args['host'] in ['fragmentos', 'salud-mental-derechos-sociedad', 'hospital-neurosiquiatrico', 'mundo-joven']:
+    category = args['host'].strip().replace('-', ' ').capitalize()
+    tmp = soup.select('div.centrado div.post')
+    for i in xrange(len(tmp)): 
+      img         = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
+      a           = tmp[i].h1.a
+      volanta  = tmp[i].find_all('p')[0].text.strip()
+
+      item = {}
+      item['title']       = a.text.strip()
+      item['link']        = '%s%s' % (main_url, a['href'])
+      item['guid']        = get_guid(a['href'])
+      item['category']    = category #volanta.capitalize()
+      item['description'] = category
+      item['thumbnail']   = fullimg(img['src'] if img is not None else None) #('%s/%s' % (main_url, a.img['src'])) if len(p) > 1 and p[0].img is not None else None
+      item['subheader']   = None
+      builder.add_item(item)
+
+    return builder.get_value(), last_modified
+  
   category = ''
   for n in soup.select('div.cabecera div.contenedor div.cont-menu ul.menu')[0].find_all('li'):
     if n.a['href'].replace('/', '') == args['host']:

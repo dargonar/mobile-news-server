@@ -88,12 +88,6 @@ def read_url_clean(httpurl, clean=True, encoding=None):
   h             = result.info()
   last_modified = h['Last-Modified'] if 'Last-Modified' in h.keys() or 'last-modified' in h.keys() else 'now'
   
-  # r = requests.get(httpurl, timeout=25)
-  # assert(r.status_code == 200)
-
-  # content       = r.text
-  # last_modified = r.headers.get('Last-Modified')
-
   if encoding:
     content=content.decode(encoding).encode('utf-8')
     content=content.replace(encoding,'utf-8')
@@ -379,6 +373,16 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
 
   return httpurl, args, template, page_name, extras
 
+def get_lastmodified(url):
+  request = urllib2.Request(url)
+  request.get_method = lambda : 'HEAD'
+  response = urllib2.urlopen(request)
+  if response.getcode()!= 200: 
+    return 'now'
+  h = response.info()
+  last = h['Last-Modified'] if 'Last-Modified' in h.keys() or 'last-modified' in h.keys() else 'now'
+  return last, response.getcode()
+  
 def get_xml(appid, url, use_cache=False):
   
   inner_url = build_inner_url('xml', appid, url)
@@ -396,12 +400,22 @@ def get_xml(appid, url, use_cache=False):
       fnc = getattr(importlib.import_module(apps_id[appid]), httpurl.split()[1])
       result, last_modified = fnc(args)
     else:
-      # Todos los diarios que implementan el protocolo (ElDia).
+      # EL DIA (Todos los diarios que implementan el protocolo)
       if '%s' in httpurl: httpurl = httpurl % args['host']
       # El last modified de el read_clean del diaior ElDia es mentiroso, dado que el verdadero esta en el HTML y no en el RSS.
       result, last_modified = read_clean(httpurl, clean=False, use_cache=use_cache)
       result = result.decode('utf-8')
-
+      
+      # SI ES NOTICIA, Como el last_modified pertenece a la fecha del XML que es dinamico, nos traemos el last modified de la verdadera url
+      if url.startswith('noticia://') and apps_id[appid] == 'eldia':
+        xml = re.sub(r'<(/?)\w+:(\w+/?)', r'<\1\2', result)
+        r = XML2Dict().fromstring(xml.encode('utf-8'))
+        if type(r.rss.channel.item) == OODict:
+          items = [r.rss.channel.item]
+        else:
+          items = r.rss.channel.item
+        last_modified, _ = get_lastmodified(items[0].link)
+      
       # HACKO el DIA:
       if url.startswith('farmacia://') or url.startswith('cartelera://') and apps_id[appid] == 'eldia':
         now = date2iso(datetime.now()+timedelta(hours=-3))

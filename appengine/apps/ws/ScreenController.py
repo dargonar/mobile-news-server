@@ -73,6 +73,7 @@ class ScreenController(FrontendHandler, HtmlBuilderMixing):
     ptls  = self.request.params['ptls']  # pt, ls
 
     use_cache = self.str2bool(self.request.params.get('use_cache'))
+    #logging.error(' -- get_html(): use_cache:' + 'SI' if use_cache else 'NO')
     content, images, _ = self.build_html_and_images(appid, url, size, ptls, use_cache)
     
     # self.response.write(apps_id[appid]) 
