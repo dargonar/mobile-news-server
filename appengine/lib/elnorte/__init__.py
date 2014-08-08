@@ -647,7 +647,7 @@ def get_mapping():
     },
     'config': {
         'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
-        'iphone':  { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
-        'ipad':    { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] }
+        'iphone':  { 'ad_mob': 'ca-app-pub-1446891183596798/3247541772', 'google_analytics' : ['UA-32663760-8'] },
+        'ipad':    { 'ad_mob': 'ca-app-pub-1446891183596798/3247541772', 'google_analytics' : ['UA-32663760-8'] }
     }
   } 
