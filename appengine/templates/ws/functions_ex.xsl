@@ -236,15 +236,16 @@
 {%- endmacro %}
 
 {% macro DateSectionLabel(node, class='date') -%}    
-  {% set thedate = node.pubDate|datetime %}
-  {% if thedate != '' %}
-  <label class="{{class}}">{{thedate}}</label>
+  {% if session['appid'] not in ['com.diventi.eldia','com.diventi.puertonegocios'] %}
+    {% set thedate = node.pubDate|datetime %}
+    {% if thedate != '' %}
+    <label class="{{class}}">{{thedate}}</label>
+    {% endif %}
+    
+    {% if node.category and thedate != '' %}
+    &nbsp;|&nbsp;
+    {% endif %}
   {% endif %}
-
-  {% if node.category and thedate != '' %}
-  &nbsp;|&nbsp;
-  {% endif %}
-  
   {% if node.category %}
   <label class="seccion">
   {% if node.category|trim == 'Información General' %}
