@@ -18,5 +18,5 @@ mv app.yaml.tmp appengine/app.yaml
 /c/Python27/python.exe compile_templates.py
 
 # Upload to appengine
-appcfg.py --noauth_local_webserver --oauth2 --no_cookies update appengine/.
+appcfg.py --oauth2 --no_cookies update appengine/.
 
