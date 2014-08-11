@@ -20,12 +20,12 @@ from webapp2 import RequestHandler
 from utils import do_slugify
 from utils import FrontendHandler, get_or_404
 from utils import apps_id, in_cache, drop_cache, build_inner_url, get_xml, get_mapping, read_cache, get_httpurl, get_lastmodified
-from utils import HtmlBuilderMixing, Jinja2Mixin
+from utils import HtmlBuilderMixing, MyBaseHandler
 
 from lhammer.xml2dict import XML2Dict
 
 
-class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
+class DownloadAll(MyBaseHandler, HtmlBuilderMixing):
 
   def download_article(self, **kwargs):
     self.request.charset = 'utf-8'

@@ -13,7 +13,8 @@ def rss_clasificados(args):
 
   builder = XMLBuild(conf, datetime.now())
   
-  for _id, title in get_classifieds().items():
+  list, last_modified = get_classifieds()
+  for _id, title in list.items():
     item = {}
     item['title'] = title
     item['link']  = 'clasificados://%s' % _id
@@ -21,7 +22,8 @@ def rss_clasificados(args):
 
     builder.add_item(item)
 
-  return builder.get_value()
+  # NOTA: Cuando cambiemos el arreglo de clasificados, tocar esta fecha hardcodeada
+  return builder.get_value(), last_modified
 
 
 def get_classifieds():
@@ -63,7 +65,7 @@ def get_classifieds():
   ('34', u'Jardinería, plantas y viveros'),
   ('35', u'Carpintería metalica y madera, puertas, cortinas'),
   ('36', u'Ferreterías - cerrajerías')
-  ])
+  ]), '2014-08-11'
 
 def get_mapping():
   return {

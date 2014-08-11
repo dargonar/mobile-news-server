@@ -369,7 +369,7 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
   extras = mapping['extras']
   if extras['has_clasificados']:
     fnc = getattr(importlib.import_module(apps_id[appid]),'get_classifieds')
-    extras['clasificados'] = fnc()
+    extras['clasificados'] = fnc()[0]
 
   return httpurl, args, template, page_name, extras
 
