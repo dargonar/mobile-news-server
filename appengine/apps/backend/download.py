@@ -53,7 +53,7 @@ class DownloadAll(RequestHandler, HtmlBuilderMixing, Jinja2Mixin):
         
         if es_eldia: 
           http_url = link
-        else
+        else:
           http_url, _, _, _, _ = get_httpurl(appid, url, size=size) 
         
         last, code = get_lastmodified(http_url)
