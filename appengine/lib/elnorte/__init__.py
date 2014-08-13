@@ -646,8 +646,10 @@ def get_mapping():
       'has_cartelera'    : 'cartelera://',
     },
     'config': {
-        'android': { 'ad_mob': '', 'google_analytics' : ['UA-32663760-8'] },
-        'iphone':  { 'ad_mob': 'ca-app-pub-1446891183596798/3247541772', 'google_analytics' : ['UA-32663760-8'] },
-        'ipad':    { 'ad_mob': 'ca-app-pub-1446891183596798/3247541772', 'google_analytics' : ['UA-32663760-8'] }
+        'android': { 'ad_mob': 'ca-app-pub-1805532590338999/6762567533', 'google_analytics' : ['UA-32663760-8', 'UA-53771738-1'] },
+        'iphone':  { 'ad_mob': 'ca-app-pub-1805532590338999/3809101136', 'google_analytics' : ['UA-32663760-8', 'UA-53771738-1'] },
+        'ipad':    { 'ad_mob': 'ca-app-pub-1805532590338999/3809101136', 'google_analytics' : ['UA-32663760-8', 'UA-53771738-1'] }
     }
   }   
+  # THEIRS: 'UA-53771738-1' 
+  # OURS: ca-app-pub-1446891183596798/3247541772
