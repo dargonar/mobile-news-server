@@ -367,10 +367,17 @@ def get_httpurl(appid, url, size='small', ptls='pt'):
     raise('8-(')
 
   extras = mapping['extras']
+  # if extras['has_clasificados']:
+    # fnc = getattr(importlib.import_module(apps_id[appid]),'get_classifieds')
+    # extras['clasificados'] = fnc()[0]
   if extras['has_clasificados']:
     fnc = getattr(importlib.import_module(apps_id[appid]),'get_classifieds')
-    extras['clasificados'] = fnc()[0]
-
+    ret = fnc()
+    if len(ret) > 0:
+      extras['clasificados'] = fnc()[0]
+    else:
+      extras['clasificados'] = ret
+      
   return httpurl, args, template, page_name, extras
 
 def get_lastmodified(url):
