@@ -26,6 +26,7 @@ def fullimg(url):
   return url
 
 def get_guid(href):
+  logging.error('---- '+href)
   return re.compile('\d+').findall(href)[-1]
 
 # Necochea, viernes 16 de agosto 2013
@@ -60,6 +61,8 @@ def rss_index(args):
   tmp = soup.select('div.wrap div.contenedor div.col3 div.col1  div.w620 div.nota.notafinal div.slide620 div.scrollable620 a')
   for i in xrange(len(tmp)): 
     a = tmp[i]
+    if not a['href'] or len(a['href'])==0:
+      continue
     item = {}
     item['title']     = a.find_all('div',attrs={'class':'titularslide620'})[0].text.strip()
     item['link']      = '%s%s' % (main_url, a['href'])
@@ -73,6 +76,10 @@ def rss_index(args):
   for i in xrange(len(tmp)): 
     img = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
     a = tmp[i].find_all('h3')[0].a
+    
+    if not a['href'] or len(a['href'])==0:
+      continue
+    
     category = 'Portada'
     if '/notas-de-opinion/' in a['href'] or '/el-comentario/' in a['href']:
       category = u'Opinión'
@@ -94,6 +101,10 @@ def rss_index(args):
     img         = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
     a           = tmp[i].find_all('h6')[0].a
     subbheader  = tmp[i].find_all('p')[0].text.strip()
+    
+    if not a['href'] or len(a['href'])==0:
+      continue
+      
     item = {}
     item['title']     = a.text.strip()
     item['link']      = '%s%s' % (main_url, a['href'])
@@ -106,6 +117,10 @@ def rss_index(args):
   tmp = soup.select('div.wrap div.contenedor div.col3 div.col1 div.w620 div.cont_video620 div.videos620_thumb li')
   for i in xrange(len(tmp)): 
     a           = tmp[i].a
+    
+    if not a['href'] or len(a['href'])==0:
+      continue
+      
     img         = a.find_all('img')[0] if len(a.find_all('img'))>0 else None
     title       = a.find_all('div',attrs={'class':'tit'})[0].text.strip()
     item = {}
@@ -141,6 +156,10 @@ def rss_index(args):
         category_txt  = category[0].text.strip() 
         img           = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
         a             = tmp[i].find_all('p')[0].a
+        
+        if not a['href'] or len(a['href'])==0:
+          continue
+      
         item = {}
         item['title']     = a.text.strip()
         item['link']      = '%s%s' % (main_url, a['href'])
@@ -159,6 +178,9 @@ def rss_index(args):
     for x in xrange(len(notas)):
       img         = notas[x].find_all('div',attrs={'class':'fotoNota'})[0].a.img
       a           = notas[x].find_all('h6')[0].a
+      
+      if not a['href'] or len(a['href'])==0:
+        continue
       
       item = {}
       item['title']     = a.text.strip()
@@ -206,7 +228,9 @@ def rss_section(args):
       img         = tmp[i].find_all('div',attrs={'class':'fotoNota'})[0].a.img
       a           = tmp[i].h1.a
       volanta  = tmp[i].find_all('p')[0].text.strip()
-
+      
+      if not a['href'] or len(a['href'])==0:
+        continue
       item = {}
       item['title']       = a.text.strip()
       item['link']        = '%s%s' % (main_url, a['href'])
@@ -231,7 +255,10 @@ def rss_section(args):
     volanta     = tmp[i].find_all('div',attrs={'class':'volanta'})[0].text.strip()
     a           = tmp[i].find_all('h5')[0].a
     subbheader  = tmp[i].find_all('p')[0].text.strip()
-
+    
+    if not a['href'] or len(a['href'])==0:
+      continue
+      
     item = {}
     item['title']       = a.text.strip()
     item['link']        = '%s%s' % (main_url, a['href'])
