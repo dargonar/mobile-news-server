@@ -87,31 +87,45 @@ def rss_index(args):
   #today_date = get_header_date(soup)
   builder = XMLBuild(conf, datetime.now())
   
+  noticias_cargadas = []
+  
   notas = soup.select('#gaass200 div.ga-main-item')
   for i in xrange(len(notas)):
     nota = notas[i]
+    
+    link = nota.div.h4.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item = {}
     item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
     #fullpath(nota.img['src']) if nota.img else None
     item['title']     = UnicodeDammit(nota.div.h4.a.text).unicode_markup
     item['category']  = u'Noticias'
     item['subheader'] = UnicodeDammit(nota.div.p.text).unicode_markup
-    item['link']      = fullpath(nota.div.h4.a['href'])
-    item['guid']      = get_guid(nota.div.h4.a['href']) #get_guid(nota.div.h4.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link) #get_guid(nota.div.h4.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
   notas = soup.select('#innertop div.hnews')
   for i in xrange(len(notas)):
     nota = notas[i]
+    
+    link = nota.h3.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item = {}
     item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
     #fullpath(nota.img['src']) if nota.img else None
     item['title']     = UnicodeDammit(nota.h3.a.text).unicode_markup
     item['category']  = 'Noticias'
     item['subheader'] = UnicodeDammit(nota.p.text).unicode_markup
-    item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = get_guid(nota.h3.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link)
     #items.append(item)
     builder.add_item(item)    
 
@@ -120,14 +134,20 @@ def rss_index(args):
     nota = notas[i]
     if not nota.p:
       continue
+    
+    link = nota.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item = {}
     item['thumbnail'] = fullpath(nota.a.img['src']) if nota.a.img else None
     #fullpath(nota.img['src']) if nota.img else None
     item['title']     = UnicodeDammit(nota.p.a.text).unicode_markup
     item['category']  = 'Noticias'
     item['subheader'] = ''
-    item['link']      = fullpath(nota.a['href'])
-    item['guid']      = get_guid(nota.a['href']) #get_guid(nota.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link) #get_guid(nota.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -135,13 +155,19 @@ def rss_index(args):
   for i in xrange(len(notas)):
     nota = notas[i]
     item = {}
+    
+    link = nota.h4.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item['thumbnail'] = None #fullpath(nota.a.img['src']) if nota.img else None
     #fullpath(nota.img['src']) if nota.img else None
     item['title']     = UnicodeDammit(nota.h4.a.text).unicode_markup
     item['category']  = u'Opinión'
     item['subheader'] = ''
-    item['link']      = fullpath(nota.h4.a['href'])
-    item['guid']      = get_guid(nota.h4.a['href']) #get_guid(nota.h4.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link) #get_guid(nota.h4.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -150,14 +176,20 @@ def rss_index(args):
     nota = notas[i]
     if not nota.p or not nota.p.a:
       continue
+    
+    link = nota.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item = {}
     item['thumbnail'] = fullpath(nota.a.img['src']) if nota.a.img else None
     #fullpath(nota.img['src']) if nota.img else None
     item['title']     = UnicodeDammit(nota.p.a.text).unicode_markup
     item['category']  = u'Zoom'
     item['subheader'] = ''
-    item['link']      = fullpath(nota.a['href'])
-    item['guid']      = get_guid(nota.a['href']) #get_guid(nota.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link) #get_guid(nota.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -206,7 +238,10 @@ def rss_seccion(args):
     return builder.get_value(), last_modified
   
   builder = get_noticias_seccion(builder, soup)
-  soup = BeautifulSoup(read_clean(full_url+'?start=6', use_cache=False, clean=False))
+  logging.error(' -- PN: '+full_url)
+  html, _ = read_clean(full_url+'?start=6', use_cache=False, clean=False) 
+  #soup = BeautifulSoup(read_clean(full_url+'?start=6', use_cache=False, clean=False))
+  soup = BeautifulSoup(html)
   builder = get_noticias_seccion(builder, soup)
   return builder.get_value(), last_modified
 
@@ -232,17 +267,26 @@ def get_revistas(builder, soup):
    
 def get_noticias_seccion(builder, soup):
   category = soup.select('#header ul.jt-menu li.active a')[0].text
+  
+  noticias_cargadas=[]
+  
   notas = soup.select('#itemListLeading div.catItemView')
   for i in xrange(len(notas)):
     nota = notas[i]
+    
+    link = nota.h3.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item = {}
     item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
     item['title']     = nota.h3.a.text 
     item['category']  = category
     bajada = nota.find_all('div',{'class':'catItemIntroText'})
     item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
-    item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = get_guid(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
 
@@ -250,13 +294,19 @@ def get_noticias_seccion(builder, soup):
   for i in xrange(len(notas)):
     nota = notas[i]
     item = {}
+    
+    link = nota.h3.a['href']
+    if link in noticias_cargadas:
+      continue
+    noticias_cargadas.append(link)
+    
     item['thumbnail'] = fullpath(nota.img['src']) if nota.img else None
     item['title']     = nota.h3.a.text 
     item['category']  = category
     bajada = nota.find_all('div',{'class':'catItemIntroText'})
     item['subheader'] = re.sub(r'<([a-z][a-z0-9]*)([^>])*?(/?)>', r'<\1>', bajada[0].__repr__().decode('utf-8')) if bajada and len(bajada) else ''
-    item['link']      = fullpath(nota.h3.a['href'])
-    item['guid']      = get_guid(nota.h3.a['href']) #get_guid(nota.h3.a['href'])
+    item['link']      = fullpath(link)
+    item['guid']      = get_guid(link) #get_guid(nota.h3.a['href'])
     #items.append(item)
     builder.add_item(item)    
   return builder
